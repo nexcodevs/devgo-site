@@ -9,4 +9,6 @@ Site institucional da Devgo (devgo.digital). HTML estático, sem build.
 
 Deploy: Vercel (framework "Other", sem build command, output = raiz).
 
-Pendente: o formulário de contato ainda não envia para nenhum destino (só valida e mostra confirmação).
+Sistema visual: os tokens de tipografia, espaço, movimento e cor ficam no bloco `/* ===== Refino UI/UX · sistema ===== */` no fim do CSS. Mudanças de estilo entram por esses tokens.
+
+Pendente: o formulário de contato valida os campos, mas ainda não envia para nenhum destino. Hoje a mensagem de sucesso avisa isso e aponta para o LinkedIn.
