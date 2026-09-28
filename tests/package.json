@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "typecheck": "tsc -p ../jsconfig.json",
-    "lint": "cd .. && eslint -c tests/eslint.config.js js tests",
+    "lint": "cd .. && eslint -c tests/eslint.config.js js tests build",
+    "build": "node ../build/build.mjs",
     "test:e2e": "node --test site.test.mjs",
     "test": "npm run typecheck && npm run lint && npm run test:e2e"
   },

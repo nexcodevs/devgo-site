@@ -8,6 +8,7 @@
 import { byId, reducedMotion, watchVisibility } from '../core/dom.js';
 import { HOME, CITIES } from '../data/locations.js';
 import { LAND_POINTS } from '../data/globe-land.js';
+import { highlight } from '../core/highlight.js';
 
 /** @typedef {[number, number, number]} Vec3 */
 
@@ -73,10 +74,7 @@ function arcBetween(from, to) {
   return points;
 }
 
-/**
- * @param {{ timeZone: string | null }} highlight cidade em destaque no painel de fusos
- */
-export function initGlobe(highlight) {
+export function initGlobe() {
   const canvas = byId('globe', HTMLCanvasElement);
   const ctx = canvas.getContext('2d');
   if (!ctx) return; // canvas indisponível: o texto alternativo continua descrevendo o globo

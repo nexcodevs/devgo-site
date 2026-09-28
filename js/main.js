@@ -1,46 +1,24 @@
 // @ts-check
 /**
- * Ponto de entrada. Cada feature inicia isolada: se uma falhar (elemento
- * ausente, API indisponível), as demais continuam funcionando e o erro fica
- * no console com o nome da feature.
- *
- * A ordem importa em dois casos:
- * - ícones depois do squad (os ícones dos grupos são renderizados por ele);
- * - revelação por último (mede posições com todo o conteúdo já na página).
+ * Ponto de entrada. Carrega só as features presentes nesta página
+ * (ver registry.js) e inicia cada uma isolada: se uma falhar, as demais
+ * continuam funcionando e o erro fica no console com o nome da feature.
  */
-import { initMobileMenu, initClientLogos, initNavSpy, initReveal, initIconEntrances, initHeroVideo } from './features/page.js';
-import { initServices } from './features/services.js';
-import { initWorldHours } from './features/world-hours.js';
-import { initGlobe } from './features/globe.js';
-import { initNumbers } from './features/numbers.js';
-import { initStacks } from './features/stacks.js';
-import { initSquad } from './features/squad.js';
-import { initContactForm } from './features/contact-form.js';
+import { FEATURES } from './registry.js';
 
-/** Cidade em destaque: escrita pelo painel de fusos, lida pelo globo. */
-const highlight = { timeZone: /** @type {string | null} */ (null) };
+const active = FEATURES.filter((feature) => document.querySelector(feature.selector));
+const loaded = await Promise.allSettled(active.map((feature) => import(feature.module)));
 
-/** @type {Array<[string, () => void]>} */
-const FEATURES = [
-  ['menu', initMobileMenu],
-  ['hero-video', initHeroVideo],
-  ['logos', initClientLogos],
-  ['services', initServices],
-  ['world-hours', () => initWorldHours(highlight)],
-  ['globe', () => initGlobe(highlight)],
-  ['numbers', initNumbers],
-  ['stacks', initStacks],
-  ['squad', initSquad],
-  ['contact-form', initContactForm],
-  ['icons', initIconEntrances],
-  ['nav-spy', initNavSpy],
-  ['reveal', initReveal],
-];
-
-for (const [name, init] of FEATURES) {
+active.forEach((feature, i) => {
+  const result = loaded[i];
   try {
+    if (result.status === 'rejected') throw result.reason;
+    /** @type {Record<string, unknown>} */
+    const module = result.value;
+    const init = module[feature.init];
+    if (typeof init !== 'function') throw new Error(`${feature.module} não exporta ${feature.init}`);
     init();
   } catch (error) {
-    console.error(`[devgo] falha ao iniciar "${name}"`, error);
+    console.error(`[devgo] falha ao iniciar "${feature.name}"`, error);
   }
-}
+});

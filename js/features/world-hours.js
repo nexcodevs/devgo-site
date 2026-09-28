@@ -5,6 +5,7 @@
  */
 import { byId, closest, html, render, trusted } from '../core/dom.js';
 import { HOME, CITIES } from '../data/locations.js';
+import { highlight } from '../core/highlight.js';
 
 const WORKDAY_START = 9;
 const WORKDAY_END = 18;
@@ -41,10 +42,7 @@ export function sharedWorkHours(homeOffset, cityOffset) {
   return Math.max(0, Math.min(WORKDAY_END + shift, WORKDAY_END) - Math.max(WORKDAY_START + shift, WORKDAY_START));
 }
 
-/**
- * @param {{ timeZone: string | null }} highlight cidade em destaque, lida pelo globo
- */
-export function initWorldHours(highlight) {
+export function initWorldHours() {
   const list = byId('glob-cities');
 
   const draw = () => {

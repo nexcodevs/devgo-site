@@ -1,17 +1,20 @@
 // Testes de ponta a ponta do site: renderização, acessibilidade básica e
-// cada interação. Rodar a partir da raiz: npm --prefix tests test
+// cada interação, em todas as páginas. Rodar a partir da raiz: npm --prefix tests test
 import { test, before, after, describe } from 'node:test';
 import assert from 'node:assert/strict';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
 import { serve } from './static-server.mjs';
+import { build } from '../build/build.mjs';
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const VIEWPORTS = { desktop: { width: 1440, height: 900 }, tablet: { width: 768, height: 1024 }, phone: { width: 390, height: 844 } };
+let PAGES = [];
 
 let server, browser;
 before(async () => {
-  server = await serve(ROOT);
+  PAGES = await build();
+  server = await serve(`${ROOT}dist`, `${ROOT}vercel.json`);
   browser = await chromium.launch();
 });
 after(async () => {
@@ -20,20 +23,22 @@ after(async () => {
 });
 
 /**
- * Abre a página e coleta erros de console, exceções e requisições com falha.
- * @param {{ viewport?: {width:number,height:number}, reducedMotion?: 'reduce' | 'no-preference' }} [options]
+ * Abre uma página e coleta erros de console, exceções e requisições com falha.
+ * @param {{ path?: string, viewport?: {width:number,height:number}, reducedMotion?: 'reduce' | 'no-preference' }} [options]
  */
-async function open({ viewport = VIEWPORTS.desktop, reducedMotion = 'no-preference' } = {}) {
+async function open({ path = '/', viewport = VIEWPORTS.desktop, reducedMotion = 'no-preference' } = {}) {
   const page = await browser.newPage({ viewport });
   await page.emulateMedia({ reducedMotion });
   const problems = [];
+  const scripts = [];
   page.on('pageerror', (e) => problems.push(`pageerror: ${e.message}`));
   page.on('console', (m) => { if (m.type() === 'error') problems.push(`console: ${m.text()}`); });
   page.on('requestfailed', (r) => problems.push(`requestfailed: ${r.url()}`));
   page.on('response', (r) => { if (r.status() >= 400) problems.push(`${r.status()}: ${r.url()}`); });
-  await page.goto(server.url);
+  page.on('request', (r) => { if (r.resourceType() === 'script') scripts.push(new URL(r.url()).pathname); });
+  await page.goto(new URL(path, server.url).href);
   await page.waitForLoadState('networkidle');
-  return { page, problems };
+  return { page, problems, scripts };
 }
 
 /** Rola a página inteira devagar, como uma pessoa lendo. */
@@ -50,34 +55,46 @@ const subject = (page) => page.inputValue('#ct-assunto');
 
 describe('renderização', () => {
   for (const [name, viewport] of Object.entries(VIEWPORTS)) {
-    test(`carrega sem erros e sem rolagem lateral (${name})`, async () => {
-      const { page, problems } = await open({ viewport });
-      await scrollThrough(page);
-      assert.deepEqual(problems, []);
-      const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
-      assert.ok(overflow <= 0, `rolagem lateral de ${overflow}px`);
-      assert.equal(await page.locator('.is-pending').count(), 0, 'algum bloco não foi revelado');
-      await page.close();
+    test(`todas as páginas carregam sem erros e sem rolagem lateral (${name})`, async () => {
+      for (const path of PAGES) {
+        const { page, problems } = await open({ path, viewport });
+        await scrollThrough(page);
+        assert.deepEqual(problems, [], path);
+        const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+        assert.ok(overflow <= 0, `${path}: rolagem lateral de ${overflow}px`);
+        assert.equal(await page.locator('.is-pending').count(), 0, `${path}: algum bloco não foi revelado`);
+        await page.close();
+      }
     });
   }
 
-  test('todas as seções dinâmicas são renderizadas', async () => {
-    const { page } = await open();
-    const count = (selector) => page.locator(selector).count();
-    assert.equal(await count('.svc-item'), 4);
-    assert.equal(await count('.logo-cell'), 12); // 6 logos + cópia do loop
-    assert.equal(await count('.marquee-clone img[alt=""]'), 6);
-    assert.equal(await count('.glob-city'), 5);
-    assert.equal(await count('.orbit-pill'), 28);
-    assert.equal(await count('.stk-filter'), 7);
-    assert.equal(await count('.squad-group'), 4);
-    assert.equal(await count('.squad-role'), 16);
-    assert.equal(await count('.tile-matrix i'), 90);
-    await page.close();
+  test('cada página tem as seções esperadas', async () => {
+    const expected = {
+      '/': { '.svc-item': 4, '.logo-cell': 12, '.marquee-clone img[alt=""]': 6, '.spec-chips span': 44, '.step': 4, '.tile-matrix i': 90, '.quote': 2, '#faq details': 5, '#contact-form': 1 },
+      '/como-funciona': { '.flow li': 5, '.assurances div': 4, '.models tbody tr': 4, '.glob-city': 5, '#faq details': 9, '#contact-form': 1 },
+      '/especialidades': { '.orbit-pill': 28, '.stk-filter': 7, '.squad-group': 4, '.squad-role': 16, '#contact-form': 1 },
+      '/contato': { '#contact-form': 1 },
+    };
+    assert.deepEqual(Object.keys(expected).sort(), [...PAGES].sort());
+    for (const [path, counts] of Object.entries(expected)) {
+      const { page } = await open({ path });
+      for (const [selector, n] of Object.entries(counts)) assert.equal(await page.locator(selector).count(), n, `${path} ${selector}`);
+      await page.close();
+    }
+  });
+
+  test('conteúdo pré-renderizado aparece sem JavaScript', async () => {
+    const context = await browser.newContext({ javaScriptEnabled: false });
+    const page = await context.newPage();
+    await page.goto(server.url);
+    assert.match(await page.locator('#especialidades').textContent(), /Databricks/);
+    await page.goto(new URL('/como-funciona', server.url).href);
+    assert.match(await page.locator('.models').textContent(), /Fee por contratação realizada/);
+    await context.close();
   });
 
   test('globo desenha no canvas', async () => {
-    const { page } = await open();
+    const { page } = await open({ path: '/como-funciona' });
     await page.locator('#globe').scrollIntoViewIfNeeded();
     await page.waitForTimeout(600);
     const painted = await page.evaluate(() => {
@@ -92,39 +109,73 @@ describe('renderização', () => {
   });
 });
 
-describe('carregamento', () => {
-  test('todo módulo JS está no modulepreload (e nada além deles)', async () => {
-    const { readdir } = await import('node:fs/promises');
-    const files = (await readdir(new URL('../js', import.meta.url), { recursive: true }))
-      .filter((f) => f.endsWith('.js') && f !== 'main.js')
-      .map((f) => `js/${f.split('\\').join('/')}`)
-      .sort();
-    const { page } = await open();
-    const preloaded = (await page.$$eval('link[rel="modulepreload"]', (links) => links.map((l) => l.getAttribute('href')))).sort();
-    assert.deepEqual(preloaded, files);
+describe('carregamento e navegação entre páginas', () => {
+  test('cada página pré-carrega exatamente os módulos que usa', async () => {
+    for (const path of PAGES) {
+      const { page, scripts } = await open({ path });
+      const preloaded = (await page.$$eval('link[rel="modulepreload"]', (links) => links.map((l) => l.getAttribute('href')))).sort();
+      const used = [...new Set(scripts)].filter((s) => s !== '/js/main.js').sort();
+      assert.deepEqual(preloaded, used, path);
+      await page.close();
+    }
+  });
+
+  test('todos os links internos respondem', async () => {
+    const hrefs = new Set();
+    for (const path of PAGES) {
+      const { page } = await open({ path });
+      for (const href of await page.$$eval('a[href^="/"]', (links) => links.map((a) => a.getAttribute('href')))) hrefs.add(href);
+      await page.close();
+    }
+    for (const href of hrefs) {
+      const [pathname, hash] = href.split('#');
+      const response = await fetch(new URL(pathname || '/', server.url));
+      assert.equal(response.status, 200, href);
+      if (hash) assert.match(await response.text(), new RegExp(`id="${hash}"`), `${href}: âncora inexistente`);
+    }
+  });
+
+  test('o menu marca a página atual', async () => {
+    const { page } = await open({ path: '/como-funciona' });
+    assert.deepEqual(await page.$$eval('.nav-links [aria-current="page"]', (els) => els.map((e) => e.textContent)), ['Como funciona']);
     await page.close();
+  });
+
+  test('sitemap lista todas as páginas', async () => {
+    const xml = await (await fetch(new URL('/sitemap.xml', server.url))).text();
+    for (const path of PAGES) assert.match(xml, new RegExp(`<loc>[^<]*${path === '/' ? '/' : path}</loc>`));
   });
 });
 
 describe('acessibilidade básica', () => {
-  test('um único h1, imagens com alt e controles com nome', async () => {
-    const { page } = await open();
-    assert.equal(await page.locator('h1').count(), 1);
-    assert.equal(await page.locator('img:not([alt])').count(), 0);
-    const unnamed = await page.evaluate(() => [...document.querySelectorAll('button, a[href]')]
-      .filter((el) => !(el.getAttribute('aria-label') || el.textContent.trim()))
-      .map((el) => el.outerHTML.slice(0, 80)));
-    assert.deepEqual(unnamed, []);
-    const blankTargets = await page.locator('a[target="_blank"]:not([rel*="noopener"])').count();
-    assert.equal(blankTargets, 0);
-    await page.close();
+  test('um único h1, imagens com alt e controles com nome em todas as páginas', async () => {
+    for (const path of PAGES) {
+      const { page } = await open({ path });
+      assert.equal(await page.locator('h1').count(), 1, path);
+      assert.equal(await page.locator('img:not([alt])').count(), 0, path);
+      const unnamed = await page.evaluate(() => [...document.querySelectorAll('button, a[href]')]
+        .filter((el) => !(el.getAttribute('aria-label') || el.textContent.trim()))
+        .map((el) => el.outerHTML.slice(0, 80)));
+      assert.deepEqual(unnamed, [], path);
+      assert.equal(await page.locator('a[target="_blank"]:not([rel*="noopener"])').count(), 0, path);
+      await page.close();
+    }
   });
 
   test('stacks fora do filtro saem da ordem de tabulação', async () => {
-    const { page } = await open();
+    const { page } = await open({ path: '/especialidades' });
     await page.click('.stk-filter[data-filter="CRM"]');
     assert.equal(await page.locator('.orbit-pill.is-dimmed:not([tabindex="-1"])').count(), 0);
     assert.equal(await page.locator('.orbit-pill:not(.is-dimmed)').count(), 3);
+    await page.close();
+  });
+
+  test('perguntas frequentes abrem pelo teclado', async () => {
+    const { page } = await open();
+    const summary = page.locator('#faq summary').first();
+    await summary.focus();
+    await page.keyboard.press('Enter');
+    assert.equal(await page.locator('#faq details').first().getAttribute('open'), '');
     await page.close();
   });
 });
@@ -139,7 +190,7 @@ describe('menu móvel', () => {
     await page.keyboard.press('Escape');
     assert.equal(await button.getAttribute('aria-expanded'), 'false');
     await button.click();
-    await page.click('#mobile-menu a[href="#stacks"]');
+    await page.click('#mobile-menu a[href="/#clientes"]');
     assert.equal(await button.getAttribute('aria-expanded'), 'false');
     assert.equal(await page.locator('#mobile-menu').evaluate((el) => el.classList.contains('is-open')), false);
     await page.close();
@@ -182,7 +233,7 @@ describe('soluções', () => {
 
 describe('stacks', () => {
   test('filtro seleciona a primeira stack da categoria e o CTA preenche o contato', async () => {
-    const { page } = await open();
+    const { page } = await open({ path: '/especialidades' });
     await page.locator('#stacks').scrollIntoViewIfNeeded();
     await page.click('.stk-filter[data-filter="CRM"]');
     assert.equal(await page.getAttribute('.stk-filter[data-filter="CRM"]', 'aria-pressed'), 'true');
@@ -197,7 +248,7 @@ describe('stacks', () => {
   });
 
   test('lista do celular pede o profissional', async () => {
-    const { page } = await open({ viewport: VIEWPORTS.phone, reducedMotion: 'reduce' });
+    const { page } = await open({ path: '/especialidades', viewport: VIEWPORTS.phone, reducedMotion: 'reduce' });
     await page.click('.orbit-chip[data-stack="VTEX"]');
     assert.equal(await subject(page), 'Alocar profissional de VTEX');
     await page.close();
@@ -206,7 +257,7 @@ describe('stacks', () => {
 
 describe('monte seu squad', () => {
   test('adiciona, ajusta, limita e resume no contato', async () => {
-    const { page } = await open();
+    const { page } = await open({ path: '/especialidades' });
     const row = (role) => page.locator(`.squad-role[data-role="${role}"]`);
     await row('Back-end').locator('.squad-add').click();
     assert.equal(await page.evaluate(() => document.activeElement?.getAttribute('aria-label')), 'Mais Back-end');
@@ -226,7 +277,7 @@ describe('monte seu squad', () => {
   });
 
   test('squad vazio leva ao especialista sem mexer no assunto', async () => {
-    const { page } = await open();
+    const { page } = await open({ path: '/especialidades' });
     assert.equal(await page.textContent('.tray-head span'), 'vazio');
     await page.click('.tray-cta');
     assert.equal(await subject(page), '');
@@ -314,11 +365,11 @@ describe('formulário de contato', () => {
 });
 
 describe('navegação', () => {
-  test('marca a seção visível no menu', async () => {
+  test('na home, marca no menu a seção visível', async () => {
     const { page } = await open();
-    await page.locator('#stacks').evaluate((el) => el.scrollIntoView({ block: 'center', behavior: 'instant' }));
+    await page.locator('#clientes').evaluate((el) => el.scrollIntoView({ block: 'center', behavior: 'instant' }));
     await page.waitForTimeout(400);
-    assert.equal(await page.getAttribute('.nav-links a[href="#stacks"]', 'aria-current'), 'true');
+    assert.equal(await page.getAttribute('.nav-links a[href="/#clientes"]', 'aria-current'), 'true');
     assert.equal(await page.locator('.nav-links a[aria-current]').count(), 1);
     await page.close();
   });

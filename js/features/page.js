@@ -46,7 +46,7 @@ export function initClientLogos() {
   /** @param {boolean} decorative cópia usada só para o loop da faixa */
   const cells = (decorative) => CLIENT_LOGOS.map(([slug, ratio, name]) => {
     const height = Math.min(LOGO_MAX_HEIGHT, Math.sqrt(LOGO_AREA / ratio));
-    return html`<div class="logo-cell"><img src="assets/L_${slug}.png" alt="${decorative ? '' : name}" width="${Math.round(height * ratio)}" height="${Math.round(height)}"></div>`;
+    return html`<div class="logo-cell"><img src="/assets/L_${slug}.png" alt="${decorative ? '' : name}" width="${Math.round(height * ratio)}" height="${Math.round(height)}"></div>`;
   });
   render(byId('logo-track'), html`${cells(false)}<div class="marquee-clone" aria-hidden="true">${cells(true)}</div>`);
 }
@@ -55,7 +55,8 @@ export function initClientLogos() {
 
 export function initNavSpy() {
   /** @type {Map<string, HTMLElement>} */
-  const links = new Map(queryAll('.nav-links a[href^="#"]').map((a) => [a.getAttribute('href')?.slice(1) ?? '', a]));
+  // só os links para seções desta página (/#solucoes, /#clientes…)
+  const links = new Map(queryAll('.nav-links a[href*="#"]').map((a) => [a.getAttribute('href')?.split('#')[1] ?? '', a]));
   /** @type {HTMLElement | undefined} */
   let current;
   const observer = new IntersectionObserver((entries) => {
@@ -71,7 +72,7 @@ export function initNavSpy() {
 
 /* ---------- Revelação por rolagem ---------- */
 
-const REVEAL_TARGETS = ['.sec-head', '.why-grid > *', '.glob-list > li', '.bento > *', '.quotes > *', '.next-steps > li', '.contact-form', '.stk-foot'];
+const REVEAL_TARGETS = ['.sec-head', '.why-grid > *', '.steps > li', '.spec > *', '.flow > li', '.glob-list > li', '.bento > *', '.quotes > *', '.next-steps > li', '.contact-form', '.stk-foot'];
 const REVEAL_SAFETY_MS = 2500;
 
 /** Esconde apenas o que está abaixo da dobra na carga; o que já está na tela nunca some. */

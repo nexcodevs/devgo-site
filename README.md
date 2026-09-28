@@ -6,16 +6,32 @@ sem framework, sem build e sem dependências em produção.
 ## Estrutura
 
 ```
-index.html            marcação da página (todo o texto indexável está aqui)
+site/pages/*.html     páginas (home, como-funciona, especialidades, contato)
+site/partials/*.html  trechos compartilhados: head, header, footer, contato, FAQ, etapas…
+build/build.mjs       monta as páginas, pré-renderiza blocos de js/data e gera dist/
+build/renderers.mjs   blocos gerados a partir dos dados (prévia de especialidades, tabela de modelos)
 css/site.css          estilos: tokens → base → layout → componentes → seções → movimento
-js/main.js            ponto de entrada; inicia cada feature isolada (uma falha não derruba as outras)
-js/core/dom.js        helpers de DOM, template `html` com escape automático, visibilidade
+js/main.js            ponto de entrada; carrega só as features presentes na página
+js/registry.js        lista de features, seletor e módulo de cada uma (usada também pelo build)
+js/core/              helpers de DOM e estado compartilhado
 js/data/*.js          conteúdo: serviços, stacks, perfis, cidades, ilustrações, pontos do globo
 js/features/*.js      comportamento de cada seção (acordeão, globo, stacks, squad, formulário…)
 assets/ fonts/        imagens, vídeo e a fonte PP Neue Montreal
 tests/                ferramentas de desenvolvimento e testes (não vão para produção)
-vercel.json           cabeçalhos de segurança (CSP) e política de cache
+vercel.json           build, cabeçalhos de segurança (CSP) e política de cache
 ```
+
+### Páginas
+
+Cada página em `site/pages` começa com uma linha de metadados:
+
+```
+<!--page {"slug":"como-funciona","nav":"como-funciona","title":"…","description":"…"} -->
+```
+
+`<!-- include:nome -->` insere `site/partials/nome.html` e `<!-- render:nome -->` insere um bloco de
+`build/renderers.mjs`. O build marca o link da página no menu, pré-carrega só os módulos JS que a página
+usa e gera `sitemap.xml` e `robots.txt`. Para trocar o domínio, altere `SITE_URL` em `build/build.mjs`.
 
 ### Convenções
 
@@ -29,10 +45,11 @@ vercel.json           cabeçalhos de segurança (CSP) e política de cache
 
 ## Desenvolvimento
 
-Qualquer servidor estático na raiz serve o site (os módulos ES não abrem via `file://`):
+Gere o site e sirva a pasta `dist/` (os módulos ES não abrem via `file://`):
 
 ```
-python3 -m http.server 8000
+node build/build.mjs
+python3 -m http.server 8000 -d dist
 ```
 
 Checagens (tipos, lint e testes de ponta a ponta com Playwright):
@@ -43,13 +60,13 @@ npm --prefix tests test
 ```
 
 Os testes sobem um servidor que aplica os mesmos cabeçalhos do `vercel.json`, então uma violação da CSP
-quebra o teste antes de chegar à produção. Ao criar um módulo em `js/`, inclua o `<link rel="modulepreload">`
-correspondente no `index.html` (há um teste que confere a lista).
+quebra o teste antes de chegar à produção. Ao criar uma feature, registre-a
+em `js/registry.js`; o build calcula os pré-carregamentos sozinho.
 
 ## Deploy
 
 Vercel, ligado a este repositório: cada push na `main` publica em produção e cada branch gera uma prévia.
-Projeto sem build command; a raiz é o diretório de saída. `.vercelignore` deixa `tests/` fora do deploy.
+O build roda `node build/build.mjs` (sem dependências) e publica `dist/`. `.vercelignore` deixa `tests/` fora do deploy.
 
 ## Pendências de conteúdo
 

@@ -20,18 +20,21 @@ const TYPES = {
 
 /**
  * Sobe o servidor numa porta livre e devolve a URL base e uma função para fechar.
- * @param {string} root diretório servido
+ * Como na Vercel (cleanUrls), /pagina serve pagina.html.
+ * @param {string} root diretório servido (dist/)
+ * @param {string} configPath vercel.json com os cabeçalhos
  */
-export async function serve(root) {
+export async function serve(root, configPath) {
   const base = resolve(root);
-  const config = JSON.parse(await readFile(join(base, 'vercel.json'), 'utf8'));
+  const config = JSON.parse(await readFile(configPath, 'utf8'));
   /** @type {Array<{ pattern: RegExp, headers: Array<{ key: string, value: string }> }>} */
   const rules = config.headers.map((rule) => ({ pattern: new RegExp(`^${rule.source}$`), headers: rule.headers }));
   /** @param {string} path */
   const headersFor = (path) => Object.fromEntries(rules.filter((r) => r.pattern.test(path)).flatMap((r) => r.headers.map((h) => [h.key, h.value])));
   const server = createServer(async (req, res) => {
     const path = decodeURIComponent(new URL(req.url ?? '/', 'http://x').pathname);
-    const file = normalize(join(base, path === '/' ? 'index.html' : path));
+    const clean = path === '/' ? '/index.html' : extname(path) ? path : `${path}.html`;
+    const file = normalize(join(base, clean));
     if (!file.startsWith(base)) { res.writeHead(403).end(); return; }
     try {
       const body = await readFile(file);

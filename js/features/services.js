@@ -17,7 +17,7 @@ const ROLE_TONES = [
 ];
 
 /** @param {string} photo @param {string} title @param {string} caption @param {string} badge */
-const person = (photo, title, caption, badge) => html`<div class="viz-person"><img src="assets/${photo}" alt=""><div><strong>${title}</strong><small>${caption}</small></div><span class="viz-badge">${badge}</span></div>`;
+const person = (photo, title, caption, badge) => html`<div class="viz-person"><img src="/assets/${photo}" alt=""><div><strong>${title}</strong><small>${caption}</small></div><span class="viz-badge">${badge}</span></div>`;
 
 /** @param {string} left @param {string} right */
 const vizTop = (left, right) => html`<div class="viz-top"><span>${left}</span><span>${right}</span></div>`;
