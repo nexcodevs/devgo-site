@@ -108,6 +108,22 @@ export function initReveal() {
   }, { rootMargin: '0px 0px -8% 0px' });
   pending.forEach((el) => observer.observe(el));
 
+  // rolagem muito rápida (ou quadros pulados) pode passar por um bloco sem o observer
+  // registrar a interseção: revela tudo o que já ficou acima da dobra
+  let scheduled = false;
+  const sweep = () => {
+    scheduled = false;
+    const limit = window.innerHeight * 0.92;
+    let left = 0;
+    for (const el of pending) {
+      if (!el.classList.contains('is-pending')) continue;
+      if (el.getBoundingClientRect().top <= limit) { observer.unobserve(el); show(el); } else left++;
+    }
+    if (!left) window.removeEventListener('scroll', onScroll);
+  };
+  const onScroll = () => { if (!scheduled) { scheduled = true; requestAnimationFrame(sweep); } };
+  window.addEventListener('scroll', onScroll, { passive: true });
+
   // rede de segurança (ex.: pulo via âncora antes do observer disparar)
   window.setTimeout(() => {
     for (const el of pending) if (el.getBoundingClientRect().top < window.innerHeight) show(el);
@@ -132,10 +148,23 @@ export function initIconEntrances() {
 
 /* ---------- Frase final do hero ---------- */
 
-const ROTATE_MS = 2600;
-const ROTATE_SWAP_MS = 380;
+const ROTATE_MS = 3200;
+const DECODE_START_MS = 60;
+const DECODE_STEP_MS = 45;
+const GLYPHS = 'abcdefghijklmnopqrstuvwxyz0123456789/<>_';
 
-/** Troca o final do título do hero ("para o seu time.", "para o seu produto."...). */
+/**
+ * Letras de `to` com o instante (ms) em que cada uma assenta. As que já
+ * coincidem com `from` na mesma posição não mudam; as outras "decodificam".
+ * @param {string} from @param {string} to
+ * @returns {{ char: string, settleAt: number }[]}
+ */
+export function decodePlan(from, to) {
+  let changed = 0;
+  return [...to].map((char, i) => ({ char, settleAt: from[i] === char ? 0 : DECODE_START_MS + (changed++) * DECODE_STEP_MS }));
+}
+
+/** Troca o final do título do hero com um efeito de decodificação letra a letra. */
 export function initHeroRotator() {
   const rotator = byId('hero-rotator');
   const word = /** @type {HTMLElement} */ (rotator.querySelector('.hero-rotator-word'));
@@ -143,17 +172,40 @@ export function initHeroRotator() {
   const phrases = JSON.parse(rotator.dataset.phrases ?? '[]');
   if (reducedMotion || phrases.length < 2) return;
   let index = 0;
+
+  /** @param {string} to */
+  const decode = (to) => {
+    const plan = decodePlan(word.textContent ?? '', to);
+    const cells = plan.map(({ char }) => {
+      const cell = document.createElement('span');
+      cell.textContent = char;
+      return cell;
+    });
+    word.replaceChildren(...cells);
+    const start = performance.now();
+    const tick = (/** @type {number} */ now) => {
+      const elapsed = now - start;
+      let pending = false;
+      plan.forEach(({ char, settleAt }, i) => {
+        const cell = cells[i];
+        if (elapsed >= settleAt || char === ' ') {
+          if (cell.classList.contains('is-scramble') || cell.textContent !== char) { cell.textContent = char; cell.className = 'is-settled'; }
+        } else {
+          pending = true;
+          cell.className = 'is-scramble';
+          cell.textContent = GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
+        }
+      });
+      if (pending) requestAnimationFrame(tick);
+      else { word.textContent = to; }
+    };
+    requestAnimationFrame(tick);
+  };
+
   window.setInterval(() => {
     if (document.hidden) return;
-    word.classList.add('is-out');
-    window.setTimeout(() => {
-      index = (index + 1) % phrases.length;
-      word.textContent = phrases[index];
-      word.classList.remove('is-out');
-      word.classList.add('is-in');
-      void word.offsetWidth;
-      word.classList.remove('is-in');
-    }, ROTATE_SWAP_MS);
+    index = (index + 1) % phrases.length;
+    decode(phrases[index]);
   }, ROTATE_MS);
 }
 

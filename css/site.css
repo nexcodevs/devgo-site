@@ -124,10 +124,13 @@ p,li,dd,blockquote{text-wrap:pretty}
 .hero h1{font-size:clamp(46px,6.4vw,96px);line-height:.95;letter-spacing:-.04em}
 .hero h1 span{color:var(--blue-tint)}
 .sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
-.hero-rotator{display:inline-block;overflow:hidden;vertical-align:bottom;padding-bottom:.08em}
-.hero-rotator-word{display:inline-block;transition:transform .38s cubic-bezier(.4,0,.2,1),opacity .38s ease}
-.hero-rotator-word.is-out{transform:translateY(-70%);opacity:0}
-.hero-rotator-word.is-in{transform:translateY(70%);opacity:0;transition:none}
+.hero-rotator{position:relative;display:inline-block;white-space:nowrap}
+.hero-rotator::after{content:"";display:inline-block;width:.06em;height:.8em;margin-left:.08em;vertical-align:-.04em;border-radius:2px;background:var(--blue-tint);animation:caretBlink 1s steps(1) infinite}
+.hero-rotator-word .is-scramble{color:#fff;opacity:.45;filter:blur(.5px)}
+.hero-rotator-word .is-settled{animation:glyphSettle .45s cubic-bezier(.2,.8,.2,1)}
+@keyframes glyphSettle{from{color:#fff;text-shadow:0 0 .35em rgba(156,156,255,.9)}}
+@keyframes caretBlink{50%{opacity:0}}
+@media (max-width:640px){.hero-rotator{white-space:normal}}
 .hero-sub{max-width:46ch;font-size:clamp(17px,1.5vw,20px);color:var(--on-night-2)}
 .hero-actions{display:flex;flex-wrap:wrap;gap:12px}
 @media (min-width:901px){.hero-inner{padding-bottom:clamp(72px,9vw,136px)}}
