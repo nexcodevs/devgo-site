@@ -43,11 +43,12 @@ async function open({ path = '/', viewport = VIEWPORTS.desktop, reducedMotion = 
 
 /** Rola a página inteira devagar, como uma pessoa lendo. */
 async function scrollThrough(page) {
-  const height = await page.evaluate(() => document.body.scrollHeight);
-  for (let y = 0; y < height; y += 300) {
+  // mede a altura a cada passo: a página pode crescer enquanto carrega (imagens, blocos renderizados em JS)
+  for (let y = 0; y < await page.evaluate(() => document.body.scrollHeight); y += 300) {
     await page.evaluate((top) => window.scrollTo(0, top), y);
     await page.waitForTimeout(60);
   }
+  await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
   await page.waitForTimeout(800);
 }
 
@@ -398,6 +399,17 @@ describe('navegação', () => {
     await page.waitForTimeout(400);
     assert.equal(await page.getAttribute('.nav-links a[href="/#solucoes"]', 'aria-current'), 'true');
     assert.equal(await page.locator('.nav-links a[aria-current]').count(), 1);
+    await page.close();
+  });
+});
+
+describe('hero', () => {
+  test('troca a frase final do título, e o título acessível continua fixo', async () => {
+    const { page } = await open();
+    const first = await page.textContent('.hero-rotator-word');
+    await page.waitForTimeout(3300);
+    assert.notEqual(await page.textContent('.hero-rotator-word'), first);
+    assert.equal(await page.textContent('.hero h1 .sr-only'), 'para o seu time.');
     await page.close();
   });
 });

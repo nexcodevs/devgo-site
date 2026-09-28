@@ -130,6 +130,33 @@ export function initIconEntrances() {
   }
 }
 
+/* ---------- Frase final do hero ---------- */
+
+const ROTATE_MS = 2600;
+const ROTATE_SWAP_MS = 380;
+
+/** Troca o final do título do hero ("para o seu time.", "para o seu produto."...). */
+export function initHeroRotator() {
+  const rotator = byId('hero-rotator');
+  const word = /** @type {HTMLElement} */ (rotator.querySelector('.hero-rotator-word'));
+  /** @type {string[]} */
+  const phrases = JSON.parse(rotator.dataset.phrases ?? '[]');
+  if (reducedMotion || phrases.length < 2) return;
+  let index = 0;
+  window.setInterval(() => {
+    if (document.hidden) return;
+    word.classList.add('is-out');
+    window.setTimeout(() => {
+      index = (index + 1) % phrases.length;
+      word.textContent = phrases[index];
+      word.classList.remove('is-out');
+      word.classList.add('is-in');
+      void word.offsetWidth;
+      word.classList.remove('is-in');
+    }, ROTATE_SWAP_MS);
+  }, ROTATE_MS);
+}
+
 /* ---------- Vídeo do hero ---------- */
 
 export function initHeroVideo() {

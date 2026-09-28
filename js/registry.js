@@ -14,6 +14,7 @@
 /** @type {Feature[]} */
 export const FEATURES = [
   { name: 'menu', selector: '#menu-btn', module: './features/page.js', init: 'initMobileMenu' },
+  { name: 'hero-rotator', selector: '#hero-rotator', module: './features/page.js', init: 'initHeroRotator' },
   { name: 'hero-video', selector: '#hero-video', module: './features/page.js', init: 'initHeroVideo' },
   { name: 'logos', selector: '#logo-track', module: './features/page.js', init: 'initClientLogos' },
   { name: 'services', selector: '#services', module: './features/services.js', init: 'initServices' },
