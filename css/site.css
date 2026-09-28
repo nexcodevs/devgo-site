@@ -117,7 +117,7 @@ p,li,dd,blockquote{text-wrap:pretty}
 .hero{position:relative;overflow:hidden;display:flex;flex-direction:column;min-height:min(calc(100svh - 76px),860px);background:#000}
 .hero-video{position:absolute;inset:0;z-index:0;width:100%;height:100%;object-fit:cover}
 .hero-shade{position:absolute;inset:0;z-index:0;background:linear-gradient(180deg,rgba(0,0,0,.55) 0%,rgba(0,0,0,.15) 35%,rgba(0,0,0,.55) 70%,rgba(0,0,0,.92) 100%),linear-gradient(90deg,rgba(0,0,0,.7) 0%,rgba(0,0,0,.1) 70%)}
-.hero-inner{position:relative;z-index:1;flex:1;display:flex;flex-direction:column;justify-content:center;padding-block:clamp(28px,4vw,48px) clamp(32px,4vw,56px)}
+.hero-inner{position:relative;z-index:1;flex:1;display:flex;flex-direction:column;justify-content:flex-end;padding-block:clamp(28px,4vw,48px) clamp(32px,4vw,56px)}
 .hero-copy{display:flex;flex-direction:column;gap:24px}
 .hero-kicker{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--blue-tint)}
 .hero-kicker i{width:8px;height:8px;border-radius:50%;background:var(--blue);box-shadow:0 0 0 4px rgba(60,60,243,.3)}
@@ -125,7 +125,7 @@ p,li,dd,blockquote{text-wrap:pretty}
 .hero h1 span{color:var(--blue-tint)}
 .hero-sub{max-width:46ch;font-size:clamp(17px,1.5vw,20px);color:var(--on-night-2)}
 .hero-actions{display:flex;flex-wrap:wrap;gap:12px}
-@media (min-width:901px){.hero-inner{padding-bottom:clamp(96px,11vw,176px)}}
+@media (min-width:901px){.hero-inner{padding-bottom:clamp(72px,9vw,136px)}}
 @media (max-width:560px){.hero{min-height:0}}
 
 /* ---------- Logos de clientes ---------- */
