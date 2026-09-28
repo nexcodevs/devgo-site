@@ -70,7 +70,7 @@ describe('renderização', () => {
 
   test('cada página tem as seções esperadas', async () => {
     const expected = {
-      '/': { '.svc-item': 4, '.logo-cell': 12, '.marquee-clone img[alt=""]': 6, '.spec-chips span': 44, '.step': 4, '.tile-matrix i': 90, '.quote': 2, '#insights .insight-card': 3, '#faq details': 5, '#contact-form': 1 },
+      '/': { '.svc-item': 4, '.logo-cell': 12, '.marquee-clone img[alt=""]': 6, '.spec-tile': 10, '.journey li': 4, '.promise-stats div': 3, '.tile-matrix i': 90, '.quote': 2, '#insights .insight-lead': 1, '#insights .insight-row': 2, '#faq details': 5, '#contact-form': 1 },
       '/como-funciona': { '.flow li': 5, '.assurances div': 4, '.models tbody tr': 4, '.glob-city': 5, '#faq details': 9, '#contact-form': 1 },
       '/especialidades': { '.orbit-pill': 28, '.stk-filter': 7, '.squad-group': 4, '.squad-role': 16, '#contact-form': 1 },
       '/contato': { '#contact-form': 1 },

@@ -29,17 +29,30 @@ const card = (a) => `<a class="insight-card" href="${a.path}">
         </a>`;
 
 export const RENDERERS = {
-  /** Home: prévia de perfis e stacks, com links para a página de especialidades. */
-  'specialties-preview': () => `<div class="spec">
-      <div class="spec-card">
-        <div class="spec-head"><h3>Perfis</h3><a class="link-more" href="/especialidades#perfis">Monte seu squad <span class="arrow" aria-hidden="true">→</span></a></div>
-        ${PROFILE_GROUPS.map((g) => `<div class="spec-group"><b>${esc(g.title)}</b><div class="spec-chips">${g.roles.map((r) => `<span>${esc(r)}</span>`).join('')}</div></div>`).join('\n        ')}
+  /** Home: prévia de perfis e stacks em blocos, com links para a página de especialidades. */
+  'specialties-preview': () => {
+    const roles = PROFILE_GROUPS.reduce((n, g) => n + g.roles.length, 0);
+    const tile = ({ href, color, icon, title, items, count }) => `<a class="spec-tile" href="${href}" style="--c:${color}">
+            <span class="spec-tile-mark">${icon ? `<img src="/assets/${icon}" alt="">` : ''}</span>
+            <strong>${esc(title)}</strong>
+            <span class="spec-tile-items">${items.map(esc).join(' · ')}</span>
+            <em>${count}</em>
+          </a>`;
+    return `<div class="spec2">
+      <div class="spec-row">
+        <div class="spec-label"><h3>Perfis</h3><p>${PROFILE_GROUPS.length} áreas e ${roles} perfis, do produto à operação, para montar um squad completo.</p><a class="link-more" href="/especialidades#perfis">Monte seu squad <span class="arrow" aria-hidden="true">→</span></a></div>
+        <div class="spec-tiles is-4">
+          ${PROFILE_GROUPS.map((g) => tile({ href: '/especialidades#perfis', color: g.color, icon: g.icon, title: g.title, items: g.roles, count: `${g.roles.length} perfis` })).join('\n          ')}
+        </div>
       </div>
-      <div class="spec-card">
-        <div class="spec-head"><h3>Stacks e plataformas</h3><a class="link-more" href="/especialidades#stacks">Ver stacks <span class="arrow" aria-hidden="true">→</span></a></div>
-        ${CATEGORIES.map((c) => `<div class="spec-group" style="--c:${c.color}"><b>${esc(c.name)}</b><div class="spec-chips">${STACKS.filter((s) => s.category === c.name).map((s) => `<span>${esc(s.name)}</span>`).join('')}</div></div>`).join('\n        ')}
+      <div class="spec-row">
+        <div class="spec-label"><h3>Stacks e plataformas</h3><p>${STACKS.length} stacks em ${CATEGORIES.length} categorias, de ERP e CRM a dados e IA.</p><a class="link-more" href="/especialidades#stacks">Ver todas as stacks <span class="arrow" aria-hidden="true">→</span></a></div>
+        <div class="spec-tiles is-3">
+          ${CATEGORIES.map((c) => { const list = STACKS.filter((s) => s.category === c.name); return tile({ href: '/especialidades#stacks', color: c.color, title: c.name, items: list.map((s) => s.short ?? s.name), count: `${list.length} stacks` }); }).join('\n          ')}
+        </div>
       </div>
-    </div>`,
+    </div>`;
+  },
 
   /** Como funciona: os quatro modelos lado a lado. */
   'models-table': () => `<div class="table-wrap"><table class="models">
@@ -64,10 +77,21 @@ export const RENDERERS = {
         ${articlesOf(pages).map(card).join('\n        ')}
       </div>`,
 
-  /** Três mais recentes, para a home. */
-  'insights-latest': ({ pages }) => `<div class="insight-grid">
-        ${articlesOf(pages).slice(0, 3).map(card).join('\n        ')}
-      </div>`,
+  /** Home: o mais recente em destaque e os dois seguintes em lista. */
+  'insights-latest': ({ pages }) => {
+    const [lead, ...rest] = articlesOf(pages).slice(0, 3);
+    const title = (a) => esc(a.title.replace(/ · Insights Devgo$/, ''));
+    return `<div class="insight-feature">
+        <a class="insight-lead" href="${lead.path}">
+          <span class="insight-meta">${esc(lead.category)} · ${esc(lead.readingTime)} de leitura</span>
+          <div><h3>${title(lead)}</h3><p>${esc(lead.summary)}</p></div>
+          <span class="insight-more">Ler artigo <span class="arrow" aria-hidden="true">→</span></span>
+        </a>
+        <div class="insight-side">
+          ${rest.map((a) => `<a class="insight-row" href="${a.path}"><span class="insight-meta">${esc(a.category)} · ${esc(a.readingTime)}</span><h3>${title(a)}</h3><span class="insight-row-arrow" aria-hidden="true">→</span></a>`).join('\n          ')}
+        </div>
+      </div>`;
+  },
 
   /** Outros artigos, no fim de cada artigo. */
   related: ({ meta, pages }) => {
