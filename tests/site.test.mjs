@@ -70,7 +70,7 @@ describe('renderização', () => {
 
   test('cada página tem as seções esperadas', async () => {
     const expected = {
-      '/': { '.svc-item': 4, '.logo-cell': 12, '.marquee-clone img[alt=""]': 6, '.squad-group': 4, '.squad-role': 16, '.orbit-pill': 28, '.stk-filter': 7, '.tile-matrix i': 90, '.quote': 2, '#insights .insight-cover img': 1, '#insights .insight-tile img': 3, '#insights .insight-foot .btn': 1, '#faq': 0, '#como-funciona': 0, '#contact-form': 1 },
+      '/': { '.svc-item': 4, '.logo-cell': 12, '.marquee-clone img[alt=""]': 6, '.squad-group': 4, '.squad-role': 16, '.orbit-pill': 28, '.stk-filter': 7, '.tile-matrix i': 90, '.quote': 2, '#insights .insight-item img': 4, '#insights .insight-intro h2': 1, '#insights .insight-intro .btn': 1, '#faq': 0, '#como-funciona': 0, '#contact-form': 1 },
       '/insights': { '.insight-hero img': 1, '.insight-line img': 3 },
     };
     for (const path of PAGES.filter((p) => p.startsWith('/insights/'))) expected[path] = { '.prose h2': 3, '.article-cover img': 1, '.insight-card .insight-thumb img': 3, '.article-cta .btn': 1 };
@@ -90,7 +90,7 @@ describe('renderização', () => {
     const context = await browser.newContext({ javaScriptEnabled: false });
     const page = await context.newPage();
     await page.goto(server.url);
-    assert.equal(await page.locator('#insights .insight-cover h3').count(), 1);
+    assert.equal(await page.locator('#insights .insight-item h3').count(), 4);
     assert.match(await page.locator('#solucoes').textContent(), /\S/);
     await page.goto(new URL('/insights', server.url).href);
     assert.equal(await page.locator('.insight-line').count(), 3);

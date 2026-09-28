@@ -48,24 +48,21 @@ export const RENDERERS = {
       </div>`;
   },
 
-  /** Home: capa larga com o mais recente, os três seguintes em linha e um rodapé com os temas. */
+  /** Home: chamada fixa à esquerda e índice numerado dos artigos, com capa, à direita. */
   'insights-latest': ({ pages }) => {
     const all = articlesOf(pages);
-    const [lead, ...rest] = all.slice(0, 4);
-    const topics = [...new Set(all.map((a) => a.category))];
-    return `<div class="insight-mag">
-        <a class="insight-cover" href="${lead.path}">
-          <span class="insight-cover-img">${cover(lead)}</span>
-          <span class="insight-cover-text"><span class="insight-meta">Mais recente · ${esc(lead.category)}</span><h3>${title(lead)}</h3><p>${esc(lead.summary)}</p><span class="insight-more">Ler artigo · ${esc(lead.readingTime)} <span class="arrow" aria-hidden="true">→</span></span></span>
-        </a>
-        <div class="insight-trio">
-          ${rest.map((a) => `<a class="insight-tile" href="${a.path}"><span class="insight-tile-img">${cover(a, true)}</span><span class="insight-meta">${esc(a.category)} · ${esc(a.readingTime)}</span><h3>${title(a)}</h3></a>`).join('\n          ')}
-        </div>
-        <div class="insight-foot">
-          <p><strong>${all.length} guias</strong> sobre ${esc(topics.join(', ').replace(/, ([^,]*)$/, ' e $1').toLowerCase())}.</p>
-          <a class="btn btn-blue" href="/insights">Ver todos os insights <span class="arrow" aria-hidden="true">→</span></a>
-        </div>
-      </div>`;
+    const topics = [...new Set(all.map((a) => a.category))].join(', ').replace(/, ([^,]*)$/, ' e $1').toLowerCase();
+    return `<div class="insight-split">
+      <div class="insight-intro">
+        <span class="eyebrow">insights</span>
+        <h2>Guias para quem monta times de tecnologia.</h2>
+        <p class="lede">Conteúdo prático do time da Devgo sobre ${esc(topics)}.</p>
+        <a class="btn btn-blue" href="/insights">Ver todos os insights <span class="arrow" aria-hidden="true">→</span></a>
+      </div>
+      <ol class="insight-list">
+        ${all.slice(0, 4).map((a, i) => `<li><a class="insight-item" href="${a.path}"><span class="insight-num">${String(i + 1).padStart(2, '0')}</span><span class="insight-item-text"><span class="insight-meta">${esc(a.category)} · ${esc(a.readingTime)}</span><h3>${title(a)}</h3><p>${esc(a.summary)}</p></span><span class="insight-item-img">${cover(a, true)}</span></a></li>`).join('\n        ')}
+      </ol>
+    </div>`;
   },
 
   /** Outros artigos, no fim de cada artigo. */
