@@ -21,6 +21,8 @@ export const FEATURES = [
   { name: 'stacks', selector: '#stk-panel', module: './features/stacks.js', init: 'initStacks' },
   { name: 'squad', selector: '#squad-groups', module: './features/squad.js', init: 'initSquad' },
   { name: 'insights', selector: '#insight-filters', module: './features/insights.js', init: 'initInsightFilters' },
+  { name: 'world-hours', selector: '#glob-cities', module: './features/world-hours.js', init: 'initWorldHours' },
+  { name: 'globe', selector: '#globe', module: './features/globe.js', init: 'initGlobe' },
   { name: 'contact-form', selector: '#contact-form', module: './features/contact-form.js', init: 'initContactForm' },
   { name: 'icons', selector: '[data-icons]', module: './features/page.js', init: 'initIconEntrances' },
   { name: 'nav-spy', selector: '[data-nav-spy]', module: './features/page.js', init: 'initNavSpy' },

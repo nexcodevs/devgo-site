@@ -70,7 +70,7 @@ describe('renderização', () => {
 
   test('cada página tem as seções esperadas', async () => {
     const expected = {
-      '/': { '.svc-item': 4, '.logo-cell': 12, '.marquee-clone img[alt=""]': 6, '.squad-group': 4, '.squad-role': 16, '.orbit-pill': 28, '.stk-filter': 7, '.tile-matrix i': 90, '.quote': 2, '#insights .insight-item img': 4, '#insights .insight-intro h2': 1, '#insights .insight-intro .btn': 1, '#faq': 0, '#como-funciona': 0, '#contact-form': 1 },
+      '/': { '.svc-item': 4, '.logo-cell': 12, '.marquee-clone img[alt=""]': 6, '.squad-group': 4, '.squad-role': 16, '.orbit-pill': 28, '.stk-filter': 7, '.tile-matrix i': 90, '.quote': 2, '#insights .insight-item img': 4, '#insights .insight-intro h2': 1, '#insights .insight-intro .btn': 1, '.glob-city': 5, '.glob-list li': 4, '#faq': 0, '#como-funciona': 0, '#contact-form': 1 },
       '/insights': { '.insight-hero img': 1, '.insight-pick img': 2, '.insight-card img': 20, '.insight-filters button': 6 },
     };
     for (const path of PAGES.filter((p) => p.startsWith('/insights/'))) expected[path] = { '.prose h2': 3, '.article-cover img': 1, '.insight-card .insight-thumb img': 3, '.article-cta .btn': 1 };
@@ -98,6 +98,20 @@ describe('renderização', () => {
     await context.close();
   });
 
+  test('globo desenha no canvas', async () => {
+    const { page } = await open();
+    await page.locator('#globe').scrollIntoViewIfNeeded();
+    await page.waitForTimeout(600);
+    const painted = await page.evaluate(() => {
+      const canvas = /** @type {HTMLCanvasElement} */ (document.getElementById('globe'));
+      const { data } = canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height);
+      let lit = 0;
+      for (let i = 3; i < data.length; i += 4 * 97) if (data[i] > 0) lit++;
+      return lit;
+    });
+    assert.ok(painted > 100, `canvas quase vazio (${painted} amostras pintadas)`);
+    await page.close();
+  });
 });
 
 describe('carregamento e navegação entre páginas', () => {
@@ -401,19 +415,29 @@ describe('movimento reduzido', () => {
 });
 
 describe('funções puras', () => {
-  test('iniciais e embaralhamento', async () => {
+  test('horas em comum, fusos, iniciais e embaralhamento', async () => {
     const { page } = await open();
     const result = await page.evaluate(async () => {
+      const { sharedWorkHours, utcOffsetHours } = await import('/js/features/world-hours.js');
       const { initials } = await import('/js/features/squad.js');
       const { shuffle } = await import('/js/features/numbers.js');
+      const jan = new Date(Date.UTC(2026, 0, 15, 12));
       const items = Array.from({ length: 50 }, (_, i) => i);
       return {
+        sameZone: sharedWorkHours(-3, -3),
+        london: sharedWorkHours(-3, 0),
+        farAway: sharedWorkHours(-3, 9),
+        spOffset: utcOffsetHours('America/Sao_Paulo', jan),
+        nyOffset: utcOffsetHours('America/New_York', jan),
+        unknownZone: utcOffsetHours('Mars/Base', jan),
         initials: ['UX/UI Designer', 'QA', 'Back-end', 'Automação de testes'].map(initials),
         shuffleKeepsItems: shuffle(items).sort((a, b) => a - b).join() === items.join(),
         shuffleIsPure: items[0] === 0 && items[49] === 49,
       };
     });
     assert.deepEqual(result, {
+      sameZone: 9, london: 6, farAway: 0,
+      spOffset: -3, nyOffset: -5, unknownZone: null,
       initials: ['UU', 'QA', 'BE', 'AD'],
       shuffleKeepsItems: true, shuffleIsPure: true,
     });

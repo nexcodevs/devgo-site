@@ -248,6 +248,37 @@ p,li,dd,blockquote{text-wrap:pretty}
   .svc-progress{top:auto;bottom:0}
 }
 
+/* ---------- Atuação global ---------- */
+.glob{overflow:hidden}
+.glob-inner{display:flex;flex-direction:column;gap:clamp(48px,6vw,80px)}
+.glob-main{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:clamp(32px,5vw,72px);align-items:center}
+.glob-copy{display:flex;flex-direction:column;gap:24px}
+.glob h2{font-size:var(--fs-h2);line-height:.96}
+.glob-lede{max-width:560px;font-size:var(--fs-lead);line-height:1.5;color:var(--on-night-2)}
+.glob-cta{align-self:flex-start}
+.glob-hours{display:flex;flex-direction:column;gap:12px}
+.glob-hours-title{font-size:13px;color:var(--on-night-3)}
+.glob-cities{display:flex;flex-wrap:wrap;gap:8px}
+.glob-city{display:inline-flex;align-items:center;gap:10px;min-height:44px;padding:0 14px 0 10px;border:1px solid var(--night-line);border-radius:999px;background:rgba(255,255,255,.03);font-size:14px;cursor:default;transition:border-color .2s,background .2s}
+.glob-city:hover{border-color:var(--blue);background:rgba(60,60,243,.14)}
+.glob-city b{font-weight:600;color:var(--blue-tint);font-variant-numeric:tabular-nums}
+.glob-city small{font-size:13px;color:var(--on-night-3);font-variant-numeric:tabular-nums}
+.globe-wrap{position:relative;width:100%;max-width:620px;aspect-ratio:1;justify-self:center;margin-bottom:24px}
+.globe{position:relative;display:block;width:100%;height:100%;touch-action:pan-y;cursor:grab}
+.globe.is-dragging{cursor:grabbing}
+.globe-tag{position:absolute;left:50%;bottom:-18px;transform:translateX(-50%);display:flex;align-items:center;gap:8px;padding:8px 14px;border:1px solid var(--night-line);border-radius:999px;background:rgba(0,0,0,.6);backdrop-filter:blur(8px);font-size:13px;white-space:nowrap}
+.globe-tag i{width:7px;height:7px;border-radius:50%;background:#4ADE80;box-shadow:0 0 0 3px rgba(74,222,128,.2)}
+.glob-list{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:24px 32px;margin:0;padding:0;list-style:none}
+.glob-list li{display:flex;flex-direction:column;gap:8px;padding-top:18px;border-top:1px solid var(--night-line)}
+.glob-list b{display:flex;align-items:center;gap:12px;font-size:17px;font-weight:600}
+.glob-list span{font-size:14px;color:var(--on-night-3)}
+.glob-icon{width:36px;height:36px;flex:none;padding:7px;border:1px solid rgba(156,156,255,.3);border-radius:10px;background:rgba(60,60,243,.18);color:var(--blue-tint);transition:box-shadow .3s}
+@media (max-width:900px){
+  .glob-main{grid-template-columns:1fr}
+  .glob-list{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:560px){.glob-list{grid-template-columns:1fr}}
+
 /* ---------- Números (bento) ---------- */
 .bento{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:auto auto;gap:12px}
 .tile{position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;gap:28px;min-height:260px;padding:clamp(24px,2.6vw,36px);border:1px solid var(--night-line);border-radius:20px;background:var(--panel)}
@@ -681,10 +712,17 @@ a:hover .insight-more .arrow{transform:translateX(3px)}
   .icons-idle .why-card img,.icons-idle .group-icon img{opacity:0;transform:scale(.55) rotate(-12deg)}
   .icons-play .why-card img,.icons-play .group-icon img{animation:icPop .7s cubic-bezier(.3,1.5,.5,1) var(--d,0s) both,icFloat 4.2s ease-in-out calc(var(--d,0s) + .8s) infinite}
   .why-card:hover img{animation:icWig .6s ease both}
+  .icons-idle .glob-icon *{stroke-dasharray:1;stroke-dashoffset:1}
+  .icons-play .glob-icon *{stroke-dasharray:1;stroke-dashoffset:1;animation:icDraw 1.1s ease calc(var(--d,0s) + .15s) forwards}
+  .icons-play .glob-icon{animation:icGlow 3.6s ease-in-out calc(var(--d,0s) + 1.2s) infinite}
+  li:hover .glob-icon *{animation:icRedraw .9s ease both}
 }
 @keyframes icPop{from{opacity:0;transform:scale(.55) rotate(-12deg)}to{opacity:1;transform:none}}
 @keyframes icFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
 @keyframes icWig{0%{transform:none}30%{transform:rotate(-10deg) scale(1.08)}60%{transform:rotate(6deg) scale(1.08)}100%{transform:none}}
+@keyframes icDraw{to{stroke-dashoffset:0}}
+@keyframes icRedraw{0%{stroke-dasharray:1;stroke-dashoffset:1}100%{stroke-dasharray:1;stroke-dashoffset:0}}
+@keyframes icGlow{0%,100%{box-shadow:0 0 0 0 rgba(156,156,255,0)}50%{box-shadow:0 0 0 6px rgba(156,156,255,.14)}}
 
 /* ilustrações animadas dos grupos de perfis (SVG) */
 .ill .ia-cur,.ill .ia-grow,.ill .ia-spin,.ill .ia-pulse,.ill .ia-toast{transform-box:fill-box}
