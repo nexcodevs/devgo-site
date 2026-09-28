@@ -71,7 +71,7 @@ describe('renderização', () => {
   test('cada página tem as seções esperadas', async () => {
     const expected = {
       '/': { '.svc-item': 4, '.logo-cell': 12, '.marquee-clone img[alt=""]': 6, '.squad-group': 4, '.squad-role': 16, '.orbit-pill': 28, '.stk-filter': 7, '.tile-matrix i': 90, '.quote': 2, '#insights .insight-item img': 4, '#insights .insight-intro h2': 1, '#insights .insight-intro .btn': 1, '#faq': 0, '#como-funciona': 0, '#contact-form': 1 },
-      '/insights': { '.insight-hero img': 1, '.insight-line img': 3 },
+      '/insights': { '.insight-hero img': 1, '.insight-pick img': 2, '.insight-card img': 20, '.insight-filters button': 6 },
     };
     for (const path of PAGES.filter((p) => p.startsWith('/insights/'))) expected[path] = { '.prose h2': 3, '.article-cover img': 1, '.insight-card .insight-thumb img': 3, '.article-cta .btn': 1 };
     assert.deepEqual(Object.keys(expected).sort(), [...PAGES].sort());
@@ -93,7 +93,8 @@ describe('renderização', () => {
     assert.equal(await page.locator('#insights .insight-item h3').count(), 4);
     assert.match(await page.locator('#solucoes').textContent(), /\S/);
     await page.goto(new URL('/insights', server.url).href);
-    assert.equal(await page.locator('.insight-line').count(), 3);
+    assert.equal(await page.locator('.insight-card:visible').count(), 20);
+    assert.equal(await page.locator('#insight-filters:visible').count(), 0);
     await context.close();
   });
 
@@ -353,6 +354,25 @@ describe('formulário de contato', () => {
     const [markup, escaped] = await page.evaluate(() => window.__probe);
     assert.equal(markup, '<b>&lt;img src=x onerror=alert(1)&gt;</b>');
     assert.equal(escaped, '&quot;&#39;&amp;');
+    await page.close();
+  });
+});
+
+describe('biblioteca de insights', () => {
+  test('filtra por tema e mostra mais artigos', async () => {
+    const { page } = await open({ path: '/insights' });
+    const visible = () => page.locator('#insight-all .insight-card:visible').count();
+    assert.equal(await visible(), 9);
+    await page.click('#insight-more');
+    assert.equal(await visible(), 17);
+    assert.equal(await page.locator('#insight-more:visible').count(), 0);
+    await page.click('#insight-filters button[data-topic="Stacks e plataformas"]');
+    assert.equal(await visible(), 4);
+    assert.equal(await page.locator('#insight-top:visible').count(), 0);
+    assert.equal(await page.textContent('#insight-library-title'), 'Stacks e plataformas');
+    await page.click('#insight-filters button[data-topic=""]');
+    assert.equal(await visible(), 9);
+    assert.equal(await page.locator('#insight-top:visible').count(), 1);
     await page.close();
   });
 });

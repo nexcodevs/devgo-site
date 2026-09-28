@@ -14,7 +14,7 @@ const title = (a) => esc(a.title.replace(/ · Insights Devgo$/, ''));
 /** Capa do artigo; `small` usa a versão de 600px. */
 const cover = (a, small = false) => `<img src="/assets/${small ? a.image.replace(/\.jpg$/, '-sm.jpg') : a.image}" alt="${esc(a.imageAlt)}" width="${small ? 600 : 1200}" height="${small ? 375 : 750}" loading="lazy">`;
 
-const card = (a) => `<a class="insight-card" href="${a.path}">
+const card = (a, featured = false) => `<a class="insight-card" href="${a.path}" data-topic="${esc(a.category)}"${featured ? ' data-featured' : ''}>
           <span class="insight-thumb">${cover(a, true)}</span>
           <span class="insight-meta">${esc(a.category)} · ${esc(a.readingTime)} de leitura</span>
           <h3>${title(a)}</h3>
@@ -34,17 +34,31 @@ export const RENDERERS = {
 </header>
 <div class="article-cover"><div class="wrap"><img src="/assets/${meta.image}" alt="${esc(meta.imageAlt)}" width="1200" height="750"></div></div>`,
 
-  /** Página /insights: o mais recente em destaque e os demais em índice. */
+  /** Página /insights: filtro por tema, três destaques e a biblioteca completa (o JS filtra e pagina). */
   'insights-list': ({ pages }) => {
-    const [lead, ...rest] = articlesOf(pages);
-    return `<div class="insight-index">
+    const all = articlesOf(pages);
+    const [lead, ...picks] = all.slice(0, 3);
+    const topics = [...new Set(all.map((a) => a.category))].sort((x, y) => x.localeCompare(y, 'pt-BR'));
+    const count = (t) => all.filter((a) => a.category === t).length;
+    return `<div class="insight-filters" id="insight-filters" role="group" aria-label="Filtrar artigos por tema" hidden>
+        <button class="stk-filter" type="button" data-topic="" aria-pressed="true">Todos <span class="insight-filter-n">${all.length}</span></button>
+        ${topics.map((t) => `<button class="stk-filter" type="button" data-topic="${esc(t)}" aria-pressed="false">${esc(t)} <span class="insight-filter-n">${count(t)}</span></button>`).join('\n        ')}
+      </div>
+      <div class="insight-top" id="insight-top">
         <a class="insight-hero" href="${lead.path}">
           <span class="insight-hero-img">${cover(lead)}</span>
           <span class="insight-hero-text"><span class="insight-meta">Mais recente · ${esc(lead.category)}</span><h3>${title(lead)}</h3><p>${esc(lead.summary)}</p><span class="insight-more">Ler artigo · ${esc(lead.readingTime)} <span class="arrow" aria-hidden="true">→</span></span></span>
         </a>
-        <ol class="insight-lines">
-          ${rest.map((a) => `<li><a class="insight-line" href="${a.path}"><span class="insight-line-img">${cover(a, true)}</span><div><span class="insight-meta">${esc(a.category)} · ${esc(a.readingTime)}</span><h3>${title(a)}</h3><p>${esc(a.summary)}</p></div><span class="insight-row-arrow" aria-hidden="true">→</span></a></li>`).join('\n          ')}
-        </ol>
+        <div class="insight-picks">
+          ${picks.map((a) => `<a class="insight-pick" href="${a.path}"><span class="insight-thumb">${cover(a, true)}</span><span class="insight-meta">${esc(a.category)} · ${esc(a.readingTime)}</span><h3>${title(a)}</h3></a>`).join('\n          ')}
+        </div>
+      </div>
+      <div class="insight-library">
+        <h2 class="insight-library-title" id="insight-library-title">Todos os artigos</h2>
+        <div class="insight-grid" id="insight-all">
+          ${all.map((a, i) => card(a, i < 3)).join('\n          ')}
+        </div>
+        <div class="insight-more-row"><button class="btn btn-dark" type="button" id="insight-more" hidden>Mostrar mais artigos</button></div>
       </div>`;
   },
 
@@ -67,7 +81,9 @@ export const RENDERERS = {
 
   /** Outros artigos, no fim de cada artigo. */
   related: ({ meta, pages }) => {
-    const others = articlesOf(pages).filter((a) => a.path !== meta.path).slice(0, 3);
+    const others = articlesOf(pages).filter((a) => a.path !== meta.path)
+      .sort((a, b) => Number(b.category === meta.category) - Number(a.category === meta.category))
+      .slice(0, 3);
     return `<section class="theme-soft sec" aria-labelledby="related-title">
   <div class="wrap">
     <h2 class="related-title" id="related-title">Continue lendo</h2>
