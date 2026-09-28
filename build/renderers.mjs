@@ -72,10 +72,20 @@ export const RENDERERS = {
   </div>
 </header>`,
 
-  /** Lista completa da página /insights. */
-  'insights-list': ({ pages }) => `<div class="insight-grid is-list">
-        ${articlesOf(pages).map(card).join('\n        ')}
-      </div>`,
+  /** Página /insights: o mais recente em destaque e os demais em índice. */
+  'insights-list': ({ pages }) => {
+    const [lead, ...rest] = articlesOf(pages);
+    const title = (a) => esc(a.title.replace(/ · Insights Devgo$/, ''));
+    return `<div class="insight-index">
+        <a class="insight-hero" href="${lead.path}">
+          <div><span class="insight-meta">Mais recente · ${esc(lead.category)}</span><h3>${title(lead)}</h3></div>
+          <div><p>${esc(lead.summary)}</p><span class="insight-more">Ler artigo · ${esc(lead.readingTime)} <span class="arrow" aria-hidden="true">→</span></span></div>
+        </a>
+        <ol class="insight-lines">
+          ${rest.map((a) => `<li><a class="insight-line" href="${a.path}"><span class="insight-meta">${esc(a.category)}</span><div><h3>${title(a)}</h3><p>${esc(a.summary)}</p></div><span class="insight-time">${esc(a.readingTime)}</span><span class="insight-row-arrow" aria-hidden="true">→</span></a></li>`).join('\n          ')}
+        </ol>
+      </div>`;
+  },
 
   /** Home: o mais recente em destaque e os dois seguintes em lista. */
   'insights-latest': ({ pages }) => {

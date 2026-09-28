@@ -74,7 +74,7 @@ describe('renderização', () => {
       '/como-funciona': { '.flow li': 5, '.assurances div': 4, '.models tbody tr': 4, '.glob-city': 5, '#faq details': 9, '#contact-form': 1 },
       '/especialidades': { '.orbit-pill': 28, '.stk-filter': 7, '.squad-group': 4, '.squad-role': 16, '#contact-form': 1 },
       '/contato': { '#contact-form': 1 },
-      '/insights': { '.insight-card': 4 },
+      '/insights': { '.insight-hero': 1, '.insight-line': 3 },
     };
     for (const path of PAGES.filter((p) => p.startsWith('/insights/'))) expected[path] = { '.prose h2': 3, '.insight-card': 3, '.article-cta .btn': 1 };
     assert.deepEqual(Object.keys(expected).sort(), [...PAGES].sort());
