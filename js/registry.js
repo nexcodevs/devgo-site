@@ -17,8 +17,6 @@ export const FEATURES = [
   { name: 'hero-video', selector: '#hero-video', module: './features/page.js', init: 'initHeroVideo' },
   { name: 'logos', selector: '#logo-track', module: './features/page.js', init: 'initClientLogos' },
   { name: 'services', selector: '#services', module: './features/services.js', init: 'initServices' },
-  { name: 'world-hours', selector: '#glob-cities', module: './features/world-hours.js', init: 'initWorldHours' },
-  { name: 'globe', selector: '#globe', module: './features/globe.js', init: 'initGlobe' },
   { name: 'numbers', selector: '#tile-matrix', module: './features/numbers.js', init: 'initNumbers' },
   { name: 'stacks', selector: '#stk-panel', module: './features/stacks.js', init: 'initStacks' },
   { name: 'squad', selector: '#squad-groups', module: './features/squad.js', init: 'initSquad' },

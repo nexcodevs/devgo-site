@@ -72,7 +72,7 @@ export function initNavSpy() {
 
 /* ---------- Revelação por rolagem ---------- */
 
-const REVEAL_TARGETS = ['.sec-head', '.why-grid > *', '.journey > li', '.spec-row', '.insight-grid > *', '.insight-feature > *', '.insight-hero', '.insight-lines > li', '.flow > li', '.glob-list > li', '.bento > *', '.quotes > *', '.next-steps > li', '.contact-form', '.stk-foot'];
+const REVEAL_TARGETS = ['.sec-head', '.why-grid > *', '.insight-grid > *', '.insight-feature > *', '.insight-hero', '.insight-lines > li', '.bento > *', '.quotes > *', '.next-steps > li', '.contact-form', '.stk-foot'];
 const REVEAL_SAFETY_MS = 2500;
 
 /** Esconde apenas o que está abaixo da dobra na carga; o que já está na tela nunca some. */
@@ -121,9 +121,7 @@ const ICON_STAGGER_S = 0.14;
 /** Grupos marcados com [data-icons] animam seus ícones quando entram na tela. */
 export function initIconEntrances() {
   for (const group of queryAll('[data-icons]')) {
-    // o "desenho" do traço usa comprimento normalizado (stroke-dasharray: 1)
-    group.querySelectorAll('.glob-icon *').forEach((shape) => shape.setAttribute('pathLength', '1'));
-    queryAll('.why-card img, .group-icon img, .glob-icon', group)
+    queryAll('.why-card img, .group-icon img', group)
       .forEach((icon, i) => icon.style.setProperty('--d', `${(i * ICON_STAGGER_S).toFixed(2)}s`));
     group.classList.add('icons-idle');
     onceVisible(group, () => group.classList.replace('icons-idle', 'icons-play'), { threshold: 0.25 });

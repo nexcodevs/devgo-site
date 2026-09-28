@@ -4,7 +4,8 @@
 //
 // Marcadores aceitos nas páginas:
 //   <!--page {json} -->       primeira linha: slug, title, description, nav, navSpy
-//                             artigos: type "article", category, date (AAAA-MM-DD), readingTime, summary
+//                             artigos: type "article", category, date (AAAA-MM-DD), readingTime, summary,
+//                             image (em assets/, com versão -sm.jpg de 600px) e imageAlt
 //   <!-- include:nome -->     insere site/partials/nome.html
 //   <!-- render:nome -->      insere o HTML gerado por RENDERERS[nome]
 import { cp, mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises';
@@ -90,6 +91,7 @@ function articleJsonLd(meta) {
     headline: meta.title.replace(/ · Insights Devgo$/, ''),
     description: meta.description,
     datePublished: meta.date,
+    image: `${SITE_URL}/assets/${meta.image}`,
     inLanguage: 'pt-BR',
     author: { '@type': 'Organization', name: 'Devgo' },
     publisher: { '@type': 'Organization', name: 'Devgo', logo: { '@type': 'ImageObject', url: `${SITE_URL}/assets/logo.svg` } },
@@ -115,6 +117,7 @@ async function buildPage({ meta, content }, pages) {
     .replaceAll('{{description}}', escapeAttr(meta.description))
     .replaceAll('{{og_type}}', meta.type === 'article' ? 'article' : 'website')
     .replaceAll('{{url}}', SITE_URL + meta.path)
+    .replaceAll('{{og_image}}', `${SITE_URL}/assets/${meta.image ?? 'og.jpg'}`)
     .replaceAll('{{site}}', SITE_URL)
     .replace('{{head_extra}}', meta.type === 'article' ? articleJsonLd(meta) : '')
     .replace('{{preloads}}', preloads);
