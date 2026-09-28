@@ -1,0 +1,19 @@
+{
+  "name": "devgo-site-dev",
+  "private": true,
+  "description": "Ferramentas de desenvolvimento do site (o site em si não tem build nem dependências).",
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc -p ../jsconfig.json",
+    "lint": "cd .. && eslint -c tests/eslint.config.js js tests",
+    "test:e2e": "node --test site.test.mjs",
+    "test": "npm run typecheck && npm run lint && npm run test:e2e"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.0",
+    "eslint": "^9.39.0",
+    "globals": "^17.0.0",
+    "playwright": "1.56.0",
+    "typescript": "^5.9.0"
+  }
+}
