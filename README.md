@@ -6,7 +6,8 @@ sem framework, sem build e sem dependências em produção.
 ## Estrutura
 
 ```
-site/pages/*.html     páginas (home, como-funciona, especialidades, contato)
+site/pages/*.html     páginas (home, como-funciona, especialidades, contato, insights)
+site/pages/insights/  artigos de Insights, um arquivo por artigo
 site/partials/*.html  trechos compartilhados: head, header, footer, contato, FAQ, etapas…
 build/build.mjs       monta as páginas, pré-renderiza blocos de js/data e gera dist/
 build/renderers.mjs   blocos gerados a partir dos dados (prévia de especialidades, tabela de modelos)
@@ -31,7 +32,11 @@ Cada página em `site/pages` começa com uma linha de metadados:
 
 `<!-- include:nome -->` insere `site/partials/nome.html` e `<!-- render:nome -->` insere um bloco de
 `build/renderers.mjs`. O build marca o link da página no menu, pré-carrega só os módulos JS que a página
-usa e gera `sitemap.xml` e `robots.txt`. Para trocar o domínio, altere `SITE_URL` em `build/build.mjs`.
+usa e gera `sitemap.xml` e `robots.txt`.
+
+Para publicar um artigo, copie um arquivo de `site/pages/insights/`, troque os metadados (`slug`, `title`,
+`description`, `category`, `date`, `readingTime`, `summary`) e o texto. A listagem de Insights, o bloco da home,
+"Continue lendo" e os dados estruturados do artigo são gerados a partir desses metadados. Para trocar o domínio, altere `SITE_URL` em `build/build.mjs`.
 
 ### Convenções
 

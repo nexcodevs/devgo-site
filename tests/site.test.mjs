@@ -70,15 +70,21 @@ describe('renderização', () => {
 
   test('cada página tem as seções esperadas', async () => {
     const expected = {
-      '/': { '.svc-item': 4, '.logo-cell': 12, '.marquee-clone img[alt=""]': 6, '.spec-chips span': 44, '.step': 4, '.tile-matrix i': 90, '.quote': 2, '#faq details': 5, '#contact-form': 1 },
+      '/': { '.svc-item': 4, '.logo-cell': 12, '.marquee-clone img[alt=""]': 6, '.spec-chips span': 44, '.step': 4, '.tile-matrix i': 90, '.quote': 2, '#insights .insight-card': 3, '#faq details': 5, '#contact-form': 1 },
       '/como-funciona': { '.flow li': 5, '.assurances div': 4, '.models tbody tr': 4, '.glob-city': 5, '#faq details': 9, '#contact-form': 1 },
       '/especialidades': { '.orbit-pill': 28, '.stk-filter': 7, '.squad-group': 4, '.squad-role': 16, '#contact-form': 1 },
       '/contato': { '#contact-form': 1 },
+      '/insights': { '.insight-card': 4 },
     };
+    for (const path of PAGES.filter((p) => p.startsWith('/insights/'))) expected[path] = { '.prose h2': 3, '.insight-card': 3, '.article-cta .btn': 1 };
     assert.deepEqual(Object.keys(expected).sort(), [...PAGES].sort());
     for (const [path, counts] of Object.entries(expected)) {
       const { page } = await open({ path });
-      for (const [selector, n] of Object.entries(counts)) assert.equal(await page.locator(selector).count(), n, `${path} ${selector}`);
+      for (const [selector, n] of Object.entries(counts)) {
+        const found = await page.locator(selector).count();
+        if (selector === '.prose h2') assert.ok(found >= n, `${path} ${selector}: ${found}`);
+        else assert.equal(found, n, `${path} ${selector}`);
+      }
       await page.close();
     }
   });
@@ -141,6 +147,17 @@ describe('carregamento e navegação entre páginas', () => {
     await page.close();
   });
 
+  test('artigos têm dados estruturados válidos e link de volta para Insights', async () => {
+    for (const path of PAGES.filter((p) => p.startsWith('/insights/'))) {
+      const { page } = await open({ path });
+      const data = JSON.parse(await page.locator('script[type="application/ld+json"]').textContent());
+      assert.equal(data['@type'], 'Article', path);
+      assert.equal(data.mainEntityOfPage.endsWith(path), true, path);
+      assert.equal(await page.getAttribute('.nav-links [aria-current="page"]', 'href'), '/insights', path);
+      await page.close();
+    }
+  });
+
   test('sitemap lista todas as páginas', async () => {
     const xml = await (await fetch(new URL('/sitemap.xml', server.url))).text();
     for (const path of PAGES) assert.match(xml, new RegExp(`<loc>[^<]*${path === '/' ? '/' : path}</loc>`));
@@ -190,7 +207,7 @@ describe('menu móvel', () => {
     await page.keyboard.press('Escape');
     assert.equal(await button.getAttribute('aria-expanded'), 'false');
     await button.click();
-    await page.click('#mobile-menu a[href="/#clientes"]');
+    await page.click('#mobile-menu a[href="/#solucoes"]');
     assert.equal(await button.getAttribute('aria-expanded'), 'false');
     assert.equal(await page.locator('#mobile-menu').evaluate((el) => el.classList.contains('is-open')), false);
     await page.close();
@@ -367,9 +384,9 @@ describe('formulário de contato', () => {
 describe('navegação', () => {
   test('na home, marca no menu a seção visível', async () => {
     const { page } = await open();
-    await page.locator('#clientes').evaluate((el) => el.scrollIntoView({ block: 'center', behavior: 'instant' }));
+    await page.locator('#solucoes').evaluate((el) => el.scrollIntoView({ block: 'center', behavior: 'instant' }));
     await page.waitForTimeout(400);
-    assert.equal(await page.getAttribute('.nav-links a[href="/#clientes"]', 'aria-current'), 'true');
+    assert.equal(await page.getAttribute('.nav-links a[href="/#solucoes"]', 'aria-current'), 'true');
     assert.equal(await page.locator('.nav-links a[aria-current]').count(), 1);
     await page.close();
   });

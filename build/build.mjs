@@ -4,10 +4,11 @@
 //
 // Marcadores aceitos nas páginas:
 //   <!--page {json} -->       primeira linha: slug, title, description, nav, navSpy
+//                             artigos: type "article", category, date (AAAA-MM-DD), readingTime, summary
 //   <!-- include:nome -->     insere site/partials/nome.html
 //   <!-- render:nome -->      insere o HTML gerado por RENDERERS[nome]
 import { cp, mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises';
-import { join, posix } from 'node:path';
+import { dirname, join, posix } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { RENDERERS } from './renderers.mjs';
 import { FEATURES } from '../js/registry.js';
@@ -33,11 +34,12 @@ async function expandIncludes(source, depth = 0) {
   return html;
 }
 
-function expandRenders(html) {
+/** @param {string} html @param {{ meta: object, pages: object[] }} context página atual e todas as páginas */
+function expandRenders(html, context) {
   return html.replace(/<!-- render:([\w-]+) -->/g, (_, name) => {
     const render = RENDERERS[name];
     if (!render) throw new Error(`render:${name} não existe em build/renderers.mjs`);
-    return render();
+    return render(context);
   });
 }
 
@@ -68,14 +70,36 @@ async function moduleClosure(entries) {
 
 const escapeAttr = (value) => String(value).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
 
-async function buildPage(file) {
+/** Lê a página e os metadados da primeira linha. */
+async function readPage(file) {
   const source = await read(`site/pages/${file}`);
   const match = source.match(/^<!--page (\{.*\}) -->\n/);
   if (!match) throw new Error(`${file}: falta a linha <!--page {...} -->`);
   const meta = JSON.parse(match[1]);
-  const path = meta.slug === 'index' ? '/' : `/${meta.slug}`;
+  const expected = file.replace(/\.html$/, '');
+  if (meta.slug !== expected) throw new Error(`${file}: slug "${meta.slug}" deveria ser "${expected}"`);
+  meta.path = meta.slug === 'index' ? '/' : `/${meta.slug}`;
+  return { meta, content: source.slice(match[0].length) };
+}
 
-  const main = expandRenders(await expandIncludes(source.slice(match[0].length)));
+/** Dados estruturados de artigo para buscadores. */
+function articleJsonLd(meta) {
+  const data = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: meta.title.replace(/ · Insights Devgo$/, ''),
+    description: meta.description,
+    datePublished: meta.date,
+    inLanguage: 'pt-BR',
+    author: { '@type': 'Organization', name: 'Devgo' },
+    publisher: { '@type': 'Organization', name: 'Devgo', logo: { '@type': 'ImageObject', url: `${SITE_URL}/assets/logo.svg` } },
+    mainEntityOfPage: SITE_URL + meta.path,
+  };
+  return `<script type="application/ld+json">${JSON.stringify(data).replace(/</g, '\\u003c')}</script>`;
+}
+
+async function buildPage({ meta, content }, pages) {
+  const main = expandRenders(await expandIncludes(content), { meta, pages });
   let header = await read('site/partials/header.html');
   if (meta.nav) header = header.replaceAll(`data-nav="${meta.nav}"`, `data-nav="${meta.nav}" aria-current="page"`);
   const footer = await read('site/partials/footer.html');
@@ -89,15 +113,19 @@ async function buildPage(file) {
   const head = (await read('site/partials/head.html'))
     .replaceAll('{{title}}', escapeAttr(meta.title))
     .replaceAll('{{description}}', escapeAttr(meta.description))
-    .replaceAll('{{url}}', SITE_URL + path)
+    .replaceAll('{{og_type}}', meta.type === 'article' ? 'article' : 'website')
+    .replaceAll('{{url}}', SITE_URL + meta.path)
     .replaceAll('{{site}}', SITE_URL)
+    .replace('{{head_extra}}', meta.type === 'article' ? articleJsonLd(meta) : '')
     .replace('{{preloads}}', preloads);
 
   const html = `<!doctype html>\n<html lang="pt-BR">\n<head>\n${head.trim()}\n</head>\n<body>\n\n${body}\n\n</body>\n</html>\n`;
   const leftover = html.match(/<!-- (include|render):[\w-]+ -->|\{\{\w+\}\}/);
-  if (leftover) throw new Error(`${file}: marcador não resolvido ${leftover[0]}`);
-  await writeFile(join(OUT, meta.slug === 'index' ? 'index.html' : `${meta.slug}.html`), html);
-  return path;
+  if (leftover) throw new Error(`${meta.slug}: marcador não resolvido ${leftover[0]}`);
+  const out = join(OUT, `${meta.slug}.html`);
+  await mkdir(dirname(out), { recursive: true });
+  await writeFile(out, html);
+  return meta.path;
 }
 
 export async function build() {
@@ -105,9 +133,14 @@ export async function build() {
   await mkdir(OUT, { recursive: true });
   for (const item of STATIC) await cp(join(ROOT, item), join(OUT, item), { recursive: true });
 
-  const pages = (await readdir(join(ROOT, 'site/pages'))).filter((f) => f.endsWith('.html')).sort();
+  const files = (await readdir(join(ROOT, 'site/pages'), { recursive: true }))
+    .map((f) => f.split('\\').join('/'))
+    .filter((f) => f.endsWith('.html'))
+    .sort();
+  const pages = await Promise.all(files.map(readPage));
+  const metas = pages.map((p) => p.meta);
   const paths = [];
-  for (const page of pages) paths.push(await buildPage(page));
+  for (const page of pages) paths.push(await buildPage(page, metas));
 
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${paths.map((p) => `  <url><loc>${SITE_URL}${p}</loc></url>`).join('\n')}\n</urlset>\n`;
   await writeFile(join(OUT, 'sitemap.xml'), sitemap);

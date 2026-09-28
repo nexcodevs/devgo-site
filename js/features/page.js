@@ -72,7 +72,7 @@ export function initNavSpy() {
 
 /* ---------- Revelação por rolagem ---------- */
 
-const REVEAL_TARGETS = ['.sec-head', '.why-grid > *', '.steps > li', '.spec > *', '.flow > li', '.glob-list > li', '.bento > *', '.quotes > *', '.next-steps > li', '.contact-form', '.stk-foot'];
+const REVEAL_TARGETS = ['.sec-head', '.why-grid > *', '.steps > li', '.spec > *', '.insight-grid > *', '.flow > li', '.glob-list > li', '.bento > *', '.quotes > *', '.next-steps > li', '.contact-form', '.stk-foot'];
 const REVEAL_SAFETY_MS = 2500;
 
 /** Esconde apenas o que está abaixo da dobra na carga; o que já está na tela nunca some. */
