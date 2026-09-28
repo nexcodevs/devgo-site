@@ -87,6 +87,15 @@ export function render(el, content) {
   el.innerHTML = content.value;
 }
 
+/* ---------- Caminhos ---------- */
+
+/**
+ * URL de um arquivo em assets/, resolvida a partir deste módulo (e não da
+ * página), para funcionar em qualquer profundidade de URL e em qualquer host.
+ * @param {string} file
+ */
+export const assetUrl = (file) => new URL(`../../assets/${file}`, import.meta.url).href;
+
 /* ---------- Plataforma ---------- */
 
 /** Preferência do sistema por menos movimento, lida uma vez na carga. */

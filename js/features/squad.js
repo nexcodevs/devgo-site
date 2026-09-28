@@ -3,7 +3,7 @@
  * "Monte o seu squad": o usuário escolhe perfis e quantidades; a bandeja fixa
  * resume o squad e o CTA leva ao formulário com o assunto preenchido.
  */
-import { byId, closest, html, render, queryAll, replayClass, trusted, reducedMotion } from '../core/dom.js';
+import { assetUrl, byId, closest, html, render, queryAll, replayClass, trusted, reducedMotion } from '../core/dom.js';
 import { PROFILE_GROUPS } from '../data/profiles.js';
 import { prefillSubject } from './contact-form.js';
 
@@ -27,7 +27,7 @@ export function initSquad() {
   /** Quantidade por perfil, na ordem em que foram escolhidos. @type {Map<string, number>} */
   const squad = new Map();
 
-  render(groups, html`${PROFILE_GROUPS.map((group) => html`<div class="squad-group" style="--c:${group.color}"><div class="group-head"><div class="group-ill">${trusted(group.illustration)}</div><div class="group-text"><div class="group-title"><span class="group-icon"><img src="/assets/${group.icon}" alt=""></span><h3>${group.title}</h3></div><p>${group.description}</p></div></div><div class="group-roles">${group.roles.map((role) => html`<div class="squad-role" data-role="${role}"><span class="squad-role-name">${role}</span><button type="button" class="squad-add" aria-label="Adicionar ${role}">+</button><span class="squad-step"><button type="button" data-step="-1" aria-label="Menos ${role}">−</button><b>0</b><button type="button" data-step="1" aria-label="Mais ${role}">+</button></span></div>`)}</div></div>`)}`);
+  render(groups, html`${PROFILE_GROUPS.map((group) => html`<div class="squad-group" style="--c:${group.color}"><div class="group-head"><div class="group-ill">${trusted(group.illustration)}</div><div class="group-text"><div class="group-title"><span class="group-icon"><img src="${assetUrl(group.icon)}" alt=""></span><h3>${group.title}</h3></div><p>${group.description}</p></div></div><div class="group-roles">${group.roles.map((role) => html`<div class="squad-role" data-role="${role}"><span class="squad-role-name">${role}</span><button type="button" class="squad-add" aria-label="Adicionar ${role}">+</button><span class="squad-step"><button type="button" data-step="-1" aria-label="Menos ${role}">−</button><b>0</b><button type="button" data-step="1" aria-label="Mais ${role}">+</button></span></div>`)}</div></div>`)}`);
 
   const rows = queryAll('.squad-role', groups);
   const chosen = () => [...squad].filter(([, qty]) => qty > 0);

@@ -4,7 +4,7 @@
  * menu móvel, faixa de logos, seção atual na navegação, revelação por
  * rolagem, entrada dos ícones e vídeo do hero.
  */
-import { byId, closest, html, render, queryAll, reducedMotion, onceVisible } from '../core/dom.js';
+import { assetUrl, byId, closest, html, render, queryAll, reducedMotion, onceVisible } from '../core/dom.js';
 
 /* ---------- Menu móvel ---------- */
 
@@ -46,7 +46,7 @@ export function initClientLogos() {
   /** @param {boolean} decorative cópia usada só para o loop da faixa */
   const cells = (decorative) => CLIENT_LOGOS.map(([slug, ratio, name]) => {
     const height = Math.min(LOGO_MAX_HEIGHT, Math.sqrt(LOGO_AREA / ratio));
-    return html`<div class="logo-cell"><img src="/assets/L_${slug}.png" alt="${decorative ? '' : name}" width="${Math.round(height * ratio)}" height="${Math.round(height)}"></div>`;
+    return html`<div class="logo-cell"><img src="${assetUrl(`L_${slug}.png`)}" alt="${decorative ? '' : name}" width="${Math.round(height * ratio)}" height="${Math.round(height)}"></div>`;
   });
   render(byId('logo-track'), html`${cells(false)}<div class="marquee-clone" aria-hidden="true">${cells(true)}</div>`);
 }

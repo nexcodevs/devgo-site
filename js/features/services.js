@@ -5,7 +5,7 @@
  * termina, o próximo item abre. Pausa com hover/foco e fora da viewport;
  * fica estático no celular e com movimento reduzido.
  */
-import { byId, closest, html, render, queryAll, reducedMotion, watchVisibility } from '../core/dom.js';
+import { assetUrl, byId, closest, html, render, queryAll, reducedMotion, watchVisibility } from '../core/dom.js';
 import { SERVICES, SQUAD_EXAMPLE, LEADERSHIP_EXAMPLE, MATCH_SCORES } from '../data/services.js';
 
 const AUTOPLAY_MS = 6000;
@@ -17,7 +17,7 @@ const ROLE_TONES = [
 ];
 
 /** @param {string} photo @param {string} title @param {string} caption @param {string} badge */
-const person = (photo, title, caption, badge) => html`<div class="viz-person"><img src="/assets/${photo}" alt=""><div><strong>${title}</strong><small>${caption}</small></div><span class="viz-badge">${badge}</span></div>`;
+const person = (photo, title, caption, badge) => html`<div class="viz-person"><img src="${assetUrl(photo)}" alt=""><div><strong>${title}</strong><small>${caption}</small></div><span class="viz-badge">${badge}</span></div>`;
 
 /** @param {string} left @param {string} right */
 const vizTop = (left, right) => html`<div class="viz-top"><span>${left}</span><span>${right}</span></div>`;
