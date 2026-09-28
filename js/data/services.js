@@ -48,18 +48,23 @@ export const SERVICES = [
   },
 ];
 
-/** Pessoas do squad ilustrativo: [cargo, iniciais, tom 0–2]. */
-export const SQUAD_EXAMPLE = /** @type {const} */ ([
-  ['Dev Sênior', 'DS', 0], ['Dev Pleno', 'DP', 0], ['QA', 'QA', 1], ['UX/UI', 'UX', 1], ['PM', 'PM', 2], ['PO', 'PO', 2],
-]);
+/** Squad ilustrativo em duas camadas: produto em cima, construção embaixo. [cargo, iniciais] */
+export const SQUAD_EXAMPLE = {
+  product: /** @type {[string, string][]} */ ([['Product Manager', 'PM'], ['Product Owner', 'PO']]),
+  build: /** @type {[string, string][]} */ ([['Dev Sênior', 'DS'], ['Dev Pleno', 'DP'], ['QA', 'QA'], ['UX/UI', 'UX']]),
+  sprints: 4,
+};
 
-/** Camada de gestão ilustrativa: [cargo, foco]. */
-export const LEADERSHIP_EXAMPLE = [
-  ['Arquiteto de soluções', 'arquitetura e padrões'],
-  ['Tech Lead', 'qualidade e entrega'],
-  ['Product Manager', 'estratégia e roadmap'],
-  ['Product Owner', 'backlog e prioridades'],
-];
+/**
+ * Camada de gestão ilustrativa numa matriz 2×2: colunas técnico/produto,
+ * linhas estratégia/execução. [cargo, sigla, foco]
+ */
+export const LEADERSHIP_EXAMPLE = /** @type {[string, string, string][]} */ ([
+  ['Arquiteto de soluções', 'AR', 'arquitetura e padrões'],
+  ['Product Manager', 'PM', 'estratégia e roadmap'],
+  ['Tech Lead', 'TL', 'qualidade e entrega'],
+  ['Product Owner', 'PO', 'backlog e prioridades'],
+]);
 
 /** Notas ilustrativas do match: [critério, nota %]. */
 export const MATCH_SCORES = /** @type {const} */ ([['técnica', 92], ['cultura', 86], ['carreira', 90]]);

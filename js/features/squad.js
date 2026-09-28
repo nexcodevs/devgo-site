@@ -41,13 +41,20 @@ export function initSquad() {
     }
     const items = chosen();
     const total = items.reduce((sum, [, qty]) => sum + qty, 0);
-    const dots = items.flatMap(([role, qty]) => {
+    const dot = (/** @type {string} */ role) => {
       const group = /** @type {import('../data/profiles.js').ProfileGroup} */ (groupByRole.get(role));
-      return Array.from({ length: qty }, () => html`<i style="--c:${group.color};--fg:${group.ink}" title="${role}">${initials(role)}</i>`);
+      return html`<i style="--c:${group.color};--fg:${group.ink}" title="${role}">${initials(role)}</i>`;
+    };
+    const dots = items.flatMap(([role, qty]) => Array.from({ length: qty }, () => dot(role)));
+    const org = PROFILE_GROUPS.map((group) => {
+      const picked = items.filter(([role]) => group.roles.includes(role));
+      return html`<div class="tray-area${picked.length ? ' is-filled' : ''}" style="--c:${group.color}"><span class="tray-area-name">${group.title}</span>${picked.length
+        ? picked.map(([role, qty]) => html`<div class="tray-role">${dot(role)}<span>${role}</span><b>${qty}×</b></div>`)
+        : html`<span class="tray-slot" aria-hidden="true"></span>`}</div>`;
     });
-    render(tray, html`<div class="tray-head"><strong>Seu squad</strong><span>${countLabel(total)}</span></div>${total
+    render(tray, html`<div class="tray-head"><strong>Seu squad</strong><span>${countLabel(total)}</span></div><div class="tray-org">${org}</div>${total
       ? html`<div class="tray-dots">${dots}</div>`
-      : html`<p class="tray-empty">Escolha os perfis acima. Se preferir, fale direto com a gente.</p>`}<a class="btn btn-blue tray-cta" href="#contato">${total ? 'Montar este squad' : 'Falar com um especialista'} <span class="arrow" aria-hidden="true">→</span></a>`);
+      : html`<p class="tray-empty">Escolha os perfis ao lado. Se preferir, fale direto com a gente.</p>`}<a class="btn btn-blue tray-cta" href="#contato">${total ? 'Montar este squad' : 'Falar com um especialista'} <span class="arrow" aria-hidden="true">→</span></a>`);
   };
 
   /** @param {string} role @param {number} qty */
