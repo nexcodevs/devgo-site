@@ -48,19 +48,22 @@ export const RENDERERS = {
       </div>`;
   },
 
-  /** Home: o mais recente em destaque e os dois seguintes em lista, com capas. */
+  /** Home: capa larga com o mais recente, os três seguintes em linha e um rodapé com os temas. */
   'insights-latest': ({ pages }) => {
-    const [lead, ...rest] = articlesOf(pages).slice(0, 3);
-    return `<div class="insight-feature">
-        <a class="insight-lead" href="${lead.path}">
-          <span class="insight-lead-img">${cover(lead)}</span>
-          <span class="insight-meta">${esc(lead.category)} · ${esc(lead.readingTime)} de leitura</span>
-          <h3>${title(lead)}</h3>
-          <p>${esc(lead.summary)}</p>
-          <span class="insight-more">Ler artigo <span class="arrow" aria-hidden="true">→</span></span>
+    const all = articlesOf(pages);
+    const [lead, ...rest] = all.slice(0, 4);
+    const topics = [...new Set(all.map((a) => a.category))];
+    return `<div class="insight-mag">
+        <a class="insight-cover" href="${lead.path}">
+          <span class="insight-cover-img">${cover(lead)}</span>
+          <span class="insight-cover-text"><span class="insight-meta">Mais recente · ${esc(lead.category)}</span><h3>${title(lead)}</h3><p>${esc(lead.summary)}</p><span class="insight-more">Ler artigo · ${esc(lead.readingTime)} <span class="arrow" aria-hidden="true">→</span></span></span>
         </a>
-        <div class="insight-side">
-          ${rest.map((a) => `<a class="insight-row" href="${a.path}"><span class="insight-row-img">${cover(a, true)}</span><span class="insight-row-text"><span class="insight-meta">${esc(a.category)} · ${esc(a.readingTime)}</span><h3>${title(a)}</h3><p>${esc(a.summary)}</p></span></a>`).join('\n          ')}
+        <div class="insight-trio">
+          ${rest.map((a) => `<a class="insight-tile" href="${a.path}"><span class="insight-tile-img">${cover(a, true)}</span><span class="insight-meta">${esc(a.category)} · ${esc(a.readingTime)}</span><h3>${title(a)}</h3></a>`).join('\n          ')}
+        </div>
+        <div class="insight-foot">
+          <p><strong>${all.length} guias</strong> sobre ${esc(topics.join(', ').replace(/, ([^,]*)$/, ' e $1').toLowerCase())}.</p>
+          <a class="btn btn-blue" href="/insights">Ver todos os insights <span class="arrow" aria-hidden="true">→</span></a>
         </div>
       </div>`;
   },
