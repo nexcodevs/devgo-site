@@ -357,6 +357,8 @@ p,li,dd,blockquote{text-wrap:pretty}
 .placed-feed em{flex:none;padding:4px 12px;border-radius:var(--radius-full);background:var(--lilac);font-size:12px;font-style:normal;font-weight:600;color:var(--blue-deep)}
 .placed-feed .placed-more{align-self:flex-start;margin:8px 0 0 72px;padding:8px 16px 8px 8px;background:var(--white-a12);box-shadow:none;font-size:13px;color:var(--neutral-0)}
 .placed-faces{flex:none;flex-direction:row!important}
+.placed-feed li.is-new{animation:placedIn var(--t-slow) var(--ease-out) both}
+@keyframes placedIn{from{opacity:0;transform:translateY(-8px)}}
 .placed-faces img{width:26px;height:26px;border:2px solid var(--blue)}
 .placed-faces img+img{margin-left:-8px}
 @media (max-width:560px){.placed-feed li:nth-child(2),.placed-feed li:nth-child(3){margin-left:0}.placed-feed .placed-more{margin-left:0}.placed-feed em{display:none}}

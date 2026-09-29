@@ -3,12 +3,14 @@
  * "Devgo em números": contadores, matriz de pontos, barras dos anos e o
  * seletor "quantos profissionais você precisa?".
  */
-import { byId, closest, queryAll, reducedMotion, onceVisible } from '../core/dom.js';
+import { assetUrl, byId, closest, queryAll, reducedMotion, onceVisible, watchVisibility } from '../core/dom.js';
+import { PLACEMENTS, PLACEMENT_FACES } from '../data/placements.js';
 import { prefillSubject } from './contact-form.js';
 
 const MATRIX_CELLS = 90;
 const MATRIX_STAGGER_MS = 14;
 const COUNTER_DURATION_MS = 1200;
+const FEED_INTERVAL_MS = 2800;
 
 /**
  * Embaralhamento de Fisher–Yates (sem o viés de `sort(() => Math.random() - .5)`).
@@ -83,7 +85,58 @@ function initQuantityPicker() {
   });
 }
 
+/**
+ * Próximo estado do feed: entra o próximo cargo no topo e os demais descem.
+ * @param {number} step quantos avanços já aconteceram
+ * @param {number} slots cartões visíveis
+ * @returns {{ role: string, context: string, face: string }[]}
+ */
+export function feedWindow(step, slots) {
+  return Array.from({ length: slots }, (_, i) => {
+    const n = step + slots - 1 - i;
+    const item = PLACEMENTS[n % PLACEMENTS.length];
+    return { ...item, face: PLACEMENT_FACES[n % PLACEMENT_FACES.length] };
+  });
+}
+
+/** Revezamento dos cartões de profissionais alocados (pausa fora da tela e no hover). */
+function initPlacedFeed() {
+  const feed = /** @type {HTMLElement | null} */ (document.querySelector('.placed-feed'));
+  if (!feed || reducedMotion) return;
+  const cards = queryAll('li:not(.placed-more)', feed);
+  let step = 0;
+  let visible = false;
+  let hovered = false;
+  /** @type {number | undefined} */
+  let timer;
+  const paint = () => {
+    feedWindow(step, cards.length).forEach((item, i) => {
+      const card = cards[i];
+      const img = card.querySelector('img');
+      if (img) img.src = assetUrl(item.face);
+      const strong = card.querySelector('strong');
+      if (strong) strong.textContent = item.role;
+      const small = card.querySelector('small');
+      if (small) small.textContent = item.context;
+    });
+    cards[0].classList.remove('is-new');
+    void cards[0].offsetWidth;
+    cards[0].classList.add('is-new');
+  };
+  const sync = () => {
+    const run = visible && !hovered && !document.hidden;
+    if (run && timer === undefined) timer = window.setInterval(() => { step++; paint(); }, FEED_INTERVAL_MS);
+    if (!run && timer !== undefined) { window.clearInterval(timer); timer = undefined; }
+  };
+  const tile = /** @type {HTMLElement} */ (feed.closest('.tile') ?? feed);
+  tile.addEventListener('mouseenter', () => { hovered = true; sync(); });
+  tile.addEventListener('mouseleave', () => { hovered = false; sync(); });
+  document.addEventListener('visibilitychange', sync);
+  watchVisibility(tile, (isVisible) => { visible = isVisible; sync(); }, { threshold: 0.3 });
+}
+
 export function initNumbers() {
   initBento();
+  initPlacedFeed();
   initQuantityPicker();
 }

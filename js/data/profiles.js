@@ -1,6 +1,6 @@
 // @ts-check
 /** Grupos de perfis do "monte seu squad". */
-import { PRODUCT_ILLUSTRATION, ENGINEERING_ILLUSTRATION, MOBILE_ILLUSTRATION, QUALITY_ILLUSTRATION } from './illustrations.js';
+import { PRODUCT_ILLUSTRATION, ENGINEERING_ILLUSTRATION, MOBILE_ILLUSTRATION, DATA_ILLUSTRATION, QUALITY_ILLUSTRATION, PLATFORMS_ILLUSTRATION } from './illustrations.js';
 
 /**
  * @typedef {object} ProfileGroup
@@ -18,25 +18,37 @@ export const PROFILE_GROUPS = [
   {
     title: 'Produto e Design',
     description: 'Quem define o que construir e como a experiência funciona.',
-    icon: 'card1.svg', color: 'var(--blue-500)', ink: 'var(--text-on-brand)', illustration: PRODUCT_ILLUSTRATION,
-    roles: ['Product Manager', 'Product Owner', 'UX/UI Designer', 'UX Research'],
+    icon: 'card1.svg', color: 'var(--blue-900)', ink: 'var(--text-on-brand)', illustration: PRODUCT_ILLUSTRATION,
+    roles: ['Product Manager', 'Product Owner', 'UX/UI Designer', 'UX Research', 'Scrum Master'],
   },
   {
     title: 'Engenharia de software',
     description: 'Quem constrói e sustenta o produto, do front ao back.',
-    icon: 'card2.svg', color: 'var(--blue-400)', ink: 'var(--text-on-brand)', illustration: ENGINEERING_ILLUSTRATION,
+    icon: 'card2.svg', color: 'var(--blue-600)', ink: 'var(--text-on-brand)', illustration: ENGINEERING_ILLUSTRATION,
     roles: ['Front-end', 'Back-end', 'Full-stack', 'Tech Lead', 'Arquiteto'],
   },
   {
     title: 'Mobile',
     description: 'Apps nativos e multiplataforma, do protótipo à loja.',
-    icon: 'card3.svg', color: 'var(--blue-300)', ink: 'var(--text-on-tint)', illustration: MOBILE_ILLUSTRATION,
-    roles: ['iOS', 'Android', 'Cross-platform'],
+    icon: 'card3.svg', color: 'var(--blue-500)', ink: 'var(--text-on-brand)', illustration: MOBILE_ILLUSTRATION,
+    roles: ['iOS', 'Android', 'React Native', 'Flutter'],
+  },
+  {
+    title: 'Dados e IA',
+    description: 'Quem organiza os dados e coloca modelos e IA em produção.',
+    icon: 'card5.svg', color: 'var(--blue-400)', ink: 'var(--text-on-brand)', illustration: DATA_ILLUSTRATION,
+    roles: ['Engenharia de Dados', 'Análise de Dados e BI', 'Ciência de Dados', 'Machine Learning', 'IA e LLM'],
   },
   {
     title: 'Qualidade e Operação',
     description: 'Quem garante que o que foi entregue funciona e continua funcionando.',
-    icon: 'card4.svg', color: 'var(--blue-100)', ink: 'var(--text-on-tint)', illustration: QUALITY_ILLUSTRATION,
-    roles: ['QA', 'Automação de testes', 'DevOps', 'Sustentação'],
+    icon: 'card4.svg', color: 'var(--blue-300)', ink: 'var(--text-on-tint)', illustration: QUALITY_ILLUSTRATION,
+    roles: ['QA', 'Automação de testes', 'DevOps', 'SRE', 'Cloud', 'Sustentação'],
+  },
+  {
+    title: 'Plataformas',
+    description: 'Especialistas em ERP, CRM e e-commerce que fazem o negócio rodar.',
+    icon: 'card6.svg', color: 'var(--blue-100)', ink: 'var(--text-on-tint)', illustration: PLATFORMS_ILLUSTRATION,
+    roles: ['SAP funcional', 'ABAP', 'TOTVS Protheus', 'Salesforce', 'VTEX', 'Shopify'],
   },
 ];
