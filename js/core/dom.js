@@ -138,24 +138,3 @@ export function replayClass(el, className) {
   void (/** @type {HTMLElement} */ (el)).offsetWidth; // força reflow para a animação recomeçar
   el.classList.add(className);
 }
-
-const PLAY_ICON = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.5v11l9-5.5z"/></svg>';
-const PAUSE_ICON = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 3h3v10H4zM9 3h3v10H9z"/></svg>';
-
-/**
- * Liga um botão .media-toggle (pausar/retomar movimento, WCAG 2.2.2).
- * @param {string} id
- * @param {(paused: boolean) => void} onChange
- */
-export function bindMediaToggle(id, onChange) {
-  const button = document.getElementById(id);
-  if (!(button instanceof HTMLButtonElement)) return;
-  const labelPause = button.dataset.labelPause ?? 'Pausar';
-  const labelPlay = button.dataset.labelPlay ?? 'Retomar';
-  button.addEventListener('click', () => {
-    const paused = button.getAttribute('aria-pressed') !== 'true';
-    button.setAttribute('aria-pressed', String(paused));
-    button.innerHTML = `${paused ? PLAY_ICON : PAUSE_ICON}<span>${paused ? labelPlay : labelPause}</span>`;
-    onChange(paused);
-  });
-}

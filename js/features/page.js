@@ -4,7 +4,7 @@
  * menu móvel, faixa de logos, seção atual na navegação, revelação por
  * rolagem, entrada dos ícones e vídeo do hero.
  */
-import { assetUrl, byId, closest, html, render, queryAll, reducedMotion, onceVisible, bindMediaToggle } from '../core/dom.js';
+import { assetUrl, byId, closest, html, render, queryAll, reducedMotion, onceVisible } from '../core/dom.js';
 
 /* ---------- Menu móvel ---------- */
 
@@ -49,8 +49,6 @@ export function initClientLogos() {
     return html`<div class="logo-cell"><img src="${assetUrl(`L_${slug}.png`)}" alt="${decorative ? '' : name}" width="${Math.round(height * ratio)}" height="${Math.round(height)}"></div>`;
   });
   render(byId('logo-track'), html`${cells(false)}<div class="marquee-clone" aria-hidden="true">${cells(true)}</div>`);
-  const marquee = byId('logo-track').parentElement;
-  bindMediaToggle('logos-pause', (paused) => marquee?.classList.toggle('is-paused', paused));
 }
 
 /* ---------- Seção atual na navegação ---------- */
