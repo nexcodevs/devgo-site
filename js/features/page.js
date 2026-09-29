@@ -215,10 +215,7 @@ export function initHeroRotator() {
 
 export function initHeroVideo() {
   const video = byId('hero-video', HTMLVideoElement);
-  if (reducedMotion) {
-    video.removeAttribute('autoplay');
-    video.pause();
-    return;
-  }
-  bindMediaToggle('hero-pause', (paused) => { if (paused) video.pause(); else void video.play().catch(() => {}); });
+  if (!reducedMotion) return;
+  video.removeAttribute('autoplay');
+  video.pause();
 }

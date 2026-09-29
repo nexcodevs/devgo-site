@@ -834,9 +834,7 @@ a:hover .insight-more .arrow{transform:translateX(3px)}
 .menu-btn svg{width:20px;height:20px}
 .ext{font-size:.85em;opacity:.8}
 /* controles de pausa (WCAG 2.2.2) */
-.hero .media-toggle{position:absolute;right:var(--gutter);bottom:var(--space-6);z-index:2}
-@media (max-width:900px){.hero .media-toggle{top:var(--space-4);bottom:auto;min-height:var(--control-sm)}}
-.logos-head .media-toggle{min-height:var(--control-sm);padding:0 var(--space-3);border-color:var(--border-default);background:none;color:var(--text-secondary);font-size:13px}
+@media (max-width:900px){.logos-head .media-toggle{min-height:var(--control-sm);padding:0 var(--space-3);border-color:var(--border-default);background:none;color:var(--text-secondary);font-size:13px}
 .logos-head .media-toggle:hover{border-color:var(--border-strong);color:var(--text-primary)}
 .media-toggle svg{width:14px;height:14px;fill:currentColor}
 @media (prefers-reduced-motion:reduce){.media-toggle{display:none}}
