@@ -289,7 +289,7 @@ describe('monte seu squad', () => {
     for (let i = 0; i < 25; i++) await trayRow('Dev ABAP').locator('[data-step="1"]').click();
     assert.equal(await trayRow('Dev ABAP').locator('.squad-step b').textContent(), '20');
 
-    await page.click('.sq-platform[data-platform="Produto sob medida"]');
+    await page.click('.sq-platform[data-platform="Sob medida"]');
     assert.equal(await page.locator('.sq-tab[data-tab="platform"]').count(), 0);
     await page.close();
   });

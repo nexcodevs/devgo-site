@@ -4,6 +4,7 @@
 /**
  * @typedef {object} Platform
  * @property {string} name
+ * @property {string} kind tipo de plataforma, exibido no cartão
  * @property {string[]} roles especialistas da plataforma (vazio = sem aba própria)
  */
 
@@ -17,13 +18,13 @@
 
 /** @type {Platform[]} */
 export const PLATFORMS = [
-  { name: 'Produto sob medida', roles: [] },
-  { name: 'SAP', roles: ['Consultor SAP FI/CO', 'Consultor SAP SD/MM', 'Dev ABAP', 'SAP Basis', 'SAP BTP', 'Arquiteto S/4HANA'] },
-  { name: 'TOTVS', roles: ['Dev ADVPL/TL++', 'Consultor Protheus', 'Especialista Fluig'] },
-  { name: 'Salesforce', roles: ['Salesforce Admin', 'Salesforce Developer', 'Consultor Sales/Service Cloud', 'Consultor Marketing Cloud', 'Arquiteto Salesforce'] },
-  { name: 'Dynamics 365', roles: ['Consultor Dynamics F&O', 'Dev Dynamics (X++)', 'Consultor Business Central'] },
-  { name: 'VTEX', roles: ['Dev VTEX IO', 'Dev Front-end VTEX', 'Consultor VTEX', 'Integrações VTEX'] },
-  { name: 'Shopify', roles: ['Dev Shopify (Liquid)', 'Dev Shopify Hydrogen', 'Integrações Shopify'] },
+  { name: 'Sob medida', kind: 'Web, mobile e APIs', roles: [] },
+  { name: 'SAP', kind: 'ERP', roles: ['Consultor SAP FI/CO', 'Consultor SAP SD/MM', 'Dev ABAP', 'SAP Basis', 'SAP BTP', 'Arquiteto S/4HANA'] },
+  { name: 'TOTVS', kind: 'ERP', roles: ['Dev ADVPL/TL++', 'Consultor Protheus', 'Especialista Fluig'] },
+  { name: 'Salesforce', kind: 'CRM', roles: ['Salesforce Admin', 'Salesforce Developer', 'Consultor Sales/Service Cloud', 'Consultor Marketing Cloud', 'Arquiteto Salesforce'] },
+  { name: 'Dynamics', kind: 'ERP e CRM', roles: ['Consultor Dynamics F&O', 'Dev Dynamics (X++)', 'Consultor Business Central'] },
+  { name: 'VTEX', kind: 'E-commerce', roles: ['Dev VTEX IO', 'Dev Front-end VTEX', 'Consultor VTEX', 'Integrações VTEX'] },
+  { name: 'Shopify', kind: 'E-commerce', roles: ['Dev Shopify (Liquid)', 'Dev Shopify Hydrogen', 'Integrações Shopify'] },
 ];
 
 /** @type {ProfileGroup[]} */

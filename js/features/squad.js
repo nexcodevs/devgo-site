@@ -55,17 +55,19 @@ export function initSquad() {
     render(builder, html`
       <div class="sq-step">
         <h3 class="sq-step-title" id="sq-step-1"><b>1</b>Tecnologia ou plataforma</h3>
-        <div class="sq-platforms" role="radiogroup" aria-labelledby="sq-step-1">${PLATFORMS.map((p) => html`<button type="button" class="sq-platform" role="radio" aria-checked="${String(p.name === platform)}" data-platform="${p.name}">${p.name}</button>`)}</div>
+        <div class="sq-platforms" role="radiogroup" aria-labelledby="sq-step-1">${PLATFORMS.map((p) => html`<button type="button" class="sq-platform" role="radio" aria-checked="${String(p.name === platform)}" data-platform="${p.name}"><strong>${p.name}</strong><small>${p.kind}</small></button>`)}</div>
       </div>
       <div class="sq-step">
         <h3 class="sq-step-title" id="sq-step-2"><b>2</b>Cargos por categoria</h3>
+        <div class="sq-cats">
         <div class="sq-tabs" role="tablist" aria-labelledby="sq-step-2">${tabs.map((t) => {
           const count = t.roles.reduce((sum, r) => sum + (squad.get(r) ?? 0), 0);
           return html`<button type="button" class="sq-tab" role="tab" id="sq-tab-${t.id}" aria-controls="sq-panel" aria-selected="${String(t.id === activeTab)}" tabindex="${t.id === activeTab ? '0' : '-1'}" data-tab="${t.id}"><span class="group-icon"><i style="--icon:url(${assetUrl(t.icon)})" aria-hidden="true"></i></span>${t.title}${count ? html`<em>${count}</em>` : ''}</button>`;
         })}</div>
         <div class="sq-panel" role="tabpanel" id="sq-panel" aria-labelledby="sq-tab-${current.id}">
           <p>${current.description}</p>
-          <div class="sq-roles">${current.roles.map((role) => html`<button type="button" class="squad-role" data-role="${role}" aria-pressed="${String((squad.get(role) ?? 0) > 0)}">${role}<i aria-hidden="true">+</i></button>`)}</div>
+          <div class="sq-roles">${current.roles.map((role) => html`<button type="button" class="squad-role" data-role="${role}" aria-pressed="${String((squad.get(role) ?? 0) > 0)}"><span>${role}</span><i aria-hidden="true">+</i></button>`)}</div>
+        </div>
         </div>
       </div>`);
   };
@@ -75,11 +77,14 @@ export function initSquad() {
     const count = total();
     const showPlatform = PLATFORMS.find((p) => p.name === platform)?.roles.length;
     render(tray, html`<div class="tray-head"><strong>Seu squad</strong><span>${countLabel(count)}</span></div>${showPlatform ? html`<p class="tray-platform">Plataforma: <b>${platform}</b></p>` : ''}${count
-      ? html`<ul class="tray-list">${items.map(([role, qty]) => html`<li class="tray-role" data-role="${role}"><span>${role}</span><span class="squad-step"><button type="button" data-step="-1" aria-label="Menos ${role}">−</button><b>${qty}</b><button type="button" data-step="1" aria-label="Mais ${role}">+</button></span></li>`)}</ul>`
+      ? html`<ul class="tray-list">${items.map(([role, qty]) => html`<li class="tray-role${shown.has(role) ? '' : ' is-new'}" data-role="${role}"><span>${role}</span><span class="squad-step"><button type="button" data-step="-1" aria-label="Menos ${role}">−</button><b>${qty}</b><button type="button" data-step="1" aria-label="Mais ${role}">+</button></span></li>`)}</ul>`
       : html`<p class="tray-empty">Escolha a plataforma e os cargos. Se preferir, fale direto com a gente.</p>`}<a class="btn btn-primary tray-cta" href="#contato">${count ? 'Montar este squad' : 'Falar com um especialista'} <span class="arrow" aria-hidden="true">→</span></a>`);
+    shown = new Set(items.map(([role]) => role));
   };
 
   const draw = () => { drawBuilder(); drawTray(); };
+  /** Cargos já exibidos no resumo: só os novos animam a entrada. @type {Set<string>} */
+  let shown = new Set();
 
   /** @param {string} role @param {number} qty */
   const setQuantity = (role, qty) => {
@@ -95,7 +100,7 @@ export function initSquad() {
     // aba escolhida sempre visível na faixa rolável (celular)
     const tab = /** @type {HTMLElement | null} */ (builder.querySelector('.sq-tab[aria-selected="true"]'));
     const strip = tab?.parentElement;
-    if (tab && strip) strip.scrollLeft = tab.offsetLeft - strip.offsetLeft - (strip.clientWidth - tab.offsetWidth) / 2;
+    if (tab && strip && strip.scrollWidth > strip.clientWidth) strip.scrollLeft = tab.offsetLeft - strip.offsetLeft - (strip.clientWidth - tab.offsetWidth) / 2;
   };
 
   builder.addEventListener('click', (event) => {
@@ -124,9 +129,11 @@ export function initSquad() {
   // setas navegam entre as abas (padrão de tablist)
   builder.addEventListener('keydown', (event) => {
     const tab = closest(event.target, '.sq-tab');
-    if (!tab || (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft')) return;
+    const keys = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 };
+    const dir = keys[/** @type {keyof typeof keys} */ (event.key)];
+    if (!tab || !dir) return;
     const ids = tabsFor(platform).map((t) => t.id);
-    const i = ids.indexOf(activeTab) + (event.key === 'ArrowRight' ? 1 : -1);
+    const i = ids.indexOf(activeTab) + dir;
     activeTab = ids[(i + ids.length) % ids.length];
     drawBuilder();
     refocus(`#sq-tab-${activeTab}`);
