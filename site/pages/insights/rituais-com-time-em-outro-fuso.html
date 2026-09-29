@@ -1,24 +1,87 @@
-<!--page {"slug": "insights/rituais-com-time-em-outro-fuso", "type": "article", "nav": "insights", "title": "Daily, planning e review com o time em outro fuso · Insights Devgo", "description": "Como organizar daily, planning e review em times de tecnologia distribuídos em fusos diferentes.", "category": "Times globais", "date": "2026-07-06", "readingTime": "4 min", "summary": "Como organizar os rituais quando parte do time começa o dia quando a outra está terminando, sem reuniões fora de hora.", "image": "insights/rituais-com-time-em-outro-fuso.jpg", "imageAlt": "Profissionais com fones de ouvido trabalhando em notebooks"} -->
+<!--page {"slug": "insights/rituais-com-time-em-outro-fuso", "type": "article", "nav": "insights", "title": "Daily, planning e review com o time em outro fuso · Insights Devgo", "description": "Como organizar daily, planning e review com poucas horas em comum: mapa de sobreposição, daily escrita, registro de decisões e handoffs.", "category": "Times globais", "date": "2026-07-06", "readingTime": "5 min", "summary": "Mapa de sobreposição, o que fica síncrono e o que vai para a escrita, template de daily escrita, registro de decisões e handoffs entre fusos.", "image": "insights/rituais-com-time-em-outro-fuso.jpg", "imageAlt": "Profissionais com fones de ouvido trabalhando em notebooks", "imageFocus": "25% 40%"} -->
 <!-- render:article-head -->
 <section class="theme-light article-body">
   <div class="wrap article-layout">
     <div class="prose">
-      <p>Com poucas horas em comum, cada reunião ocupa um espaço precioso. O segredo é colocar nas horas compartilhadas só o que precisa de conversa ao vivo e levar o resto para a escrita.</p>
+      <p>Você tem um time dividido entre dois fusos e duas ou três horas em comum por dia. A primeira reação costuma ser encaixar todos os rituais nessa janela: daily, refinamento, planning, review, retro e as reuniões de alinhamento que surgem. Em poucas semanas, a janela fica lotada e ninguém tem tempo de programar quando o outro lado está online.</p>
+      <p>A outra reação é espalhar reuniões para fora do horário de alguém. Funciona por um tempo, até essa pessoa cansar. O caminho mais sustentável é tratar as horas em comum como o recurso mais caro do time e colocar nelas só o que precisa de conversa ao vivo. O resto vai para a escrita.</p>
 
-      <h2>Daily: curta ou escrita</h2>
-      <p>Se as horas em comum são poucas, uma daily escrita, com o que foi feito, o que vem a seguir e os bloqueios, libera tempo para conversas que precisam de todos.</p>
+      <h2>Comece pelo mapa de sobreposição</h2>
+      <p>Antes de mexer na agenda, desenhe a semana real do time.</p>
+      <ol>
+        <li>Liste cada pessoa com o fuso e o horário em que costuma estar disponível, não o horário oficial.</li>
+        <li>Converta tudo para um fuso de referência.</li>
+        <li>Marque a janela em que todos estão disponíveis e as janelas parciais, em que só parte do time está.</li>
+        <li>Anote as mudanças de horário de verão e os feriados de cada país.</li>
+      </ol>
+      <p>Com o mapa, você enxerga três tipos de tempo: a janela de todos, as janelas parciais e o tempo de foco individual. Cada ritual tem um lugar certo. Se o mapa mostrar menos de duas horas em comum, revise o desenho do time antes de revisar os rituais. O artigo sobre <a href="/insights/times-de-tecnologia-em-outros-fusos">o que avaliar antes de montar um time em outro fuso</a> trata disso.</p>
 
-      <h2>Planning e review nas horas em comum</h2>
-      <p>São os rituais em que a discussão importa. Reserve o horário fixo de sobreposição para eles e evite mudar a agenda.</p>
-
-      <h2>Documentar vira hábito</h2>
+      <h2>O que fica síncrono e o que vai para a escrita</h2>
+      <h3>Síncrono, na janela de todos</h3>
       <ul>
-        <li>Decisões registradas no ticket, e não só na conversa.</li>
-        <li>Resumo de cada reunião para quem não pôde participar.</li>
-        <li>Critério de pronto escrito em toda tarefa.</li>
+        <li><strong>Planning:</strong> a negociação de escopo precisa de ida e volta rápida.</li>
+        <li><strong>Refinamento de itens complexos:</strong> quando há dúvida de negócio ou de arquitetura.</li>
+        <li><strong>Review com stakeholders:</strong> reação ao vivo vale mais que comentário por escrito.</li>
+        <li><strong>Retrospectiva:</strong> conversas sobre como o time trabalha pedem tom de voz.</li>
+      </ul>
+      <h3>Assíncrono, por escrito</h3>
+      <ul>
+        <li><strong>Daily:</strong> status e bloqueios funcionam bem escritos.</li>
+        <li><strong>Refinamento de itens simples:</strong> perguntas e respostas no ticket.</li>
+        <li><strong>Code review:</strong> já é assíncrono por natureza. Combine um prazo de resposta.</li>
+        <li><strong>Comunicados e decisões pequenas:</strong> registre e siga.</li>
+      </ul>
+      <p>Uma regra prática: se a conversa precisa de mais de três trocas de mensagem para chegar a uma conclusão, marque 15 minutos na janela comum.</p>
+
+      <h2>Daily escrita: um template que funciona</h2>
+      <p>Cada pessoa posta no canal do time até um horário combinado do seu próprio dia. Para quem está no outro fuso, a atualização está lá quando começa o expediente.</p>
+      <ul>
+        <li><strong>Ontem:</strong> o que foi concluído, com link para o ticket ou PR.</li>
+        <li><strong>Hoje:</strong> o que pretende avançar.</li>
+        <li><strong>Bloqueios:</strong> o que impede o avanço e quem pode ajudar, com menção direta.</li>
+        <li><strong>Para o outro fuso:</strong> o que alguém do outro lado precisa saber ou fazer antes de você voltar.</li>
+      </ul>
+      <p>O último item é o que faz diferença. Ele transforma a daily em um handoff. Se houver bloqueio que dependa de conversa, ele vai para a janela comum no mesmo dia.</p>
+
+      <h2>Documentação de decisões e handoffs</h2>
+      <h3>Registro de decisão</h3>
+      <p>Toda decisão que muda o rumo de uma tarefa precisa estar escrita onde o time procura, normalmente no ticket ou em um documento de decisões do projeto. Um formato curto basta:</p>
+      <ul>
+        <li>Contexto: qual era o problema.</li>
+        <li>Opções consideradas.</li>
+        <li>Decisão e motivo.</li>
+        <li>Quem decidiu e em que data.</li>
+      </ul>
+      <h3>Handoff de fim de dia</h3>
+      <p>Quando uma tarefa passa de um fuso para outro, quem sai deixa escrito o estado atual, o próximo passo, onde estão os arquivos ou branches e o que ainda não foi testado. Parece burocracia, mas evita que alguém perca a manhã tentando reconstruir o que o colega sabia.</p>
+      <h3>Resumo de reunião</h3>
+      <p>Quem não pôde participar recebe, no mesmo dia, um resumo com decisões e próximos passos. Três a cinco linhas bastam. A gravação é um complemento, não um substituto.</p>
+
+      <h2>Ferramentas e combinados</h2>
+      <p>A ferramenta importa menos que o combinado. Qualquer time já tem gerenciador de tarefas, chat e repositório. O que costuma faltar é a regra de uso.</p>
+      <ul>
+        <li><strong>Um lugar para cada coisa:</strong> decisões no ticket, conversa no chat, conhecimento permanente na wiki.</li>
+        <li><strong>Canais separados</strong> para urgente e para assunto que pode esperar o outro fuso.</li>
+        <li><strong>Status de disponibilidade</strong> atualizado, com o horário local visível no perfil.</li>
+        <li><strong>Prazo de resposta combinado,</strong> por exemplo, até o próximo início de expediente para mensagens não urgentes.</li>
+        <li><strong>Agenda fixa:</strong> planning, review e retro sempre no mesmo horário, para ninguém precisar recalcular fuso toda semana.</li>
       </ul>
 
-      <blockquote><p>Em times distribuídos, a escrita é o ritual que mais acelera o time.</p></blockquote>
+      <h2>Armadilhas comuns</h2>
+      <ul>
+        <li><strong>Encher a janela comum de reuniões.</strong> Proteja pelo menos parte dela para pareamento e dúvidas rápidas.</li>
+        <li><strong>Revezar sempre para o mesmo lado.</strong> Se alguma reunião precisa sair do horário, alterne quem se sacrifica.</li>
+        <li><strong>Daily escrita que ninguém lê.</strong> O líder precisa responder aos bloqueios no mesmo dia, senão o formato morre.</li>
+        <li><strong>Decisões no corredor.</strong> Quem está no escritório decide e esquece de registrar. Para o outro fuso, a decisão não existe.</li>
+        <li><strong>Copiar os rituais do time presencial.</strong> Eles foram desenhados para outro contexto. Ajuste duração, formato e horário.</li>
+      </ul>
+      <p>Para os rituais com profissionais alocados no mesmo fuso, veja também <a href="/insights/rituais-com-profissionais-alocados">rituais com profissionais alocados</a>.</p>
+
+      <h2>Como a Devgo entra nessa rotina</h2>
+      <p>No Squad as a Service, a Devgo entrega o time completo com rituais rodando desde a primeira sprint, e isso inclui desenhar a rotina em cima das horas em comum com o cliente. Os profissionais trabalham em fusos compatíveis com EUA e Europa, full-time e 100% dedicados ao time.</p>
+      <p>Quando o cliente já tem a própria rotina, a Devgo aloca profissionais ou liderança, como tech lead, PM ou PO, que se encaixam nela. Em qualquer formato, um agente Devgo acompanha a alocação no dia a dia e ajuda a ajustar o que não está funcionando.</p>
+
+      <blockquote><p>Use as horas em comum para conversar e decidir; todo o resto deve estar escrito quando o outro fuso acordar.</p></blockquote>
     </div>
     <aside class="article-aside"><!-- include:article-cta --></aside>
   </div>

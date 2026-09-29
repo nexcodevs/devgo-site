@@ -1,38 +1,81 @@
-<!--page {"slug": "insights/como-escolher-o-modelo-de-contratacao", "type": "article", "nav": "insights", "title": "Alocação, squad ou contratação direta: como escolher o modelo certo · Insights Devgo", "description": "Quatro perguntas para decidir entre alocar profissionais, montar um squad, trazer liderança sob demanda ou contratar direto para o seu time de tecnologia.", "category": "Modelos de contratação", "date": "2026-09-28", "readingTime": "6 min", "summary": "Quatro perguntas que decidem se o seu time precisa de profissionais alocados, de um squad completo, de liderança sob demanda ou de uma contratação direta.", "image": "insights/como-escolher-o-modelo-de-contratacao.jpg", "imageAlt": "Três profissionais trabalhando lado a lado em notebooks"} -->
+<!--page {"slug": "insights/como-escolher-o-modelo-de-contratacao", "type": "article", "nav": "insights", "title": "Alocação, squad ou contratação direta: como escolher o modelo certo · Insights Devgo", "description": "Matriz de decisão para escolher entre alocação, squad, liderança sob demanda ou contratação direta no seu time de tecnologia.", "category": "Modelos de contratação", "date": "2026-09-28", "readingTime": "7 min", "summary": "Cinco perguntas, uma matriz de decisão e cenários combinados para escolher entre alocação, squad, liderança sob demanda e contratação direta.", "image": "insights/como-escolher-o-modelo-de-contratacao.jpg", "imageAlt": "Três profissionais trabalhando lado a lado em notebooks", "imageFocus": "70% 20%"} -->
 <!-- render:article-head -->
 <section class="theme-light article-body">
   <div class="wrap article-layout">
     <div class="prose">
-      <p>Quando o roadmap aperta, a primeira reação costuma ser abrir vagas. Só que contratar é só um dos caminhos, e nem sempre o mais rápido ou o mais seguro. A escolha do modelo define quanto tempo você leva até ter gente entregando, quanto controle mantém sobre o dia a dia e quanto risco assume se a pessoa não se adaptar.</p>
-      <p>Na prática, quatro perguntas resolvem a maior parte das decisões.</p>
+      <p>Quando o roadmap aperta, a reação automática é abrir vagas. Só que a vaga aberta resolve um problema de longo prazo, e muitas vezes o problema é de agora: uma frente nova que precisa começar no próximo trimestre, um time que perdeu duas pessoas, um projeto que ficou sem ninguém decidindo arquitetura.</p>
+      <p>Escolher o modelo errado custa caro de um jeito silencioso. Você contrata CLT para uma demanda de oito meses e depois não sabe o que fazer com a posição. Ou soma três devs a um time sem liderança e descobre que a fila de decisões pendentes só cresceu. Este artigo organiza a decisão em cinco perguntas, mostra o que cada combinação de respostas indica e traz cenários em que vale usar mais de um modelo ao mesmo tempo.</p>
 
-      <h2>1. A necessidade é contínua ou tem um horizonte definido?</h2>
-      <p>Se a demanda nasce de um projeto, de um pico de entregas ou de uma frente nova que ainda precisa provar valor, faz sentido ganhar capacidade sem assumir uma estrutura permanente. Se a função é central e vai existir por anos, trazer a pessoa para a sua folha tende a ser o melhor investimento.</p>
-
-      <h2>2. Você já tem quem lidere tecnicamente?</h2>
-      <p>Profissionais alocados rendem mais quando entram num time com direção clara: alguém que define prioridades, revisa código e decide arquitetura. Se essa camada está faltando, reforçar o time com mais devs só aumenta a fila de decisões pendentes. Nesse caso, o primeiro passo é trazer liderança.</p>
-
-      <h2>3. Você precisa de uma pessoa ou de um time que rode junto?</h2>
-      <p>Somar um dev back-end a um time que já funciona é bem diferente de colocar de pé uma frente inteira. Para a segunda situação, montar pessoas avulsas uma a uma costuma levar meses até o grupo ganhar ritmo. Um squad montado para rodar junto encurta esse caminho.</p>
-
-      <h2>4. O conhecimento precisa ficar na sua folha?</h2>
-      <p>Algumas funções guardam conhecimento que você não quer depender de terceiros para manter, como o arquiteto do core do produto ou o líder de dados. Para essas, a contratação direta é o modelo natural.</p>
-
-      <h2>O que cada resposta indica</h2>
+      <h2>Os quatro modelos, em uma frase cada</h2>
       <ul>
-        <li><strong>Alocação de profissionais.</strong> Você tem liderança, precisa de capacidade extra e quer começar sem abrir vaga CLT. O profissional trabalha full-time, com a sua rotina, suas ferramentas e sua gestão.</li>
-        <li><strong>Squad as a Service.</strong> Você precisa acelerar um produto ou uma frente de negócio e não quer montar um time do zero. Devs, QA, design, PM e PO entram juntos, com rituais ágeis desde a primeira sprint.</li>
-        <li><strong>Liderança sob demanda.</strong> O time cresceu e falta direção técnica ou de produto. Arquitetos, tech leads, PMs e POs entram 100% dedicados, dentro da operação, e não como consultoria avulsa.</li>
-        <li><strong>Hunting tech.</strong> A função é estratégica e de longo prazo. A busca é feita para uma vaga que vai para a sua própria folha.</li>
+        <li><strong>Alocação de profissionais.</strong> Uma pessoa entra full-time no seu time, com a sua gestão, suas ferramentas e seus rituais. O parceiro cuida de seleção, contrato e continuidade.</li>
+        <li><strong>Squad as a Service.</strong> Um time completo, com devs, QA, design, PM e PO, que já entra com papéis definidos e rituais rodando desde a primeira sprint.</li>
+        <li><strong>Liderança sob demanda.</strong> Arquiteto, tech lead, PM ou PO 100% dedicado, dentro da operação. Não é consultoria de algumas horas por semana.</li>
+        <li><strong>Contratação direta, com ou sem hunting.</strong> A pessoa vai para a sua folha. Faz sentido quando a função é permanente e o conhecimento precisa ficar em casa.</li>
+      </ul>
+      <p>Os três primeiros têm algo em comum: a pessoa trabalha para o seu time, não para um escopo do fornecedor. Se o que você procura é entregar um projeto fechado a terceiros, a conversa é outra, e vale ler <a href="/insights/alocacao-ou-outsourcing">a diferença entre alocação e outsourcing</a>.</p>
+
+      <h2>As cinco perguntas que decidem</h2>
+      <h3>1. Qual o horizonte da necessidade?</h3>
+      <p>Separe o que é estrutural do que é conjuntural. Uma função que vai existir enquanto o produto existir, como o dono técnico do core, pede contratação direta. Uma demanda ligada a um projeto, a um pico de entregas ou a uma frente que ainda precisa provar valor pede capacidade sem estrutura permanente.</p>
+      <p>Um teste simples: se daqui a um ano e meio essa frente tiver sido cancelada, o que acontece com a posição? Se a resposta for “teríamos um problema”, provavelmente não é caso de folha própria.</p>
+
+      <h3>2. Quem decide as coisas técnicas hoje?</h3>
+      <p>Profissional alocado rende quando entra num time com direção: alguém que prioriza o backlog, revisa código e decide padrões. Sem essa camada, cada pessoa nova aumenta a fila de decisões pendentes. Se ninguém cumpre esse papel, a primeira contratação é de liderança, não de execução.</p>
+
+      <h3>3. Você precisa de uma pessoa ou de um time?</h3>
+      <p>Somar um dev back-end a um time que já roda é um problema de encaixe. Colocar de pé uma frente inteira é um problema de formação de time: papéis, rituais, acordos de trabalho. Montar isso pessoa por pessoa leva meses. Quando a frente é nova, o squad encurta o caminho.</p>
+
+      <h3>4. Qual a urgência real?</h3>
+      <p>Seja honesto sobre a data. Um processo de contratação direta envolve abertura de vaga, triagem, entrevistas, proposta e aviso prévio do candidato no emprego atual. Se a primeira entrega precisa sair antes disso tudo acontecer, a contratação direta sozinha não resolve, mesmo que seja o destino final da posição.</p>
+
+      <h3>5. Onde o conhecimento precisa morar?</h3>
+      <p>Em alocação, o profissional trabalha dentro do seu time, então o conhecimento circula nas suas ferramentas, no seu código e na sua documentação. Mas algumas funções concentram decisões que você não quer que dependam de nenhum contrato, como o arquiteto do produto principal ou o líder de dados. Para essas, folha própria.</p>
+
+      <h2>A matriz de decisão</h2>
+      <p>Cruze as respostas. Não é uma fórmula, mas cobre a maioria dos casos.</p>
+      <ul>
+        <li><strong>Tem liderança, precisa de capacidade, horizonte de projeto ou incerto:</strong> alocação de profissionais.</li>
+        <li><strong>Frente nova, sem time por trás, prazo curto:</strong> Squad as a Service.</li>
+        <li><strong>O time existe, mas ninguém decide arquitetura ou prioridade:</strong> liderança sob demanda antes de qualquer reforço de execução.</li>
+        <li><strong>Função permanente, conhecimento crítico, prazo que comporta o processo:</strong> contratação direta, com hunting se o perfil for difícil.</li>
+        <li><strong>Função permanente com urgência alta:</strong> alocação agora e hunting em paralelo para a posição definitiva.</li>
+        <li><strong>Frente nova e estratégica no longo prazo:</strong> squad para começar e hunting para as posições de liderança que vão ficar em casa.</li>
       </ul>
 
-      <h2>Os modelos se combinam</h2>
-      <p>É comum uma empresa usar mais de um ao mesmo tempo: um squad para a frente nova, profissionais alocados para reforçar o time que sustenta o produto atual e hunting para as posições de liderança que precisam ficar em casa. O ponto é decidir cada caso pela necessidade, e não pelo hábito.</p>
+      <h2>Cenários combinados</h2>
+      <p>Na prática, empresas médias e grandes raramente usam um modelo só. Três exemplos hipotéticos:</p>
+      <h3>O e-commerce que vai lançar um app</h3>
+      <p>Imagine um varejista digital com um time web estável e a decisão de lançar um app em seis meses. O time web recebe reforço pontual via alocação para não perder ritmo. O app nasce com um squad mobile completo. E o head de mobile, que vai cuidar do app depois do lançamento, é buscado via hunting enquanto o squad roda.</p>
+      <h3>A empresa que cresceu sem arquitetura</h3>
+      <p>Imagine uma empresa de software que dobrou o time de engenharia em um ano e hoje cada squad decide padrões por conta própria. Mais devs só agravam o problema. O primeiro movimento é um arquiteto dedicado via liderança sob demanda, que organiza os padrões e define o que vem antes. Só depois entra reforço de execução.</p>
+      <h3>O projeto de ERP com data para acabar</h3>
+      <p>Uma migração de ERP tem fases, e cada fase pede perfis diferentes. Contratar tudo na folha deixaria gente ociosa depois do go-live. Alocação por fase resolve, e a empresa contrata direto só quem vai sustentar o sistema no dia a dia. Tem mais sobre isso em <a href="/insights/perfis-para-projeto-sap-s4hana">perfis para projeto SAP S/4HANA</a>.</p>
 
-      <blockquote><p>Uma boa regra: se a pergunta é “quem vai fazer isso nos próximos meses?”, pense em alocação ou squad. Se é “quem vai cuidar disso nos próximos anos?”, pense em contratação direta.</p></blockquote>
+      <h2>Armadilhas comuns</h2>
+      <ul>
+        <li><strong>Decidir pelo hábito.</strong> “Aqui sempre contratamos CLT” não é critério. Cada posição tem seu horizonte.</li>
+        <li><strong>Comparar o valor da nota com o salário.</strong> O custo de uma contratação direta inclui encargos, benefícios, tempo de vaga aberta e horas do time em entrevistas.</li>
+        <li><strong>Reforçar execução quando falta direção.</strong> Mais gente num time sem liderança gera mais retrabalho, não mais entrega.</li>
+        <li><strong>Tratar squad como pessoas alocadas na mesma data.</strong> Squad é time com papéis e rituais. Cinco pessoas começando juntas, sem isso, é só alocação em lote.</li>
+        <li><strong>Esquecer a saída.</strong> Antes de começar, defina o que acontece quando a frente terminar: o time é reduzido, a posição vira efetiva, o conhecimento vai para quem?</li>
+      </ul>
 
-      <h2>Próximo passo</h2>
-      <p>Se ainda estiver em dúvida, a conversa inicial com a Devgo existe para isso. Em 30 minutos entendemos stack, cultura, senioridade e urgência, e indicamos o modelo que faz mais sentido, inclusive quando a resposta é contratar direto.</p>
+      <h2>Checklist antes de decidir</h2>
+      <ol>
+        <li>Escrevi em uma frase o problema que essa contratação resolve?</li>
+        <li>Sei se a necessidade é estrutural ou de projeto?</li>
+        <li>Tenho alguém que vai liderar tecnicamente quem entrar?</li>
+        <li>Sei a data real em que preciso de gente entregando?</li>
+        <li>Sei quais funções precisam ficar na folha e quais não?</li>
+        <li>Defini o que acontece com essa capacidade quando a frente terminar?</li>
+      </ol>
+
+      <h2>Como a Devgo entra nessa conversa</h2>
+      <p>A Devgo trabalha com os quatro modelos, e isso muda o tipo de conversa. O deep dive inicial de 30 minutos serve para entender stack, cultura, senioridade e urgência antes de falar em perfil. Às vezes a resposta é um squad, às vezes é um arquiteto, às vezes é hunting para contratação efetiva na sua folha. Em alocação, o profissional é sempre full-time e 100% dedicado ao seu time.</p>
+      <p>Com mais de 321 profissionais alocados, um aprendizado se repete: boa parte dos problemas de uma alocação nasce na escolha do modelo, não do profissional. Por isso vale gastar meia hora nela antes de abrir qualquer vaga.</p>
+
+      <blockquote><p>Se a pergunta é “quem faz isso nos próximos meses?”, pense em alocação ou squad. Se é “quem cuida disso nos próximos anos?”, pense em contratação direta.</p></blockquote>
     </div>
     <aside class="article-aside"><!-- include:article-cta --></aside>
   </div>

@@ -1,20 +1,76 @@
-<!--page {"slug": "insights/salesforce-admin-dev-ou-arquiteto", "type": "article", "nav": "insights", "title": "Salesforce: administrador, desenvolvedor ou arquiteto? · Insights Devgo", "description": "A diferença entre administrador, desenvolvedor e arquiteto Salesforce e como escolher o perfil certo para o seu momento.", "category": "Stacks e plataformas", "date": "2026-06-22", "readingTime": "4 min", "summary": "Configuração, código e desenho da solução. Como saber qual perfil Salesforce resolve o seu problema agora.", "image": "insights/salesforce-admin-dev-ou-arquiteto.jpg", "imageAlt": "Profissionais trabalhando em notebooks em um espaço de coworking"} -->
+<!--page {"slug": "insights/salesforce-admin-dev-ou-arquiteto", "type": "article", "nav": "insights", "title": "Salesforce: administrador, desenvolvedor ou arquiteto? · Insights Devgo", "description": "Papéis Salesforce explicados: administrador, dev Apex/LWC, consultor por cloud, arquiteto e integração. Como escolher pelo problema e pelo estágio.", "category": "Stacks e plataformas", "date": "2026-06-22", "readingTime": "6 min", "summary": "Admin, dev, consultor funcional, arquiteto ou especialista em integração: o que cada papel Salesforce faz e como compor o time em cada estágio do projeto.", "image": "insights/salesforce-admin-dev-ou-arquiteto.jpg", "imageAlt": "Profissionais trabalhando em notebooks em um espaço de coworking", "imageFocus": "32% 43%"} -->
 <!-- render:article-head -->
 <section class="theme-light article-body">
   <div class="wrap article-layout">
     <div class="prose">
-      <p>Boa parte do que uma empresa precisa no Salesforce se resolve com configuração. Contratar um desenvolvedor para isso é caro; contratar só um administrador para uma integração complexa atrasa o projeto.</p>
+      <p>Muitas empresas contratam para Salesforce da mesma forma que contratam para qualquer outra stack: “precisamos de alguém que saiba Salesforce”. Só que a plataforma tem papéis muito diferentes, e a escolha errada custa caro nos dois sentidos. Um desenvolvedor contratado para ajustar fluxos e relatórios vai escrever código onde bastava configuração, e a org fica mais difícil de manter. Um administrador colocado para construir uma integração complexa vai travar ou improvisar.</p>
+      <p>O ponto de partida não é o cargo, é o problema. Este artigo explica o que cada papel faz, como ler certificações sem superestimá-las, como escolher o perfil a partir do que você precisa resolver e como compor o time em cada estágio do projeto.</p>
 
-      <h2>Administrador</h2>
-      <p>Configura objetos, fluxos, permissões e relatórios. É o perfil certo para manter o CRM organizado e evoluir processos sem código.</p>
+      <h2>Os papéis, um por um</h2>
 
-      <h2>Desenvolvedor</h2>
-      <p>Escreve Apex e componentes Lightning, e constrói integrações com outros sistemas. Entra quando a configuração não resolve.</p>
+      <h3>Administrador</h3>
+      <p>Configura a plataforma sem código ou com pouco código: objetos e campos, layouts, perfis e permissões, Flows, regras de validação, relatórios e dashboards. Cuida da saúde da org, do cadastro de usuários e da qualidade dos dados. É o perfil que mantém o CRM útil no dia a dia e evolui processos em ciclos curtos.</p>
 
-      <h2>Arquiteto</h2>
-      <p>Decide o desenho da solução, o modelo de dados e as integrações, pensando em escala e em manutenção. É essencial em implantações novas e em organizações com várias nuvens Salesforce.</p>
+      <h3>Desenvolvedor (Apex e LWC)</h3>
+      <p>Entra quando a configuração não resolve. Escreve Apex para lógica de negócio complexa, triggers e processamento em lote, constrói componentes em Lightning Web Components para interfaces específicas e implementa integrações via APIs. Um bom dev Salesforce conhece os limites da plataforma (governor limits) e sabe quando não escrever código.</p>
 
-      <blockquote><p>Comece pelo problema: se ele se resolve clicando, é administração. Se precisa de código, é desenvolvimento. Se muda o desenho, é arquitetura.</p></blockquote>
+      <h3>Consultor funcional por cloud</h3>
+      <p>Traduz o processo de negócio para a plataforma. É especialista em uma cloud: Sales Cloud para funil comercial, Service Cloud para atendimento, Marketing Cloud para jornadas e comunicação, Commerce Cloud para loja virtual. Conduz levantamento, desenha o processo futuro e orienta o que o admin configura e o que o dev constrói.</p>
+
+      <h3>Arquiteto técnico e arquiteto de solução</h3>
+      <p>O arquiteto de solução decide como a plataforma atende o negócio: quais clouds, qual modelo de dados, o que fica no Salesforce e o que fica fora. O arquiteto técnico cuida de como isso é construído com segurança, performance e escala: estratégia de ambientes, deploy, volume de dados, padrões de código e integração. Em projetos menores, uma pessoa acumula os dois papéis.</p>
+
+      <h3>Especialista em integração e MuleSoft</h3>
+      <p>Quando o Salesforce precisa conversar com ERP, e-commerce, sistemas legados e plataformas de dados, a integração vira um projeto próprio. Esse especialista desenha APIs, orquestra fluxos, trata erros e reprocessamento, e garante que os dados cheguem consistentes. MuleSoft é a ferramenta da própria Salesforce para isso, mas o papel existe mesmo quando a integração usa outras ferramentas.</p>
+
+      <h2>Certificações como sinal, não como prova</h2>
+      <p>As certificações Salesforce são bem estruturadas e mostram que a pessoa estudou a plataforma com método. Uma certificação de Administrator, Platform Developer ou de uma cloud específica é um bom sinal de base. As de arquitetura exigem mais preparo e costumam indicar experiência mais ampla.</p>
+      <p>Mas certificação não substitui projeto. Há profissionais com várias certificações e pouca vivência em org real, e profissionais excelentes com poucas. Use as certificações para filtrar a base, e a entrevista para confirmar:</p>
+      <ul>
+      <li>Qual foi a org mais complexa em que você trabalhou? Quantos usuários, quais clouds, quais integrações?</li>
+      <li>Conte um caso em que você escolheu configuração em vez de código, ou o contrário. Por quê?</li>
+      <li>Como você lida com governor limits em processamento de grandes volumes?</li>
+      <li>Como funcionava o processo de deploy entre ambientes no último projeto?</li>
+      <li>Qual decisão de modelo de dados você tomaria diferente hoje?</li>
+      </ul>
+
+      <h2>Como escolher pelo problema</h2>
+      <p>Descreva o que precisa ser resolvido e compare com estes critérios:</p>
+      <ul>
+      <li><strong>Ajustes de processo, relatórios, permissões, automações simples:</strong> administrador.</li>
+      <li><strong>Regra de negócio que Flow não comporta, interface específica, volume alto de dados:</strong> desenvolvedor.</li>
+      <li><strong>Processo comercial ou de atendimento mal desenhado, adoção baixa pelos usuários:</strong> consultor funcional da cloud correspondente.</li>
+      <li><strong>Várias clouds, várias orgs, dúvida sobre o que fica dentro ou fora do Salesforce:</strong> arquiteto de solução.</li>
+      <li><strong>Performance ruim, deploys que quebram, código difícil de manter:</strong> arquiteto técnico.</li>
+      <li><strong>Dados inconsistentes entre CRM, ERP e e-commerce:</strong> especialista em integração.</li>
+      </ul>
+      <p>Uma regra prática: se o problema se resolve clicando, é administração. Se precisa de código, é desenvolvimento. Se muda o desenho, é arquitetura. Se muda o processo do negócio, é consultoria funcional.</p>
+
+      <h2>Composição por estágio do projeto</h2>
+
+      <h3>Implantação</h3>
+      <p>É onde as decisões mais difíceis de desfazer acontecem. Um arquiteto de solução desde o início, consultor funcional da cloud principal, um ou dois desenvolvedores, um administrador para configuração e, se houver integrações relevantes, um especialista em integração. O arquiteto é o papel que você menos deveria economizar aqui.</p>
+
+      <h3>Evolução</h3>
+      <p>A plataforma já roda e o negócio pede novas funcionalidades. O núcleo passa a ser desenvolvedores e administrador, com um arquiteto em papel de revisão e direção técnica. Consultor funcional entra quando uma nova cloud ou um novo processo chega.</p>
+
+      <h3>Sustentação</h3>
+      <p>Foco em estabilidade, pequenos ajustes e suporte aos usuários. Um administrador sênior costuma resolver a maior parte, com um desenvolvedor para correções e manutenção de código existente. Sem ninguém cuidando da org, a dívida técnica cresce rápido.</p>
+
+      <h2>Erros comuns na contratação Salesforce</h2>
+      <ul>
+      <li><strong>Pedir um “Salesforce full” que faça tudo.</strong> Admin, dev, funcional e arquiteto na mesma pessoa existe raramente e custa como tal.</li>
+      <li><strong>Implantação sem arquiteto.</strong> O modelo de dados nasce torto e cada evolução fica mais cara.</li>
+      <li><strong>Ignorar a cloud.</strong> Experiência forte em Sales Cloud não garante domínio de Marketing Cloud, que tem lógica bem diferente.</li>
+      <li><strong>Tratar integração como tarefa do dev.</strong> Em cenários com ERP e e-commerce, integração é especialidade.</li>
+      <li><strong>Contar certificações em vez de avaliar projetos.</strong></li>
+      </ul>
+
+      <h2>Como a Devgo monta times Salesforce</h2>
+      <p>A Devgo aloca profissionais Salesforce full-time e 100% dedicados ao seu time, do administrador ao arquiteto, incluindo especialistas por cloud e em integração. Quando o projeto pede um time completo, o Squad as a Service entrega a composição certa para o estágio, com rituais desde a primeira sprint e um contrato só.</p>
+      <p>Tudo começa com um deep dive de 30 minutos sobre o seu cenário: clouds, integrações, fase do projeto e urgência. A partir dele, a shortlist chega ranqueada e validada. Se o seu projeto também envolve e-commerce, veja <a href="/insights/time-para-ecommerce-vtex-shopify">como montar o time para e-commerce</a>.</p>
+
+      <blockquote><p>No Salesforce, escolha o perfil pelo problema: configuração, código, processo, desenho ou integração pedem pessoas diferentes.</p></blockquote>
     </div>
     <aside class="article-aside"><!-- include:article-cta --></aside>
   </div>

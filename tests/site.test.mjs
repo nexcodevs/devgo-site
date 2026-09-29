@@ -347,16 +347,34 @@ describe('formulário de contato', () => {
     await page.close();
   });
 
-  test('com dados válidos, avisa que o envio ainda não está ativo', async () => {
+  test('com dados válidos, envia para /api/lead e confirma', async () => {
     const { page } = await open();
+    /** @type {any} */
+    let sent = null;
+    await page.route('**/api/lead', async (route) => { sent = route.request().postDataJSON(); await route.fulfill({ status: 200, contentType: 'application/json', body: '{"ok":true}' }); });
     for (const [selector, value] of Object.entries(VALID)) await page.fill(selector, value);
     await page.selectOption('#ct-func', { index: 1 });
     await page.click('#contact-form button[type="submit"]');
     const status = page.locator('#form-status');
-    assert.match(await status.textContent(), /envio on-line entra no ar em breve/);
+    await status.filter({ hasText: 'Mensagem enviada' }).waitFor();
     assert.equal(await status.evaluate((el) => el.classList.contains('is-success')), true);
-    assert.equal(await page.locator('#contact-form [aria-invalid]').count(), 0);
+    assert.deepEqual([sent.nome, sent.email, sent.empresa, sent.assunto, sent.funcionarios], ['Ana', 'ana@empresa.com', 'Acme', 'Alocar 2 devs', '1 a 50']);
+    assert.equal(sent.website, '');
+    assert.equal(await page.inputValue('#ct-nome'), '', 'formulário limpo depois do envio');
+    await page.close();
+  });
+
+  test('se o servidor falhar, mantém os dados e oferece outro canal', async () => {
+    const { page } = await open();
+    await page.route('**/api/lead', (route) => route.fulfill({ status: 502, contentType: 'application/json', body: '{"ok":false}' }));
+    for (const [selector, value] of Object.entries(VALID)) await page.fill(selector, value);
+    await page.selectOption('#ct-func', { index: 1 });
+    await page.click('#contact-form button[type="submit"]');
+    const status = page.locator('#form-status');
+    await status.filter({ hasText: 'Não conseguimos enviar' }).waitFor();
+    assert.equal(await page.inputValue('#ct-nome'), 'Ana');
     assert.equal(await status.locator('a').getAttribute('rel'), 'noopener noreferrer');
+    assert.equal(await page.isEnabled('#contact-form button[type="submit"]'), true);
     await page.close();
   });
 

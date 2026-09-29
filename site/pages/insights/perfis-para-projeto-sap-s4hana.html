@@ -1,22 +1,86 @@
-<!--page {"slug": "insights/perfis-para-projeto-sap-s4hana", "type": "article", "nav": "insights", "title": "SAP S/4HANA: os perfis que um projeto de migração precisa · Insights Devgo", "description": "Os perfis profissionais de um projeto de migração para SAP S/4HANA e em que fase cada um é necessário.", "category": "Stacks e plataformas", "date": "2026-06-29", "readingTime": "5 min", "summary": "Funcional, técnico ABAP, Basis e arquiteto de soluções. O que cada perfil faz e em que fase do projeto ele entra.", "image": "insights/perfis-para-projeto-sap-s4hana.jpg", "imageAlt": "Mesa de reunião com notebook e documentos"} -->
+<!--page {"slug": "insights/perfis-para-projeto-sap-s4hana", "type": "article", "nav": "insights", "title": "SAP S/4HANA: os perfis que um projeto de migração precisa · Insights Devgo", "description": "Os perfis de um projeto de migração SAP S/4HANA por fase, do discovery ao hypercare, e os sinais de um time mal dimensionado.", "category": "Stacks e plataformas", "date": "2026-06-29", "readingTime": "6 min", "summary": "Funcionais por módulo, ABAP, Fiori, BTP, Basis, arquiteto e PM: quem entra em cada fase de uma migração S/4HANA e os sinais de time mal dimensionado.", "image": "insights/perfis-para-projeto-sap-s4hana.jpg", "imageAlt": "Mesa de reunião com notebook e documentos", "imageFocus": "52% 44%"} -->
 <!-- render:article-head -->
 <section class="theme-light article-body">
   <div class="wrap article-layout">
     <div class="prose">
-      <p>Uma migração para S/4HANA envolve processo de negócio, desenvolvimento e infraestrutura. Montar o time certo começa por entender o papel de cada perfil e quando ele é necessário.</p>
+      <p>Uma migração para SAP S/4HANA mexe em processo de negócio, código, dados e infraestrutura ao mesmo tempo. Por isso o time muda de forma ao longo do projeto. O perfil indispensável no blueprint pode ficar quase ocioso no cutover, e o que mal aparece no começo vira gargalo nos testes.</p>
+      <p>Montar o time certo começa por entender as fases e o que cada uma pede. A seguir, os perfis, em que fase cada um entra e os sinais de que o time está mal dimensionado.</p>
 
-      <h2>Consultor funcional</h2>
-      <p>Conhece o processo de negócio do módulo, como finanças, suprimentos ou vendas, e traduz a necessidade da empresa em configuração. Entra desde o levantamento.</p>
-
-      <h2>Desenvolvedor ABAP</h2>
-      <p>Adapta e cria o que o padrão não cobre, e revisa customizações antigas que precisam ser reescritas no S/4HANA. O volume de trabalho aparece na fase de construção.</p>
-
-      <h2>Basis e arquiteto de soluções</h2>
+      <h2>Antes de tudo: que tipo de migração é</h2>
+      <p>A abordagem muda o peso de cada perfil.</p>
       <ul>
-        <li>Basis cuida dos ambientes, da instalação e do desempenho.</li>
-        <li>O arquiteto de soluções decide o desenho da migração e integra as frentes.</li>
+        <li><strong>Greenfield:</strong> implantação nova, com redesenho de processos. Pesa mais no funcional e no arquiteto.</li>
+        <li><strong>Brownfield (conversão de sistema):</strong> converte o ECC existente, preservando histórico e customizações. Pesa mais no técnico: ABAP para adequar o código custom e Basis para a conversão.</li>
+        <li><strong>Seletiva:</strong> migra parte dos dados e processos. Pesa em arquitetura e migração de dados.</li>
       </ul>
-      <p>A Devgo aloca perfis SAP em todas essas funções, sempre full-time e dedicados ao projeto.</p>
+
+      <h2>Os perfis e o que cada um faz</h2>
+      <h3>Consultores funcionais por módulo</h3>
+      <p>Conhecem o processo de negócio e traduzem a necessidade da empresa em configuração. Os mais comuns:</p>
+      <ul>
+        <li><strong>FI/CO:</strong> finanças e controladoria. No S/4HANA, trabalha com o Universal Journal, que reúne contabilidade financeira e de custos numa mesma base.</li>
+        <li><strong>MM:</strong> compras, estoque e avaliação de materiais.</li>
+        <li><strong>SD:</strong> vendas, preços, entregas e faturamento.</li>
+        <li><strong>PP:</strong> planejamento e controle de produção, MRP. Em indústria, costuma ser o módulo mais sensível.</li>
+        <li><strong>Outros conforme a operação:</strong> EWM (armazém), QM (qualidade), manutenção e a localização fiscal brasileira, que geralmente pede um especialista próprio.</li>
+      </ul>
+      <h3>ABAP e ABAP on HANA</h3>
+      <p>O desenvolvedor ABAP adapta e cria o que o padrão não cobre. Em migração, o trabalho pesado é revisar customizações antigas: identificar o código que não funciona mais no S/4HANA, adequar o necessário e descartar o obsoleto. O perfil ABAP on HANA vai além, com CDS views, AMDP e código que leva o processamento para o banco. Se o projeto quer ganhar performance, e não só migrar, é esse perfil que você procura.</p>
+      <h3>Fiori/UI5</h3>
+      <p>Fiori é a experiência de usuário principal do S/4HANA. O desenvolvedor Fiori/UI5 configura apps padrão, cria apps customizados e organiza o launchpad por perfil de usuário. Costuma ser subestimado no planejamento e lembrado só quando os usuários-chave começam a testar.</p>
+      <h3>BTP</h3>
+      <p>A SAP Business Technology Platform é onde vivem extensões fora do núcleo, integrações e automações. O especialista BTP entra quando a estratégia é manter o núcleo limpo (clean core) e levar customizações para fora dele, ou quando há integrações com e-commerce, CRM e logística.</p>
+      <h3>Basis</h3>
+      <p>Cuida de ambientes, instalação, transportes, performance, segurança técnica e da conversão em si. Em projetos brownfield, é um dos perfis mais críticos da virada.</p>
+      <h3>Arquiteto de soluções</h3>
+      <p>Define o desenho da migração, integra as frentes funcional e técnica e arbitra conflitos entre o que o negócio pede e o que o padrão oferece. Precisa estar presente desde o discovery.</p>
+      <h3>Gerente de projeto</h3>
+      <p>Coordena cronograma, riscos, dependências e a relação com as áreas de negócio. Um PM que já passou por um cutover de S/4HANA faz diferença, porque sabe o que costuma dar errado nas últimas semanas.</p>
+
+      <h2>Quem entra em cada fase</h2>
+      <ol>
+        <li><strong>Discovery.</strong> Arquiteto, PM, funcionais seniores dos módulos principais e Basis para avaliar o ambiente atual. Aqui se decide a abordagem e se faz o inventário de customizações.</li>
+        <li><strong>Blueprint.</strong> Funcionais em peso, conduzindo workshops de fit-to-standard com as áreas. Arquiteto definindo integrações. ABAP, Fiori e BTP começam a estimar o que será desenvolvido.</li>
+        <li><strong>Build.</strong> Pico do time técnico: ABAP, Fiori/UI5 e BTP. Funcionais configuram e escrevem especificações. A migração de dados começa a ser ensaiada.</li>
+        <li><strong>Testes.</strong> Testes integrados e de aceite com usuários-chave. Funcionais e técnicos corrigem em paralelo. Um coordenador de testes dedicado evita que tudo vire uma planilha sem dono.</li>
+        <li><strong>Cutover.</strong> Basis, migração de dados, PM e arquiteto no centro. Ensaios de virada antes da data real. Funcionais validam os dados migrados.</li>
+        <li><strong>Hypercare.</strong> Funcionais e ABAP de prontidão para os incidentes das primeiras semanas. Depois, o time reduz para o tamanho da sustentação.</li>
+      </ol>
+
+      <h2>Perguntas para dimensionar o time</h2>
+      <ul>
+        <li>Qual a abordagem: greenfield, brownfield ou seletiva?</li>
+        <li>Quais módulos estão no escopo e quais são críticos para a operação?</li>
+        <li>Quantas customizações existem hoje e quantas devem sobreviver?</li>
+        <li>Existe estratégia de clean core? Onde vão viver as extensões?</li>
+        <li>Quantas integrações com sistemas externos precisam ser refeitas?</li>
+        <li>Os usuários-chave estão liberados para workshops e testes?</li>
+        <li>Quem da casa vai sustentar o sistema depois do hypercare?</li>
+      </ul>
+
+      <h2>Sinais de time mal dimensionado</h2>
+      <ul>
+        <li><strong>Workshops sem funcional sênior do módulo.</strong> As decisões são adiadas ou tomadas por quem não conhece o padrão.</li>
+        <li><strong>Fila de especificações esperando ABAP.</strong> O build atrasa enquanto os funcionais aguardam.</li>
+        <li><strong>Fiori lembrado nos testes.</strong> Usuários recebem transações antigas ou apps sem ajuste de perfil.</li>
+        <li><strong>Arquiteto que só aparece em crise.</strong> Sinal de que ninguém está integrando as frentes.</li>
+        <li><strong>Basis dividido com a operação atual.</strong> Na semana do cutover, ele vai ter que escolher.</li>
+        <li><strong>Time inteiro mantido depois do go-live.</strong> Hypercare dimensionado como build custa caro sem necessidade.</li>
+      </ul>
+
+      <h2>Armadilhas comuns</h2>
+      <ul>
+        <li><strong>Contratar tudo na folha.</strong> O projeto tem fases, a folha não. Parte do time fica ociosa depois do go-live.</li>
+        <li><strong>Pedir “consultor SAP” sem módulo e senioridade.</strong> Um sênior FI/CO e um pleno MM são perfis completamente diferentes. Veja <a href="/insights/como-descrever-o-perfil-tecnico">como descrever o perfil técnico</a>.</li>
+        <li><strong>Tratar ECC e S/4HANA como a mesma experiência.</strong> Quem só trabalhou em ECC precisa de rampa nas mudanças do S/4HANA.</li>
+        <li><strong>Dividir perfis entre projetos.</strong> Um consultor dividido entre dois projetos raramente entrega metade em cada um.</li>
+      </ul>
+
+      <h2>Como a Devgo monta times SAP</h2>
+      <p>A Devgo aloca perfis de S/4HANA, ABAP, Fiori e BTP, além de funcionais, Basis, arquitetos e PMs, sempre full-time e 100% dedicados ao projeto. Como a cobrança é mensal por profissional, dá para montar o time por fase: entrar com funcionais e arquiteto no discovery, crescer o técnico no build e reduzir no hypercare.</p>
+      <p>A busca parte de uma base com mais de 8 mil talentos, e a shortlist é ranqueada por IA e validada por um time com mais de 12 anos em recrutamento tech. Se um profissional precisar ser trocado no meio do projeto, a substituição é garantida em até 40 dias.</p>
+
+      <blockquote><p>Em S/4HANA, o time certo não é o maior. É o que tem o perfil certo presente na fase certa.</p></blockquote>
     </div>
     <aside class="article-aside"><!-- include:article-cta --></aside>
   </div>

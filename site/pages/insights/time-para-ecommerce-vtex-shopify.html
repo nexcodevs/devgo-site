@@ -1,23 +1,87 @@
-<!--page {"slug": "insights/time-para-ecommerce-vtex-shopify", "type": "article", "nav": "insights", "title": "Times para operar e evoluir um e-commerce em VTEX ou Shopify Plus · Insights Devgo", "description": "Os perfis de tecnologia que uma operação de e-commerce em VTEX ou Shopify Plus precisa para evoluir depois do lançamento.", "category": "Stacks e plataformas", "date": "2026-06-08", "readingTime": "4 min", "summary": "Front-end, integrações e sustentação. Os perfis que uma operação de e-commerce precisa depois que a loja entra no ar.", "image": "insights/time-para-ecommerce-vtex-shopify.jpg", "imageAlt": "Profissional apontando para o monitor de um colega"} -->
+<!--page {"slug": "insights/time-para-ecommerce-vtex-shopify", "type": "article", "nav": "insights", "title": "Times para operar e evoluir um e-commerce em VTEX ou Shopify Plus · Insights Devgo", "description": "Papéis, calendário de picos e dimensionamento por fase para operar e evoluir um e-commerce em VTEX ou Shopify Plus depois do lançamento.", "category": "Stacks e plataformas", "date": "2026-06-08", "readingTime": "6 min", "summary": "Os papéis para operar e evoluir uma loja em VTEX ou Shopify Plus, como o calendário de picos muda o time e como dimensionar por fase.", "image": "insights/time-para-ecommerce-vtex-shopify.jpg", "imageAlt": "Profissional apontando para o monitor de um colega", "imageFocus": "50% 40%"} -->
 <!-- render:article-head -->
 <section class="theme-light article-body">
   <div class="wrap article-layout">
     <div class="prose">
-      <p>O lançamento de uma loja é só o começo. Depois dele vêm campanhas, integrações novas, ajustes de desempenho e uma fila de melhorias que não para de crescer.</p>
+      <p>A loja entrou no ar. O projeto de implantação acabou, a agência ou o integrador saiu de cena e ficou uma fila de pedidos: o marketing quer uma landing page para a campanha da semana que vem, o financeiro achou divergência entre pedidos e notas, o comercial quer vender em um marketplace novo e o checkout ficou lento no último sábado.</p>
+      <p>É nesse momento que muita operação descobre que não tem um time, tem uma lista de fornecedores. Cada problema vira um chamado e cada melhoria vira um orçamento. Este artigo mostra os papéis que uma loja em VTEX ou Shopify Plus precisa para operar e evoluir, como o calendário de varejo muda o dimensionamento e como montar o time por fase.</p>
 
-      <h2>Front-end da loja</h2>
-      <p>Desenvolvedores que conhecem o framework da plataforma, como o VTEX IO ou os temas da Shopify, aceleram mudanças de layout e novas páginas sem quebrar a experiência.</p>
+      <h2>Os papéis de um time de e-commerce</h2>
+      <h3>Front-end da plataforma</h3>
+      <p>Na VTEX, isso significa conhecer o VTEX IO, os componentes da Store Framework e, quando o projeto pede algo sob medida, React e as apps customizadas. Na Shopify Plus, temas em Liquid, Online Store 2.0 e, em projetos headless, frameworks como o Hydrogen. É quem cria páginas de campanha, ajusta vitrines, melhora a performance de carregamento e evita que uma mudança de layout quebre o checkout.</p>
+      <h3>Back-end e integrações</h3>
+      <p>Uma loja raramente vive sozinha. Ela conversa com ERP, OMS, meios de pagamento, antifraude, cálculo de frete, transportadoras e marketplaces. O back-end de e-commerce cuida dessas integrações, trata filas e reprocessamentos e garante que estoque, preço e status do pedido estejam coerentes em todos os sistemas. Boa parte dos problemas que chegam ao SAC nasce aqui.</p>
+      <h3>QA</h3>
+      <p>Testar o fluxo de compra de ponta a ponta, com meios de pagamento, cupons, frete e regras de promoção, antes de cada deploy. Com automação dos fluxos críticos, a loja pode mudar toda semana sem medo de derrubar o checkout.</p>
+      <h3>DevOps e observabilidade</h3>
+      <p>Em plataformas SaaS, a infraestrutura da loja é da plataforma, mas as integrações, middlewares e apps próprios não. Alguém precisa cuidar do pipeline de deploy, dos ambientes, dos alertas e dos painéis que mostram, em tempo real, taxa de erro no checkout, tempo de resposta das integrações e pedidos travados.</p>
+      <h3>PO de e-commerce</h3>
+      <p>Quem organiza o backlog entre marketing, comercial, operações e atendimento. Um bom PO de e-commerce entende de conversão, promoção, logística e plataforma, e sabe dizer não para a quinta landing page da semana quando há um problema de estoque em aberto.</p>
+      <h3>UX e UI</h3>
+      <p>Desenho de jornadas, testes de usabilidade, ajustes de navegação, busca e página de produto. Em lojas maduras, pequenas melhorias de experiência costumam valer mais que grandes redesigns.</p>
 
-      <h2>Integrações</h2>
-      <p>ERP, meios de pagamento, logística e marketplaces. Um desenvolvedor back-end com experiência nessas integrações evita boa parte dos problemas de pedido e estoque.</p>
-
-      <h2>Sustentação e desempenho</h2>
+      <h2>O calendário manda no time</h2>
+      <p>O varejo tem datas que concentram volume e risco: Black Friday, Natal, Dia das Mães, Dia dos Namorados, Dia dos Pais, datas próprias do seu segmento e campanhas da marca. O time precisa ser planejado em torno delas, não descobrir que está pequeno na semana do pico.</p>
+      <h3>Antes do pico</h3>
       <ul>
-        <li>Monitoramento da loja em datas de pico.</li>
-        <li>Correção rápida de erros no checkout.</li>
-        <li>Otimização de velocidade, que afeta conversão.</li>
+        <li>Congelamento de mudanças estruturais com semanas de antecedência.</li>
+        <li>Teste de carga nas integrações próprias e revisão de limites com fornecedores.</li>
+        <li>Revisão de regras de promoção, cupons e frete em ambiente de homologação.</li>
+        <li>Plano de contingência: o que desligar se uma integração cair.</li>
       </ul>
-      <p>A Devgo nasceu próxima do varejo digital e aloca profissionais com experiência em VTEX, Shopify Plus, Adobe Commerce e Salesforce Commerce.</p>
+      <h3>Durante o pico</h3>
+      <ul>
+        <li>Escala de plantão combinada, com responsáveis por front, integrações e operação.</li>
+        <li>Painel único de acompanhamento, com alertas para checkout, pagamentos e pedidos travados.</li>
+        <li>Canal direto entre time técnico, marketing e atendimento.</li>
+      </ul>
+      <h3>Depois do pico</h3>
+      <ul>
+        <li>Revisão do que falhou e do que quase falhou.</li>
+        <li>Backlog de correções priorizado antes da próxima data.</li>
+      </ul>
+
+      <h2>Sustentação e evolução no mesmo time</h2>
+      <p>Toda operação de e-commerce tem duas filas: a de sustentação (bugs, incidentes, ajustes de promoção, erros de integração) e a de evolução (novas funcionalidades, novos canais, melhorias de conversão). Se as duas ficam com as mesmas pessoas sem regra, a sustentação sempre ganha e a loja para de evoluir.</p>
+      <p>Algumas formas de equilibrar:</p>
+      <ul>
+        <li>Reservar uma parte fixa da capacidade de cada sprint para sustentação.</li>
+        <li>Rodar um plantão semanal, em que uma pessoa fica com os chamados e o resto do time protege o foco.</li>
+        <li>Separar um profissional ou um pequeno núcleo só para sustentação quando o volume justifica.</li>
+      </ul>
+      <p>Seja qual for o formato, meça quanto tempo vai para cada fila. Esse número mostra quando é hora de crescer o time.</p>
+
+      <h2>Como dimensionar por fase</h2>
+      <h3>Loja recém-lançada</h3>
+      <p>Um núcleo enxuto: um dev front da plataforma, um dev back com experiência em integrações e um QA, com um PO dedicado organizando as demandas. Objetivo: estabilizar a operação e montar a base de testes e monitoramento.</p>
+      <h3>Operação em crescimento</h3>
+      <p>Novos canais, marketplaces e campanhas mais frequentes. Entram mais devs, um profissional de DevOps ou observabilidade e UX para trabalhar conversão. Nesse ponto, faz sentido pensar em um squad completo. Veja <a href="/insights/quando-montar-um-squad">quando montar um squad</a>.</p>
+      <h3>Operação madura ou multimarca</h3>
+      <p>Mais de uma loja, vários países ou uma arquitetura headless. Aqui aparece a necessidade de um arquiteto ou tech lead que cuide do todo e, muitas vezes, de squads separados por jornada ou por canal.</p>
+
+      <h2>Checklist para montar o briefing do time</h2>
+      <ul>
+        <li>Qual plataforma e versão: VTEX IO, VTEX legado, Shopify Plus com tema ou headless?</li>
+        <li>Quais integrações existem hoje: ERP, OMS, pagamentos, antifraude, frete, marketplaces?</li>
+        <li>Quais são as datas de pico dos próximos 12 meses?</li>
+        <li>Qual é a proporção atual entre sustentação e evolução?</li>
+        <li>Quem prioriza o backlog hoje?</li>
+        <li>Há testes automatizados e monitoramento do checkout?</li>
+      </ul>
+
+      <h2>Erros comuns</h2>
+      <ul>
+        <li><strong>Contratar só front-end.</strong> A maior parte dos problemas graves vem das integrações.</li>
+        <li><strong>Crescer o time na semana da Black Friday.</strong> Quem entra em cima do pico não tem contexto para ajudar.</li>
+        <li><strong>Não ter dono do backlog.</strong> Sem PO, o time atende quem grita mais alto.</li>
+        <li><strong>Pular QA para ganhar velocidade.</strong> Um erro no checkout custa mais do que o tempo economizado.</li>
+      </ul>
+
+      <h2>Como a Devgo monta times de e-commerce</h2>
+      <p>A Devgo nasceu próxima do varejo digital e aloca profissionais com experiência em VTEX, Shopify Plus, Adobe Commerce e Salesforce Commerce, sempre full-time e 100% dedicados ao time do cliente. Dá para alocar perfis específicos, montar um squad completo com devs, QA, design, PM e PO, ou trazer um arquiteto ou tech lead para organizar a operação.</p>
+      <p>O processo começa com um deep dive de 30 minutos sobre plataforma, integrações, cultura e urgência. Isso ajuda a planejar a entrada do time com antecedência em relação ao calendário de picos.</p>
+
+      <blockquote><p>Uma loja no ar precisa de um time que conheça a plataforma, as integrações e o calendário, não de uma fila de chamados.</p></blockquote>
     </div>
     <aside class="article-aside"><!-- include:article-cta --></aside>
   </div>

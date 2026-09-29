@@ -1,37 +1,81 @@
-<!--page {"slug": "insights/times-de-tecnologia-em-outros-fusos", "type": "article", "nav": "insights", "title": "Profissionais de tecnologia em outro país: fuso, idioma e contrato · Insights Devgo", "description": "O que avaliar ao montar times de tecnologia com profissionais da América Latina para empresas nos EUA e na Europa: horas em comum, idioma, contrato e rotina.", "category": "Times globais", "date": "2026-09-28", "readingTime": "5 min", "summary": "Horas em comum, idioma, contrato e rotina: o que avaliar antes de montar um time de tecnologia com profissionais de outro país.", "image": "insights/times-de-tecnologia-em-outros-fusos.jpg", "imageAlt": "Três profissionais reunidos em volta de um notebook à noite"} -->
+<!--page {"slug": "insights/times-de-tecnologia-em-outros-fusos", "type": "article", "nav": "insights", "title": "Profissionais de tecnologia em outro país: fuso, idioma e contrato · Insights Devgo", "description": "Critérios para montar um time de tecnologia em outro país: horas em comum, idioma, contrato, compliance, rotina, cultura e segurança, com checklist.", "category": "Times globais", "date": "2026-09-28", "readingTime": "7 min", "summary": "Horas em comum, idioma, contrato, rotina e segurança: os critérios e o checklist para decidir antes de montar um time de tecnologia em outro país.", "image": "insights/times-de-tecnologia-em-outros-fusos.jpg", "imageAlt": "Três profissionais reunidos em volta de um notebook à noite", "imageFocus": "48% 44%"} -->
 <!-- render:article-head -->
 <section class="theme-light article-body">
   <div class="wrap article-layout">
     <div class="prose">
-      <p>Empresas nos Estados Unidos e na Europa buscam cada vez mais profissionais de tecnologia na América Latina. A combinação de bons profissionais, fuso próximo e custo competitivo é atraente, mas o resultado depende de decisões que vão além do currículo.</p>
+      <p>Quando o roadmap aperta, a reação automática é abrir vagas. Só que a vaga aberta resolve um problema de longo prazo, e muitas vezes o problema é de agora: uma frente nova que precisa começar no próximo trimestre, um time que perdeu duas pessoas, um projeto que ficou sem ninguém decidindo arquitetura.</p>
+      <p>Escolher o modelo errado custa caro de um jeito silencioso. Você contrata CLT para uma demanda de oito meses e depois não sabe o que fazer com a posição. Ou soma três devs a um time sem liderança e descobre que a fila de decisões pendentes só cresceu. Este artigo organiza a decisão em cinco perguntas, mostra o que cada combinação de respostas indica e traz cenários em que vale usar mais de um modelo ao mesmo tempo.</p>
 
-      <h2>Fuso: conte as horas em comum, não a diferença</h2>
-      <p>O que importa é quantas horas do expediente dos dois lados se sobrepõem. Com poucas horas em comum, dailies, pareamento e decisões rápidas ficam difíceis, e o time passa a trabalhar em ciclos de um dia inteiro para cada pergunta.</p>
-      <p>A América Latina tem boa sobreposição com os EUA e parte do expediente em comum com a Europa. Vale definir, antes da busca, um intervalo mínimo de horas compartilhadas e colocá-lo como requisito do perfil.</p>
-
-      <h2>Idioma: avalie para a função, não em abstrato</h2>
-      <p>Um dev que lê documentação e escreve pull requests em inglês precisa de um nível diferente de alguém que conduz reuniões com stakeholders. Defina o que a função exige e avalie isso na entrevista, junto com a parte técnica. Na Devgo, o idioma (português, inglês ou espanhol) é avaliado nesse momento.</p>
-
-      <h2>Contrato: simplifique o que é possível</h2>
-      <p>Contratar diretamente em outro país envolve legislação trabalhista, impostos e pagamentos internacionais. Com um parceiro de alocação, você fala com uma empresa só, assina um contrato e recebe uma fatura, e o parceiro responde pelo profissional.</p>
-      <p>Antes de fechar, alinhe com o parceiro a moeda, a periodicidade de faturamento e como funciona a substituição se o profissional não se adaptar.</p>
-
-      <h2>Rotina: remoto exige mais combinados, não menos</h2>
+      <h2>Os quatro modelos, em uma frase cada</h2>
       <ul>
-        <li>Horários fixos de disponibilidade dentro das horas em comum.</li>
-        <li>Canais definidos para assuntos urgentes e para assuntos que podem esperar.</li>
-        <li>Documentação escrita das decisões, para quem está em outro fuso.</li>
-        <li>Rituais que incluem de fato quem está fora do escritório principal.</li>
+        <li><strong>Alocação de profissionais.</strong> Uma pessoa entra full-time no seu time, com a sua gestão, suas ferramentas e seus rituais. O parceiro cuida de seleção, contrato e continuidade.</li>
+        <li><strong>Squad as a Service.</strong> Um time completo, com devs, QA, design, PM e PO, que já entra com papéis definidos e rituais rodando desde a primeira sprint.</li>
+        <li><strong>Liderança sob demanda.</strong> Arquiteto, tech lead, PM ou PO 100% dedicado, dentro da operação. Não é consultoria de algumas horas por semana.</li>
+        <li><strong>Contratação direta, com ou sem hunting.</strong> A pessoa vai para a sua folha. Faz sentido quando a função é permanente e o conhecimento precisa ficar em casa.</li>
+      </ul>
+      <p>Os três primeiros têm algo em comum: a pessoa trabalha para o seu time, não para um escopo do fornecedor. Se o que você procura é entregar um projeto fechado a terceiros, a conversa é outra, e vale ler <a href="/insights/alocacao-ou-outsourcing">a diferença entre alocação e outsourcing</a>.</p>
+
+      <h2>As cinco perguntas que decidem</h2>
+      <h3>1. Qual o horizonte da necessidade?</h3>
+      <p>Separe o que é estrutural do que é conjuntural. Uma função que vai existir enquanto o produto existir, como o dono técnico do core, pede contratação direta. Uma demanda ligada a um projeto, a um pico de entregas ou a uma frente que ainda precisa provar valor pede capacidade sem estrutura permanente.</p>
+      <p>Um teste simples: se daqui a um ano e meio essa frente tiver sido cancelada, o que acontece com a posição? Se a resposta for “teríamos um problema”, provavelmente não é caso de folha própria.</p>
+
+      <h3>2. Quem decide as coisas técnicas hoje?</h3>
+      <p>Profissional alocado rende quando entra num time com direção: alguém que prioriza o backlog, revisa código e decide padrões. Sem essa camada, cada pessoa nova aumenta a fila de decisões pendentes. Se ninguém cumpre esse papel, a primeira contratação é de liderança, não de execução.</p>
+
+      <h3>3. Você precisa de uma pessoa ou de um time?</h3>
+      <p>Somar um dev back-end a um time que já roda é um problema de encaixe. Colocar de pé uma frente inteira é um problema de formação de time: papéis, rituais, acordos de trabalho. Montar isso pessoa por pessoa leva meses. Quando a frente é nova, o squad encurta o caminho.</p>
+
+      <h3>4. Qual a urgência real?</h3>
+      <p>Seja honesto sobre a data. Um processo de contratação direta envolve abertura de vaga, triagem, entrevistas, proposta e aviso prévio do candidato no emprego atual. Se a primeira entrega precisa sair antes disso tudo acontecer, a contratação direta sozinha não resolve, mesmo que seja o destino final da posição.</p>
+
+      <h3>5. Onde o conhecimento precisa morar?</h3>
+      <p>Em alocação, o profissional trabalha dentro do seu time, então o conhecimento circula nas suas ferramentas, no seu código e na sua documentação. Mas algumas funções concentram decisões que você não quer que dependam de nenhum contrato, como o arquiteto do produto principal ou o líder de dados. Para essas, folha própria.</p>
+
+      <h2>A matriz de decisão</h2>
+      <p>Cruze as respostas. Não é uma fórmula, mas cobre a maioria dos casos.</p>
+      <ul>
+        <li><strong>Tem liderança, precisa de capacidade, horizonte de projeto ou incerto:</strong> alocação de profissionais.</li>
+        <li><strong>Frente nova, sem time por trás, prazo curto:</strong> Squad as a Service.</li>
+        <li><strong>O time existe, mas ninguém decide arquitetura ou prioridade:</strong> liderança sob demanda antes de qualquer reforço de execução.</li>
+        <li><strong>Função permanente, conhecimento crítico, prazo que comporta o processo:</strong> contratação direta, com hunting se o perfil for difícil.</li>
+        <li><strong>Função permanente com urgência alta:</strong> alocação agora e hunting em paralelo para a posição definitiva.</li>
+        <li><strong>Frente nova e estratégica no longo prazo:</strong> squad para começar e hunting para as posições de liderança que vão ficar em casa.</li>
       </ul>
 
-      <h2>Perguntas para fazer ao parceiro</h2>
+      <h2>Cenários combinados</h2>
+      <p>Na prática, empresas médias e grandes raramente usam um modelo só. Três exemplos hipotéticos:</p>
+      <h3>O e-commerce que vai lançar um app</h3>
+      <p>Imagine um varejista digital com um time web estável e a decisão de lançar um app em seis meses. O time web recebe reforço pontual via alocação para não perder ritmo. O app nasce com um squad mobile completo. E o head de mobile, que vai cuidar do app depois do lançamento, é buscado via hunting enquanto o squad roda.</p>
+      <h3>A empresa que cresceu sem arquitetura</h3>
+      <p>Imagine uma empresa de software que dobrou o time de engenharia em um ano e hoje cada squad decide padrões por conta própria. Mais devs só agravam o problema. O primeiro movimento é um arquiteto dedicado via liderança sob demanda, que organiza os padrões e define o que vem antes. Só depois entra reforço de execução.</p>
+      <h3>O projeto de ERP com data para acabar</h3>
+      <p>Uma migração de ERP tem fases, e cada fase pede perfis diferentes. Contratar tudo na folha deixaria gente ociosa depois do go-live. Alocação por fase resolve, e a empresa contrata direto só quem vai sustentar o sistema no dia a dia. Tem mais sobre isso em <a href="/insights/perfis-para-projeto-sap-s4hana">perfis para projeto SAP S/4HANA</a>.</p>
+
+      <h2>Armadilhas comuns</h2>
       <ul>
-        <li>Como vocês avaliam idioma e fit cultural?</li>
-        <li>Quantas horas em comum os candidatos terão com o nosso time?</li>
-        <li>Quem responde pelo contrato e pelo acompanhamento do profissional?</li>
-        <li>O que acontece se o profissional não se adaptar?</li>
+        <li><strong>Decidir pelo hábito.</strong> “Aqui sempre contratamos CLT” não é critério. Cada posição tem seu horizonte.</li>
+        <li><strong>Comparar o valor da nota com o salário.</strong> O custo de uma contratação direta inclui encargos, benefícios, tempo de vaga aberta e horas do time em entrevistas.</li>
+        <li><strong>Reforçar execução quando falta direção.</strong> Mais gente num time sem liderança gera mais retrabalho, não mais entrega.</li>
+        <li><strong>Tratar squad como pessoas alocadas na mesma data.</strong> Squad é time com papéis e rituais. Cinco pessoas começando juntas, sem isso, é só alocação em lote.</li>
+        <li><strong>Esquecer a saída.</strong> Antes de começar, defina o que acontece quando a frente terminar: o time é reduzido, a posição vira efetiva, o conhecimento vai para quem?</li>
       </ul>
-      <p>A Devgo aloca profissionais para empresas no Brasil e no exterior e monta times para operações em outros países. Se esse é o seu cenário, a conversa inicial é o melhor lugar para começar.</p>
+
+      <h2>Checklist antes de decidir</h2>
+      <ol>
+        <li>Escrevi em uma frase o problema que essa contratação resolve?</li>
+        <li>Sei se a necessidade é estrutural ou de projeto?</li>
+        <li>Tenho alguém que vai liderar tecnicamente quem entrar?</li>
+        <li>Sei a data real em que preciso de gente entregando?</li>
+        <li>Sei quais funções precisam ficar na folha e quais não?</li>
+        <li>Defini o que acontece com essa capacidade quando a frente terminar?</li>
+      </ol>
+
+      <h2>Como a Devgo entra nessa conversa</h2>
+      <p>A Devgo trabalha com os quatro modelos, e isso muda o tipo de conversa. O deep dive inicial de 30 minutos serve para entender stack, cultura, senioridade e urgência antes de falar em perfil. Às vezes a resposta é um squad, às vezes é um arquiteto, às vezes é hunting para contratação efetiva na sua folha. Em alocação, o profissional é sempre full-time e 100% dedicado ao seu time.</p>
+      <p>Com mais de 321 profissionais alocados, um aprendizado se repete: boa parte dos problemas de uma alocação nasce na escolha do modelo, não do profissional. Por isso vale gastar meia hora nela antes de abrir qualquer vaga.</p>
+
+      <blockquote><p>Se a pergunta é “quem faz isso nos próximos meses?”, pense em alocação ou squad. Se é “quem cuida disso nos próximos anos?”, pense em contratação direta.</p></blockquote>
     </div>
     <aside class="article-aside"><!-- include:article-cta --></aside>
   </div>

@@ -1,43 +1,91 @@
-<!--page {"slug": "insights/onboarding-de-profissional-alocado", "type": "article", "nav": "insights", "title": "Os primeiros 30 dias de um profissional alocado · Insights Devgo", "description": "Um roteiro de onboarding para profissionais de tecnologia alocados: o que preparar antes do primeiro dia e o que acompanhar em cada semana do primeiro mês.", "category": "Gestão de times", "date": "2026-09-28", "readingTime": "6 min", "summary": "Um roteiro semana a semana para o primeiro mês de um profissional alocado, do acesso liberado no primeiro dia à conversa de 30 dias.", "image": "insights/onboarding-de-profissional-alocado.jpg", "imageAlt": "Profissionais sorrindo durante o trabalho em equipe"} -->
+<!--page {"slug": "insights/onboarding-de-profissional-alocado", "type": "article", "nav": "insights", "title": "Os primeiros 30 dias de um profissional alocado · Insights Devgo", "description": "Onboarding de profissional alocado: checklist antes do primeiro dia, roteiro semana a semana, sinais de alerta e perguntas da conversa de 30 dias.", "category": "Gestão de times", "date": "2026-09-28", "readingTime": "6 min", "summary": "Checklist pré-início, roteiro semana a semana e as perguntas da conversa de 30 dias para que o profissional alocado entregue no ritmo do time mais cedo.", "image": "insights/onboarding-de-profissional-alocado.jpg", "imageAlt": "Profissionais sorrindo durante o trabalho em equipe", "imageFocus": "51% 30%"} -->
 <!-- render:article-head -->
 <section class="theme-light article-body">
   <div class="wrap article-layout">
     <div class="prose">
-      <p>A maior parte dos problemas de uma alocação aparece no primeiro mês, e quase nenhum deles é técnico. É o acesso que demora uma semana, a tarefa que ninguém definiu, o profissional que não sabe a quem perguntar. Na Devgo, mais de 95% dos profissionais seguem alocados, e um bom onboarding é parte importante desse resultado.</p>
-      <p>Este roteiro funciona para um profissional ou para um squad inteiro.</p>
+      <p>A maior parte dos problemas de uma alocação aparece no primeiro mês, e quase nenhum deles é técnico. É o acesso ao repositório que leva uma semana. É a tarefa que ninguém definiu. É o profissional que não sabe a quem perguntar e passa dois dias tentando resolver sozinho algo que um colega explicaria em dez minutos.</p>
+      <p>O custo disso é alto e silencioso. Você paga um profissional sênior para ler documentação desatualizada, e ele forma uma primeira impressão ruim do time. O time, por sua vez, forma uma impressão ruim dele. Um onboarding bem feito não é gentileza: é o que decide quanto tempo leva até o profissional entregar no ritmo que você contratou. O roteiro abaixo serve para uma pessoa ou para um squad inteiro.</p>
 
-      <h2>Antes do primeiro dia</h2>
+      <h2>Antes do primeiro dia: o checklist que evita a semana perdida</h2>
+      <p>Quase tudo o que atrasa o início pode ser resolvido antes dele. Use esta lista com pelo menos uma semana de antecedência e defina um dono para cada item.</p>
+      <h3>Acessos</h3>
       <ul>
-        <li>Acessos liberados: e-mail, repositórios, ferramentas de gestão, VPN e ambientes.</li>
-        <li>Uma pessoa de referência no time para dúvidas do dia a dia.</li>
-        <li>Documentação mínima: como rodar o projeto, padrões de código e fluxo de deploy.</li>
-        <li>A primeira tarefa já escolhida, pequena e real.</li>
+      <li>E-mail corporativo, chat do time e calendário com os rituais já agendados.</li>
+      <li>Repositórios, com a permissão certa (leitura não basta para quem vai abrir pull request).</li>
+      <li>Ferramenta de gestão de tarefas e o board do time.</li>
+      <li>VPN, ambientes de desenvolvimento e homologação, ferramentas de observabilidade.</li>
+      <li>Licenças de software que o time usa, inclusive as que parecem óbvias.</li>
       </ul>
-
-      <h2>Semana 1: entrar no ritmo do time</h2>
-      <p>O objetivo da primeira semana é o profissional participar dos rituais, conhecer as pessoas com quem vai trabalhar e ter o ambiente rodando. Um primeiro pull request pequeno, ainda na primeira semana, vale mais que dias lendo documentação: mostra o fluxo completo, da tarefa ao deploy.</p>
-
-      <h2>Semanas 2 e 3: aumentar a complexidade</h2>
-      <p>As tarefas crescem aos poucos. Pareamento com quem conhece o sistema acelera muito essa fase. Reserve 15 minutos por semana para um feedback direto: o que está funcionando, o que está travando e o que falta de contexto.</p>
-
-      <h2>Semana 4: a conversa de 30 dias</h2>
-      <p>Três perguntas bastam, feitas para os dois lados:</p>
+      <h3>Ambiente e documentação</h3>
       <ul>
-        <li>As entregas do mês estão no nível esperado?</li>
-        <li>Existe algum bloqueio de acesso, contexto ou processo?</li>
-        <li>O que precisa mudar para o próximo mês?</li>
+      <li>Um guia de como rodar o projeto localmente, testado por alguém recentemente.</li>
+      <li>Padrões de código, fluxo de branches, revisão e deploy.</li>
+      <li>Um mapa simples da arquitetura: quais sistemas existem e como conversam.</li>
+      <li>Glossário do negócio. Em varejo digital, por exemplo, “pedido”, “SKU” e “sellers” podem ter significados específicos na sua operação.</li>
       </ul>
-      <p>Na alocação com a Devgo, um agente acompanha esse período junto com você e com o profissional, do onboarding ao dia a dia.</p>
+      <h3>Pessoas</h3>
+      <ul>
+      <li>Um buddy: alguém do time, com tempo reservado na agenda, para as dúvidas do dia a dia.</li>
+      <li>O gestor direto, que define prioridade e dá feedback sobre o trabalho.</li>
+      <li>Uma lista das pessoas-chave fora do time (produto, infraestrutura, negócio) com quem ele vai falar.</li>
+      </ul>
+      <h3>Primeira tarefa</h3>
+      <p>Escolha antes. Ela deve ser pequena, real e passar pelo fluxo completo: código, revisão, testes e deploy. Um ajuste de validação, um bug de baixo risco, uma melhoria de log. O objetivo não é a entrega em si, é descobrir onde o fluxo trava.</p>
+
+      <h2>Roteiro semana a semana do primeiro mês</h2>
+      <h3>Semana 1: ambiente rodando e primeiro pull request</h3>
+      <p>O profissional participa de todos os rituais desde o primeiro dia, mesmo sem ter muito a dizer. Conhece as pessoas com quem vai trabalhar em conversas curtas. Termina a semana com o ambiente rodando e, idealmente, com a primeira tarefa em revisão ou já em produção. Um primeiro pull request ainda na semana 1 vale mais do que cinco dias de leitura.</p>
+      <h3>Semana 2: contexto de negócio</h3>
+      <p>As tarefas crescem um pouco. É a hora de explicar o porquê: qual problema o produto resolve, quem são os usuários, quais indicadores o time acompanha. Uma sessão de pareamento com quem conhece o sistema acelera muito. Faça o primeiro check-in de 15 minutos: o que está funcionando, o que está travando, o que falta de contexto.</p>
+      <h3>Semana 3: autonomia com rede de proteção</h3>
+      <p>O profissional já pega tarefas médias sem precisar de alguém ao lado o tempo todo. Ele começa a opinar no refinamento e a revisar código de colegas. O buddy continua disponível, mas passa a ser procurado menos vezes. Segundo check-in de 15 minutos.</p>
+      <h3>Semana 4: ritmo do time e conversa de 30 dias</h3>
+      <p>A expectativa é que ele esteja entregando perto do ritmo do time, com a ressalva natural de sistemas grandes ou legados, que levam mais tempo. No fim da semana, faça a conversa de 30 dias.</p>
+
+      <h2>A conversa de 30 dias: perguntas para fazer</h2>
+      <p>Reserve 30 a 45 minutos. Faça as perguntas para os dois lados: para o profissional e para quem trabalha com ele no dia a dia. Anote as respostas, porque elas viram a base do acompanhamento dos próximos meses.</p>
+      <h3>Para o profissional</h3>
+      <ol>
+      <li>O que você entende hoje sobre o objetivo do time neste trimestre?</li>
+      <li>Qual parte do sistema você ainda sente que não domina?</li>
+      <li>Existe algum acesso, ferramenta ou informação que ainda falta?</li>
+      <li>Com quem você tem mais dificuldade de conseguir resposta?</li>
+      <li>O que você mudaria no processo do time, se pudesse?</li>
+      </ol>
+      <h3>Para o gestor e o time</h3>
+      <ol>
+      <li>As entregas do mês estão no nível de senioridade esperado?</li>
+      <li>A comunicação está clara? Ele sinaliza bloqueios cedo?</li>
+      <li>As revisões de código dele e para ele estão fluindo?</li>
+      <li>O que precisa acontecer no próximo mês para ele ganhar mais autonomia?</li>
+      </ol>
+      <p>Feche com dois ou três combinados concretos para o mês seguinte. Se a senioridade entregue estiver abaixo da contratada, vale revisitar o perfil descrito no começo. O artigo sobre <a href="/insights/como-definir-a-senioridade">como definir a senioridade</a> ajuda a separar expectativa de realidade.</p>
 
       <h2>Sinais de alerta no primeiro mês</h2>
       <ul>
-        <li>Acessos ainda pendentes depois da primeira semana.</li>
-        <li>Tarefas sem critério de pronto, que voltam várias vezes.</li>
-        <li>O profissional fora dos rituais ou das conversas técnicas do time.</li>
+      <li>Acessos ainda pendentes depois da primeira semana.</li>
+      <li>Nenhum código em produção ao fim da segunda semana.</li>
+      <li>Tarefas que voltam da revisão várias vezes, sem critério de pronto claro.</li>
+      <li>O profissional fica em silêncio nos rituais ou não aparece nas discussões técnicas.</li>
+      <li>Dúvidas chegam sempre por um único canal, e sempre para a mesma pessoa.</li>
+      <li>O buddy não tem tempo para ele e ninguém percebeu.</li>
       </ul>
-      <p>Quando esses sinais aparecem, vale agir cedo: quase sempre o problema é de contexto, e não de competência. Se mesmo assim não houver aderência, a substituição na Devgo é garantida e acontece em até 40 dias. Prevenir continua sendo o caminho mais barato.</p>
+      <p>Quando algum desses sinais aparece, aja cedo. Quase sempre o problema é de contexto, e não de competência. Uma conversa franca na semana 2 resolve o que viraria uma troca no mês 3.</p>
 
-      <blockquote><p>Um profissional alocado não é um fornecedor externo. Quanto mais ele participar como parte do time, mais rápido ele entrega.</p></blockquote>
+      <h2>Erros comuns no onboarding de alocados</h2>
+      <ul>
+      <li><strong>Tratar como fornecedor.</strong> Deixar o alocado fora de canais, rituais ou decisões técnicas. Ele vai entregar exatamente o que foi pedido, sem questionar o que não fazia sentido.</li>
+      <li><strong>Semana de leitura.</strong> Mandar ler toda a documentação antes de tocar no código. Pouca coisa fica, e o ânimo cai.</li>
+      <li><strong>Buddy sem agenda.</strong> Indicar alguém que já está sobrecarregado. O buddy precisa de tempo reservado, não só de boa vontade.</li>
+      <li><strong>Nenhum check-in.</strong> Esperar o fim do mês para perguntar como está. Aí o problema já tem quatro semanas.</li>
+      <li><strong>Expectativa não dita.</strong> O gestor sabe o que espera no dia 30, mas nunca falou. O profissional não tem como acertar um alvo que não vê.</li>
+      </ul>
+
+      <h2>Como a Devgo participa desse período</h2>
+      <p>Na alocação com a Devgo, o onboarding não fica só com você. Um agente Devgo acompanha o profissional e o gestor no dia a dia desde o início: confere se acessos e primeira tarefa estão prontos, faz os check-ins com os dois lados e sinaliza cedo quando algo trava. Em Squad as a Service, os rituais começam na primeira sprint, e o onboarding do time inteiro segue o mesmo roteiro.</p>
+      <p>É parte do motivo pelo qual mais de 95% dos profissionais seguem alocados. Quando, mesmo com contexto, a aderência não vem, a substituição é garantida e acontece em até 40 dias. Mas prevenir no primeiro mês continua sendo o caminho mais barato para todos.</p>
+
+      <blockquote><p>O primeiro mês define quanto tempo leva até o profissional entregar no ritmo que você contratou. Prepare antes, acompanhe toda semana e converse no dia 30.</p></blockquote>
     </div>
     <aside class="article-aside"><!-- include:article-cta --></aside>
   </div>

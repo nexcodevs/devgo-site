@@ -1,20 +1,96 @@
-<!--page {"slug": "insights/quando-montar-um-squad", "type": "article", "nav": "insights", "title": "Quando vale montar um squad completo em vez de alocar pessoas avulsas · Insights Devgo", "description": "Quando faz sentido alocar um squad de tecnologia completo em vez de profissionais individuais: novas frentes, prazos curtos e times sem liderança técnica.", "category": "Modelos de contratação", "date": "2026-09-07", "readingTime": "4 min", "summary": "Três situações em que um squad montado de uma vez entrega mais rápido do que somar profissionais um a um ao time.", "image": "insights/quando-montar-um-squad.jpg", "imageAlt": "Time trabalhando junto em uma mesa compartilhada"} -->
+<!--page {"slug": "insights/quando-montar-um-squad", "type": "article", "nav": "insights", "title": "Quando vale montar um squad completo em vez de alocar pessoas avulsas · Insights Devgo", "description": "Quando montar um squad de tecnologia completo: composição por tipo de frente, papéis, primeiros 90 dias e como medir o resultado.", "category": "Modelos de contratação", "date": "2026-09-07", "readingTime": "6 min", "summary": "Quando um squad completo faz mais sentido que profissionais avulsos, como compor o time por tipo de frente e o que esperar dos primeiros 90 dias.", "image": "insights/quando-montar-um-squad.jpg", "imageAlt": "Time trabalhando junto em uma mesa compartilhada", "imageFocus": "75% 26%"} -->
 <!-- render:article-head -->
 <section class="theme-light article-body">
   <div class="wrap article-layout">
     <div class="prose">
-      <p>Alocar profissionais um a um funciona bem para reforçar um time que já existe. Quando não existe time, ou quando a frente é nova, somar pessoas avulsas costuma levar mais tempo para virar entrega.</p>
+      <p>Alocar profissionais um a um funciona bem para reforçar um time que já existe e já tem ritmo. O problema aparece quando não existe time: uma frente nova, um produto que ainda não saiu do papel, uma migração que ninguém da casa tem braço para tocar. Somar pessoas avulsas nesse cenário cria um efeito escada. Cada profissional chega quando o anterior ainda está entrando no ritmo, e meses depois você tem cinco pessoas que nunca funcionaram como time.</p>
+      <p>Um squad resolve outro problema. Não é “cinco pessoas começando na mesma data”. É um time com papéis definidos, rituais rodando e alguém respondendo pelo ritmo desde a primeira sprint. Este artigo ajuda a decidir quando isso faz sentido, como compor o time para cada tipo de frente e como medir se está funcionando.</p>
 
-      <h2>Uma frente nova, sem time por trás</h2>
-      <p>Um novo produto, um app, uma migração de plataforma. Um squad com liderança técnica, desenvolvimento e qualidade começa com papéis definidos e já sabe trabalhar junto.</p>
+      <h2>Quando um squad faz sentido</h2>
+      <h3>Uma frente nova, sem time por trás</h3>
+      <p>Um app, um novo produto digital, a reconstrução de um checkout, uma migração de plataforma. Se não existe um time para absorver as pessoas, alguém precisa formar esse time. O squad chega formado.</p>
+      <h3>Prazo curto para a primeira entrega</h3>
+      <p>Quando a primeira versão precisa ir para produção em poucos meses, não há tempo para montar o time em sequência. Todos os papéis precisam estar presentes desde o início.</p>
+      <h3>Falta de liderança para essa frente</h3>
+      <p>Se ninguém na casa vai decidir arquitetura ou priorizar o backlog dessa frente, o squad traz essa camada, com tech lead, PM ou PO 100% dedicados.</p>
+      <h3>Você quer proteger o time atual</h3>
+      <p>Tirar gente do produto que já roda para começar algo novo costuma deixar os dois pela metade. Um squad dedicado mantém o time atual focado.</p>
 
-      <h2>Prazo curto para a primeira entrega</h2>
-      <p>Montar o time de uma vez evita o efeito escada, em que cada novo profissional chega quando o anterior ainda está entrando no ritmo.</p>
+      <h2>Quando não faz sentido</h2>
+      <ul>
+        <li>O time já existe, tem liderança e precisa de uma ou duas pessoas a mais. Alocação individual resolve.</li>
+        <li>O escopo é pequeno demais para justificar todos os papéis. Um squad de cinco para um trabalho de dois vira ociosidade.</li>
+        <li>Ninguém da casa vai ser dono do resultado. O squad pode ter PO, mas a direção de negócio precisa vir de você.</li>
+      </ul>
+      <p>Se ainda estiver em dúvida entre os modelos, veja <a href="/insights/como-escolher-o-modelo-de-contratacao">como escolher o modelo de contratação</a>.</p>
 
-      <h2>Falta de liderança técnica dentro de casa</h2>
-      <p>Se ninguém no time decide arquitetura e padrões, o squad traz essa camada junto, com um tech lead ou arquiteto 100% dedicado.</p>
+      <h2>Composição típica por tipo de frente</h2>
+      <p>Não existe squad padrão. A composição segue o problema. Alguns pontos de partida:</p>
+      <ul>
+        <li><strong>Produto digital web.</strong> PM ou PO, tech lead, dois ou três devs front e back ou full-stack, QA, UX/UI.</li>
+        <li><strong>App mobile.</strong> PO, tech lead mobile, devs iOS e Android ou cross-platform (Flutter, React Native), back-end para as APIs, QA com automação mobile, UX/UI.</li>
+        <li><strong>E-commerce.</strong> PO com visão de varejo, tech lead da plataforma (VTEX, Shopify Plus, Adobe Commerce), devs de front e de integração com ERP, OMS e meios de pagamento, QA.</li>
+        <li><strong>Dados.</strong> PO ou líder de analytics, engenheiro de dados, analista ou cientista de dados, especialista em BI. DevOps dedicado se a plataforma ainda não existe.</li>
+        <li><strong>Modernização de sistema.</strong> Arquiteto, tech lead, devs com experiência no legado e na stack de destino, QA com foco em regressão, DevOps.</li>
+      </ul>
+      <p>Squads grandes demais perdem a vantagem de comunicação que justifica o formato. Se a composição passou de oito ou nove pessoas, provavelmente são dois squads.</p>
 
-      <blockquote><p>Um squad não é um grupo de pessoas alocadas ao mesmo tempo. É um time com papéis, rituais e uma liderança que responde pelo ritmo.</p></blockquote>
+      <h2>Os papéis e o que cada um responde</h2>
+      <ul>
+        <li><strong>PO ou PM:</strong> o que entra no backlog e em que ordem. É a ponte com o negócio.</li>
+        <li><strong>Tech lead:</strong> padrões, revisão de código, decisões técnicas do dia a dia, destravar o time.</li>
+        <li><strong>Arquiteto</strong>, quando a frente pede: desenho da solução, integrações, decisões difíceis de reverter.</li>
+        <li><strong>Devs:</strong> construção, testes unitários, participação nas decisões técnicas.</li>
+        <li><strong>QA:</strong> estratégia de testes, automação, critério de pronto.</li>
+        <li><strong>UX/UI:</strong> descoberta, fluxos, interface, validação com usuários.</li>
+      </ul>
+      <p>Do seu lado, um papel não pode faltar: um sponsor de negócio com poder de decisão. Sem ele, o squad trabalha rápido na direção errada.</p>
+
+      <h2>Os primeiros 90 dias</h2>
+      <h3>Dias 1 a 30: fundação</h3>
+      <ul>
+        <li>Acessos, ambientes e ferramentas liberados antes do primeiro dia.</li>
+        <li>Kickoff com o sponsor: objetivo de negócio, restrições e o que conta como sucesso.</li>
+        <li>Rituais definidos e rodando: daily, planning, review, retro.</li>
+        <li>Um primeiro incremento pequeno em homologação ou produção, para validar pipeline e acordos.</li>
+      </ul>
+      <h3>Dias 31 a 60: ritmo</h3>
+      <ul>
+        <li>Backlog priorizado para as próximas sprints.</li>
+        <li>Principais decisões de arquitetura registradas.</li>
+        <li>Primeira leitura de previsibilidade.</li>
+        <li>Ajuste de composição, se algum papel estiver sobrando ou faltando.</li>
+      </ul>
+      <h3>Dias 61 a 90: entrega</h3>
+      <ul>
+        <li>Primeira entrega com valor para o usuário ou para o negócio.</li>
+        <li>Revisão com o sponsor: o squad está resolvendo o problema certo?</li>
+        <li>Decisão sobre o próximo trimestre: manter, crescer, reduzir ou transferir para um time interno.</li>
+      </ul>
+
+      <h2>Como medir se está funcionando</h2>
+      <p>Escolha poucos indicadores e acompanhe a tendência, não o número isolado.</p>
+      <ul>
+        <li><strong>Previsibilidade:</strong> o que foi planejado na sprint foi entregue?</li>
+        <li><strong>Lead time:</strong> quanto tempo uma demanda leva de priorizada a em produção.</li>
+        <li><strong>Frequência de deploy e taxa de falha</strong> em produção.</li>
+        <li><strong>Resultado de negócio:</strong> a métrica que justificou a frente, seja conversão, adoção ou redução de custo.</li>
+        <li><strong>Saúde do time:</strong> o que aparece nas retros e se os mesmos bloqueios se repetem.</li>
+      </ul>
+
+      <h2>Armadilhas comuns</h2>
+      <ul>
+        <li><strong>Squad sem dono de negócio.</strong> O time entrega, mas ninguém decide o que importa.</li>
+        <li><strong>Squad sobreposto a um time interno com o mesmo escopo.</strong> Gera disputa por prioridade e retrabalho.</li>
+        <li><strong>Medir só esforço.</strong> Horas e story points não dizem se o problema foi resolvido.</li>
+        <li><strong>Não planejar a transição.</strong> Se o produto vai ficar com um time interno, a transferência de conhecimento começa cedo, não no último mês.</li>
+      </ul>
+
+      <h2>Como a Devgo monta squads</h2>
+      <p>No Squad as a Service da Devgo, o time entra completo, com devs, QA, design, PM e PO, e com rituais rodando desde a primeira sprint. Todos são full-time e 100% dedicados à sua frente, e a cobrança é mensal pela capacidade do time. O desenho parte do mesmo deep dive de 30 minutos que usamos em qualquer alocação: stack, cultura, senioridade e urgência.</p>
+      <p>Um agente Devgo acompanha o squad no dia a dia e, se algum papel precisar ser trocado, a substituição é garantida em até 40 dias.</p>
+
+      <blockquote><p>Um squad não é um grupo de pessoas alocadas ao mesmo tempo. É um time com papéis, rituais e alguém respondendo pelo ritmo.</p></blockquote>
     </div>
     <aside class="article-aside"><!-- include:article-cta --></aside>
   </div>

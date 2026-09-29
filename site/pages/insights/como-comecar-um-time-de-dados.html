@@ -1,23 +1,80 @@
-<!--page {"slug": "insights/como-comecar-um-time-de-dados", "type": "article", "nav": "insights", "title": "Engenharia de dados, analytics e IA: por onde começar o time de dados · Insights Devgo", "description": "Como montar um time de dados na ordem certa: engenharia de dados, analytics e depois ciência de dados e IA.", "category": "Stacks e plataformas", "date": "2026-06-15", "readingTime": "5 min", "summary": "Sem dados organizados não existe dashboard confiável nem projeto de IA. A ordem que evita contratar cientistas de dados cedo demais.", "image": "insights/como-comecar-um-time-de-dados.jpg", "imageAlt": "Profissional trabalhando no notebook em um ambiente escuro"} -->
+<!--page {"slug": "insights/como-comecar-um-time-de-dados", "type": "article", "nav": "insights", "title": "Engenharia de dados, analytics e IA: por onde começar o time de dados · Insights Devgo", "description": "Como montar um time de dados: engenharia, analytics e depois IA. Papéis, stack com Databricks, Snowflake e Power BI, e o plano dos primeiros 90 dias.", "category": "Stacks e plataformas", "date": "2026-06-15", "readingTime": "6 min", "summary": "A ordem certa para montar o time de dados, os papéis, uma stack típica, as perguntas antes de contratar e o que esperar dos primeiros 90 dias.", "image": "insights/como-comecar-um-time-de-dados.jpg", "imageAlt": "Profissional trabalhando no notebook em um ambiente escuro", "imageFocus": "41% 39%"} -->
 <!-- render:article-head -->
 <section class="theme-light article-body">
   <div class="wrap article-layout">
     <div class="prose">
-      <p>Muitas empresas começam o time de dados contratando um cientista de dados. Em poucas semanas, ele está gastando a maior parte do tempo limpando e juntando dados, que é trabalho de engenharia.</p>
+      <p>Muitas empresas começam o time de dados contratando um cientista de dados. A expectativa é ter modelos preditivos e IA em poucos meses. Em poucas semanas, ele está gastando a maior parte do tempo limpando planilhas, juntando extrações de sistemas diferentes e descobrindo que o mesmo indicador tem três definições. Isso é trabalho de engenharia de dados, feito pela pessoa errada e na ordem errada.</p>
+      <p>O resultado é frustração dos dois lados. O negócio não vê o retorno prometido, e o profissional sai em busca de um lugar onde possa fazer o que sabe. Montar um time de dados que funciona começa por entender a ordem das camadas e contratar para o problema que você tem hoje, não para o que vai ter daqui a dois anos.</p>
 
-      <h2>Primeiro, engenharia de dados</h2>
-      <p>Pipelines que levam os dados dos sistemas para um lugar central, como Databricks ou Snowflake, com qualidade e atualização confiáveis. É a base de tudo o que vem depois.</p>
+      <h2>Antes de contratar: as perguntas de negócio</h2>
+      <p>Time de dados sem pergunta de negócio vira fábrica de dashboards que ninguém abre. Antes de abrir a primeira vaga, responda:</p>
+      <ol>
+      <li>Quais três decisões a empresa toma hoje sem dados confiáveis, e que gostaria de tomar com eles?</li>
+      <li>Quais sistemas guardam os dados que respondem essas perguntas? ERP, CRM, e-commerce, planilhas?</li>
+      <li>Quem vai usar os resultados no dia a dia? Diretoria, operação, marketing?</li>
+      <li>Existe hoje alguma fonte única de verdade, ou cada área tem o seu número?</li>
+      <li>Há dados sensíveis ou regulados que exigem cuidado desde o início?</li>
+      <li>Qual é o horizonte: um painel de vendas confiável em três meses, ou um motor de recomendação no próximo ano?</li>
+      </ol>
+      <p>As respostas definem quem contratar primeiro. Um e-commerce que ainda fecha o mês em planilha não precisa de um cientista de dados. Precisa de alguém que leve os dados da plataforma e do ERP para um lugar central.</p>
 
-      <h2>Depois, analytics</h2>
-      <p>Com dados confiáveis, analistas e ferramentas como Power BI transformam a informação em indicadores que o negócio usa para decidir.</p>
-
-      <h2>Então, ciência de dados e IA</h2>
-      <p>Modelos preditivos e IA generativa rendem mais quando têm dados organizados e perguntas de negócio claras.</p>
+      <h2>A ordem de montagem: engenharia, analytics, ciência e IA</h2>
+      <h3>1. Engenharia de dados: a fundação</h3>
+      <p>Pipelines que levam os dados dos sistemas de origem para um repositório central, como Databricks ou Snowflake, com qualidade, atualização e histórico confiáveis. Sem essa base, qualquer análise é frágil e qualquer modelo aprende com erro.</p>
+      <h3>2. Analytics: dados que viram decisão</h3>
+      <p>Com dados confiáveis, a camada de analytics modela as regras de negócio (o que é “cliente ativo”, como se calcula margem) e entrega indicadores em ferramentas como Power BI. É aqui que o negócio começa a sentir o valor do time.</p>
+      <h3>3. Ciência de dados e IA: o que vem por cima</h3>
+      <p>Modelos preditivos, segmentação, previsão de demanda, IA generativa aplicada a atendimento ou catálogo. Rendem muito mais quando têm dados organizados, métricas estáveis e perguntas claras.</p>
+      <h3>Um guia rápido para saber onde você está</h3>
       <ul>
-        <li>Sem pipeline: comece por um engenheiro de dados.</li>
-        <li>Com dados, mas sem uso: traga analytics.</li>
-        <li>Com dados e indicadores maduros: é hora de IA.</li>
+      <li><strong>Sem pipeline, dados espalhados em sistemas e planilhas:</strong> comece por engenharia de dados.</li>
+      <li><strong>Dados centralizados, mas pouco usados:</strong> traga analytics.</li>
+      <li><strong>Indicadores maduros e perguntas preditivas claras:</strong> é hora de ciência de dados e IA.</li>
       </ul>
+
+      <h2>Os papéis e o que cada um faz</h2>
+      <ul>
+      <li><strong>Engenheiro de dados:</strong> constrói e mantém os pipelines de ingestão e transformação, cuida de qualidade, orquestração e custo da plataforma. Normalmente trabalha com Python, SQL e as ferramentas nativas de Databricks ou Snowflake, na nuvem que a empresa já usa (AWS, Azure ou GCP).</li>
+      <li><strong>Analytics engineer:</strong> fica entre engenharia e análise. Modela os dados em tabelas prontas para consumo, documenta métricas e garante que “receita” signifique a mesma coisa em todos os painéis.</li>
+      <li><strong>Analista de dados ou BI:</strong> traduz perguntas de negócio em análises e dashboards, geralmente em Power BI. Conversa com as áreas e ajuda a priorizar.</li>
+      <li><strong>Cientista de dados:</strong> constrói modelos estatísticos e de machine learning para prever, classificar ou segmentar. Precisa de dados limpos e de uma pergunta clara.</li>
+      <li><strong>ML engineer:</strong> leva modelos para produção, com monitoramento, versionamento e integração aos sistemas. Também é quem costuma operacionalizar soluções com IA generativa.</li>
+      </ul>
+      <p>Em times pequenos, uma pessoa acumula papéis. Um engenheiro de dados sênior pode fazer parte do trabalho de analytics engineering no começo. Mas evite pedir que o cientista de dados faça engenharia: é o erro mais caro da lista.</p>
+
+      <h3>Uma stack típica para começar</h3>
+      <p>Não existe stack única, mas uma combinação comum e sólida é:</p>
+      <ul>
+      <li><strong>Ingestão e processamento:</strong> Python e SQL, com orquestração de pipelines.</li>
+      <li><strong>Plataforma:</strong> Databricks ou Snowflake, na nuvem que a empresa já usa.</li>
+      <li><strong>Modelagem:</strong> camadas de dados brutos, tratados e prontos para consumo, com testes de qualidade.</li>
+      <li><strong>Visualização:</strong> Power BI, integrado ao ambiente corporativo.</li>
+      <li><strong>Ciência e IA:</strong> Python e as bibliotecas de machine learning, mais os serviços de IA generativa da nuvem escolhida.</li>
+      </ul>
+      <p>Escolha a plataforma pensando em quem vai mantê-la e no que o time já conhece. A melhor ferramenta é a que o seu time consegue operar bem.</p>
+
+      <h2>Os primeiros 90 dias</h2>
+      <ol>
+      <li><strong>Dias 1 a 30:</strong> mapear fontes de dados, definir a plataforma, colocar os primeiros pipelines das fontes mais críticas em produção. Escolher uma única pergunta de negócio para responder primeiro.</li>
+      <li><strong>Dias 31 a 60:</strong> modelar as métricas dessa pergunta, validar os números com a área de negócio e publicar o primeiro painel confiável.</li>
+      <li><strong>Dias 61 a 90:</strong> ampliar para novas fontes e perguntas, documentar métricas, definir quem é dono de cada dado. Só então avaliar se há um caso de uso preditivo maduro.</li>
+      </ol>
+      <p>A meta dos 90 dias não é ter IA. É ter um número em que a diretoria confia e usa.</p>
+
+      <h2>Erros comuns</h2>
+      <ul>
+      <li><strong>Começar pelo cientista de dados.</strong> Ele vira engenheiro por necessidade, e ninguém fica satisfeito.</li>
+      <li><strong>Dashboard antes de definição.</strong> Publicar painéis sem acordar o que cada métrica significa. Em pouco tempo, ninguém confia.</li>
+      <li><strong>Stack pela moda.</strong> Escolher a ferramenta mais comentada, sem gente para operá-la.</li>
+      <li><strong>Projeto de IA sem pergunta.</strong> “Queremos usar IA” não é requisito. “Queremos prever ruptura de estoque por loja” é.</li>
+      <li><strong>Time sem dono no negócio.</strong> Dados sem um patrocinador que use os resultados perdem prioridade rápido.</li>
+      </ul>
+
+      <h2>Como a Devgo ajuda a montar o time</h2>
+      <p>A Devgo aloca profissionais de Dados e IA com experiência em Databricks, Snowflake, Power BI, Python e IA generativa, sempre full-time e 100% dedicados ao seu time. Você pode começar com um engenheiro de dados, montar um squad completo com Squad as a Service ou, se quiser o time na sua folha, usar o hunting tech. Tudo começa com um deep dive de 30 minutos sobre stack, contexto e urgência.</p>
+      <p>Com uma base de mais de 8 mil talentos e shortlist ranqueada por IA e validada pelo time, 82% das indicações são aprovadas pelos clientes. Para entender qual modelo faz mais sentido, veja <a href="/insights/como-escolher-o-modelo-de-contratacao">como escolher o modelo de contratação</a>.</p>
+
+      <blockquote><p>Primeiro dados confiáveis, depois indicadores que o negócio usa, e só então IA. Contrate na ordem do problema que você tem hoje.</p></blockquote>
     </div>
     <aside class="article-aside"><!-- include:article-cta --></aside>
   </div>

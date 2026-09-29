@@ -5,10 +5,11 @@
   "type": "module",
   "scripts": {
     "typecheck": "tsc -p ../jsconfig.json",
-    "lint": "cd .. && eslint -c tests/eslint.config.js js tests build",
+    "lint": "cd .. && eslint -c tests/eslint.config.js js tests build api",
     "build": "node ../build/build.mjs",
     "test:e2e": "node --test site.test.mjs",
-    "test": "npm run typecheck && npm run lint && npm run test:e2e"
+    "test": "npm run typecheck && npm run lint && npm run test:api && npm run test:e2e",
+    "test:api": "node --test api.test.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.0",

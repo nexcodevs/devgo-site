@@ -5,7 +5,8 @@
 // Marcadores aceitos nas páginas:
 //   <!--page {json} -->       primeira linha: slug, title, description, nav, navSpy
 //                             artigos: type "article", category, date (AAAA-MM-DD), readingTime, summary,
-//                             image (em assets/, com versão -sm.jpg de 600px) e imageAlt
+//                             image (em assets/, com versão -sm.jpg de 600px), imageAlt e imageFocus
+//                             (object-position do rosto, ex. "50% 30%")
 //   <!-- include:nome -->     insere site/partials/nome.html
 //   <!-- render:nome -->      insere o HTML gerado por RENDERERS[nome]
 import { cp, mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises';

@@ -12,7 +12,9 @@ const articlesOf = (pages) => pages.filter((p) => p.type === 'article').sort((a,
 
 const title = (a) => esc(a.title.replace(/ · Insights Devgo$/, ''));
 /** Capa do artigo; `small` usa a versão de 600px. */
-const cover = (a, small = false) => `<img src="/assets/${small ? a.image.replace(/\.jpg$/, '-sm.jpg') : a.image}" alt="${esc(a.imageAlt)}" width="${small ? 600 : 1200}" height="${small ? 375 : 750}" loading="lazy">`;
+/** Ponto de foco da foto (rosto) para os recortes menores que 16:10. */
+const focus = (a) => (a.imageFocus ? ` style="object-position:${esc(a.imageFocus)}"` : '');
+const cover = (a, small = false) => `<img src="/assets/${small ? a.image.replace(/\.jpg$/, '-sm.jpg') : a.image}" alt="${esc(a.imageAlt)}" width="${small ? 600 : 1200}" height="${small ? 375 : 750}" loading="lazy"${focus(a)}>`;
 
 const card = (a, featured = false) => `<a class="insight-card" href="${a.path}" data-topic="${esc(a.category)}"${featured ? ' data-featured' : ''}>
           <span class="insight-thumb">${cover(a, true)}</span>
@@ -32,7 +34,7 @@ export const RENDERERS = {
     <p class="article-byline">Time Devgo · <time datetime="${meta.date}">${formatDate(meta.date)}</time> · ${esc(meta.readingTime)} de leitura</p>
   </div>
 </header>
-<div class="article-cover"><div class="wrap"><img src="/assets/${meta.image}" alt="${esc(meta.imageAlt)}" width="1200" height="750"></div></div>`,
+<div class="article-cover"><div class="wrap"><img src="/assets/${meta.image}" alt="${esc(meta.imageAlt)}" width="1200" height="750"${focus(meta)}></div></div>`,
 
   /** Página /insights: filtro por tema, três destaques e a biblioteca completa (o JS filtra e pagina). */
   'insights-list': ({ pages }) => {

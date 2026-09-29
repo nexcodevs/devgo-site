@@ -23,7 +23,7 @@ export default [
     },
   },
   {
-    files: ['tests/**/*.mjs', 'build/**/*.mjs'],
+    files: ['tests/**/*.mjs', 'build/**/*.mjs', 'api/**/*.mjs'],
     languageOptions: { globals: { ...globals.node } },
     rules: { 'no-console': 'off' },
   },
