@@ -71,7 +71,7 @@ describe('renderização', () => {
 
   test('cada página tem as seções esperadas', async () => {
     const expected = {
-      '/': { '.svc-item': 4, '.logo-cell': 12, '.marquee-clone img[alt=""]': 6, '.squad-group': 6, '.squad-role': 31, '.orbit-pill': 28, '.stk-filter': 7, '.tile-matrix i': 90, '.quote': 2, '#insights .insight-item img': 4, '#insights .insight-intro h2': 1, '#insights .insight-intro .btn': 1, '.glob-city': 5, '.glob-list li': 4, '#faq': 0, '#como-funciona': 0, '#contact-form': 1 },
+      '/': { '.svc-item': 4, '.logo-cell': 12, '.marquee-clone img[alt=""]': 6, '.sq-platform': 7, '.sq-tab': 5, '.squad-role': 5, '.orbit-pill': 28, '.stk-filter': 7, '.tile-matrix i': 90, '.quote': 2, '#insights .insight-item img': 4, '#insights .insight-intro h2': 1, '#insights .insight-intro .btn': 1, '.glob-city': 5, '.glob-list li': 4, '#faq': 0, '#como-funciona': 0, '#contact-form': 1 },
       '/insights': { '.insight-hero img': 1, '.insight-pick img': 2, '.insight-card img': 20, '.insight-filters button': 6 },
     };
     for (const path of PAGES.filter((p) => p.startsWith('/insights/'))) expected[path] = { '.prose h2': 3, '.article-cover img': 1, '.insight-card .insight-thumb img': 3, '.article-cta .btn': 1 };
@@ -265,23 +265,32 @@ describe('stacks', () => {
 });
 
 describe('monte seu squad', () => {
-  test('adiciona, ajusta, limita e resume no contato', async () => {
+  test('plataforma, cargos por aba, quantidades e resumo no contato', async () => {
     const { page } = await open();
-    const row = (role) => page.locator(`.squad-role[data-role="${role}"]`);
-    await row('Back-end').locator('.squad-add').click();
-    assert.equal(await page.evaluate(() => document.activeElement?.getAttribute('aria-label')), 'Mais Back-end');
-    await row('Back-end').locator('[data-step="1"]').click();
-    await row('QA').locator('.squad-add').click();
+    const role = (name) => page.locator(`.squad-role[data-role="${name}"]`);
+    const trayRow = (name) => page.locator(`.tray-role[data-role="${name}"]`);
+
+    await page.click('.sq-platform[data-platform="SAP"]');
+    assert.equal(await page.getAttribute('.sq-tab[aria-selected="true"]', 'id'), 'sq-tab-platform');
+    await role('Dev ABAP').click();
+    assert.equal(await role('Dev ABAP').getAttribute('aria-pressed'), 'true');
+
+    await page.click('.sq-tab:has-text("Qualidade e Operação")');
+    await role('QA').click();
+    await trayRow('Dev ABAP').locator('[data-step="1"]').click();
     assert.equal(await page.textContent('.tray-head span'), '3 profissionais');
-    assert.equal(await page.locator('.tray-dots i').count(), 3);
+    assert.equal(await page.textContent('.sq-tab[data-tab="platform"] em'), '2');
 
     await page.click('.tray-cta');
-    assert.equal(await subject(page), 'Squad: 2× Back-end, 1× QA');
+    assert.equal(await subject(page), 'Squad SAP: 2× Dev ABAP, 1× QA');
 
-    await row('QA').locator('[data-step="-1"]').click();
-    assert.equal(await row('QA').evaluate((el) => el.classList.contains('is-active')), false);
-    for (let i = 0; i < 25; i++) await row('Back-end').locator('[data-step="1"]').click();
-    assert.equal(await row('Back-end').locator('.squad-step b').textContent(), '20');
+    await trayRow('QA').locator('[data-step="-1"]').click();
+    assert.equal(await trayRow('QA').count(), 0);
+    for (let i = 0; i < 25; i++) await trayRow('Dev ABAP').locator('[data-step="1"]').click();
+    assert.equal(await trayRow('Dev ABAP').locator('.squad-step b').textContent(), '20');
+
+    await page.click('.sq-platform[data-platform="Produto sob medida"]');
+    assert.equal(await page.locator('.sq-tab[data-tab="platform"]').count(), 0);
     await page.close();
   });
 
