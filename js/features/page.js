@@ -4,7 +4,7 @@
  * menu móvel, faixa de logos, seção atual na navegação, revelação por
  * rolagem, entrada dos ícones e vídeo do hero.
  */
-import { assetUrl, byId, closest, html, render, queryAll, reducedMotion, onceVisible } from '../core/dom.js';
+import { assetUrl, byId, closest, html, render, queryAll, reducedMotion, onceVisible, bindMediaToggle } from '../core/dom.js';
 
 /* ---------- Menu móvel ---------- */
 
@@ -49,6 +49,8 @@ export function initClientLogos() {
     return html`<div class="logo-cell"><img src="${assetUrl(`L_${slug}.png`)}" alt="${decorative ? '' : name}" width="${Math.round(height * ratio)}" height="${Math.round(height)}"></div>`;
   });
   render(byId('logo-track'), html`${cells(false)}<div class="marquee-clone" aria-hidden="true">${cells(true)}</div>`);
+  const marquee = byId('logo-track').parentElement;
+  bindMediaToggle('logos-pause', (paused) => marquee?.classList.toggle('is-paused', paused));
 }
 
 /* ---------- Seção atual na navegação ---------- */
@@ -139,7 +141,7 @@ export function initIconEntrances() {
   for (const group of queryAll('[data-icons]')) {
     // o "desenho" do traço usa comprimento normalizado (stroke-dasharray: 1)
     group.querySelectorAll('.glob-icon *').forEach((shape) => shape.setAttribute('pathLength', '1'));
-    queryAll('.why-card img, .group-icon img, .glob-icon', group)
+    queryAll('.why-card img, .group-icon i, .glob-icon', group)
       .forEach((icon, i) => icon.style.setProperty('--d', `${(i * ICON_STAGGER_S).toFixed(2)}s`));
     group.classList.add('icons-idle');
     onceVisible(group, () => group.classList.replace('icons-idle', 'icons-play'), { threshold: 0.25 });
@@ -212,8 +214,11 @@ export function initHeroRotator() {
 /* ---------- Vídeo do hero ---------- */
 
 export function initHeroVideo() {
-  if (!reducedMotion) return;
   const video = byId('hero-video', HTMLVideoElement);
-  video.removeAttribute('autoplay');
-  video.pause();
+  if (reducedMotion) {
+    video.removeAttribute('autoplay');
+    video.pause();
+    return;
+  }
+  bindMediaToggle('hero-pause', (paused) => { if (paused) video.pause(); else void video.play().catch(() => {}); });
 }

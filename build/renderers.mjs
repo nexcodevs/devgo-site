@@ -60,7 +60,7 @@ export const RENDERERS = {
         <div class="insight-grid" id="insight-all">
           ${all.map((a, i) => card(a, i < 3)).join('\n          ')}
         </div>
-        <div class="insight-more-row"><button class="btn btn-dark" type="button" id="insight-more" hidden>Mostrar mais artigos</button></div>
+        <div class="insight-more-row"><button class="btn btn-secondary" type="button" id="insight-more" hidden>Mostrar mais artigos</button></div>
       </div>`;
   },
 
@@ -73,7 +73,7 @@ export const RENDERERS = {
         <span class="eyebrow">insights</span>
         <h2>Guias para quem monta times de tecnologia.</h2>
         <p class="lede">Conteúdo prático do time da Devgo sobre ${esc(topics)}.</p>
-        <a class="btn btn-blue" href="/insights">Ver todos os insights <span class="arrow" aria-hidden="true">→</span></a>
+        <a class="btn btn-primary" href="/insights">Ver todos os insights <span class="arrow" aria-hidden="true">→</span></a>
       </div>
       <ol class="insight-list">
         ${all.slice(0, 4).map((a, i) => `<li><a class="insight-item" href="${a.path}"><span class="insight-num">${String(i + 1).padStart(2, '0')}</span><span class="insight-item-text"><span class="insight-meta">${esc(a.category)} · ${esc(a.readingTime)}</span><h3>${title(a)}</h3><p>${esc(a.summary)}</p></span><span class="insight-item-img">${cover(a, true)}</span></a></li>`).join('\n        ')}

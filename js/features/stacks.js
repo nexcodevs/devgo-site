@@ -15,7 +15,7 @@ const CORE_SYMBOL = 'M455 238H993V751L1019 777H1477V1230C1477 1510 1300 1693 101
 /** @type {Map<string, import('../data/stacks.js').Category>} */
 const categoryByName = new Map(CATEGORIES.map((c) => [c.name, c]));
 /** @param {string} name */
-const colorOf = (name) => categoryByName.get(name)?.color ?? '#3C3CF3';
+const colorOf = (name) => categoryByName.get(name)?.color ?? 'var(--category-erp)';
 /** @param {import('../data/stacks.js').Stack} stack */
 const label = (stack) => stack.short ?? stack.name;
 
@@ -61,7 +61,7 @@ export function initStacks() {
     const stack = STACKS[selected];
     const category = categoryByName.get(stack.category);
     detail.style.setProperty('--c', colorOf(stack.category));
-    render(detail, html`<span class="orbit-cat"><i></i>${stack.category}${stack.hot ? html` · <b>Alta demanda</b>` : ''}</span><h3>${stack.name}</h3><div class="orbit-tags">${stack.tags.map((tag) => html`<span>${tag}</span>`)}</div><div class="orbit-roles"><small>Perfis que alocamos</small>${(category?.roles ?? []).join(' · ')}</div><button type="button" class="btn btn-blue orbit-cta" data-stack="${stack.name}">Preciso de alguém em ${label(stack)} <span class="arrow" aria-hidden="true">→</span></button>`);
+    render(detail, html`<span class="orbit-cat"><i></i>${stack.category}${stack.hot ? html` · <b>Alta demanda</b>` : ''}</span><h3>${stack.name}</h3><div class="orbit-tags">${stack.tags.map((tag) => html`<span>${tag}</span>`)}</div><div class="orbit-roles"><small>Perfis que alocamos</small>${(category?.roles ?? []).join(' · ')}</div><button type="button" class="btn btn-primary orbit-cta" data-stack="${stack.name}">Preciso de alguém em ${label(stack)} <span class="arrow" aria-hidden="true">→</span></button>`);
   };
 
   /** @param {number} index */

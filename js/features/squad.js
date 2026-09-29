@@ -27,7 +27,7 @@ export function initSquad() {
   /** Quantidade por perfil, na ordem em que foram escolhidos. @type {Map<string, number>} */
   const squad = new Map();
 
-  render(groups, html`${PROFILE_GROUPS.map((group) => html`<div class="squad-group" style="--c:${group.color}"><div class="group-head"><div class="group-ill">${trusted(group.illustration)}</div><div class="group-text"><div class="group-title"><span class="group-icon"><img src="${assetUrl(group.icon)}" alt=""></span><h3>${group.title}</h3></div><p>${group.description}</p></div></div><div class="group-roles">${group.roles.map((role) => html`<div class="squad-role" data-role="${role}"><span class="squad-role-name">${role}</span><button type="button" class="squad-add" aria-label="Adicionar ${role}">+</button><span class="squad-step"><button type="button" data-step="-1" aria-label="Menos ${role}">−</button><b>0</b><button type="button" data-step="1" aria-label="Mais ${role}">+</button></span></div>`)}</div></div>`)}`);
+  render(groups, html`${PROFILE_GROUPS.map((group) => html`<div class="squad-group" style="--c:${group.color}"><div class="group-head"><div class="group-ill">${trusted(group.illustration)}</div><div class="group-text"><div class="group-title"><span class="group-icon" style="--fg:${group.ink}"><i style="--icon:url(${assetUrl(group.icon)})" aria-hidden="true"></i></span><h3>${group.title}</h3></div><p>${group.description}</p></div></div><div class="group-roles">${group.roles.map((role) => html`<div class="squad-role" data-role="${role}"><span class="squad-role-name">${role}</span><button type="button" class="squad-add" aria-label="Adicionar ${role}">+</button><span class="squad-step"><button type="button" data-step="-1" aria-label="Menos ${role}">−</button><b>0</b><button type="button" data-step="1" aria-label="Mais ${role}">+</button></span></div>`)}</div></div>`)}`);
 
   const rows = queryAll('.squad-role', groups);
   const chosen = () => [...squad].filter(([, qty]) => qty > 0);
@@ -54,7 +54,7 @@ export function initSquad() {
     });
     render(tray, html`<div class="tray-head"><strong>Seu squad</strong><span>${countLabel(total)}</span></div><div class="tray-org">${org}</div>${total
       ? html`<div class="tray-dots">${dots}</div>`
-      : html`<p class="tray-empty">Escolha os perfis ao lado. Se preferir, fale direto com a gente.</p>`}<a class="btn btn-blue tray-cta" href="#contato">${total ? 'Montar este squad' : 'Falar com um especialista'} <span class="arrow" aria-hidden="true">→</span></a>`);
+      : html`<p class="tray-empty">Escolha os perfis ao lado. Se preferir, fale direto com a gente.</p>`}<a class="btn btn-primary tray-cta" href="#contato">${total ? 'Montar este squad' : 'Falar com um especialista'} <span class="arrow" aria-hidden="true">→</span></a>`);
   };
 
   /** @param {string} role @param {number} qty */

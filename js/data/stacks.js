@@ -7,7 +7,7 @@
 /**
  * @typedef {object} Category
  * @property {string} name
- * @property {string} color  cor do anel/pílula (hex)
+ * @property {string} color  cor do anel/pílula (token category-*)
  * @property {string[]} roles perfis que alocamos nessa categoria
  */
 
@@ -22,12 +22,12 @@
 
 /** @type {Category[]} */
 export const CATEGORIES = [
-  { name: 'ERP', color: '#3C3CF3', roles: ['Consultor funcional', 'Desenvolvedor técnico', 'Arquiteto de soluções'] },
-  { name: 'CRM', color: '#7B61FF', roles: ['Desenvolvedor', 'Consultor funcional', 'Arquiteto'] },
-  { name: 'E-commerce', color: '#150B95', roles: ['Dev front-end', 'Dev back-end e integrações', 'Tech Lead'] },
-  { name: 'Cloud e DevOps', color: '#2F80ED', roles: ['DevOps / SRE', 'Engenheiro de cloud', 'Arquiteto cloud'] },
-  { name: 'Dados e IA', color: '#0E9F9A', roles: ['Engenheiro de dados', 'Cientista de dados', 'Analista de BI'] },
-  { name: 'Engenharia', color: '#5A5AF6', roles: ['Dev Pleno', 'Dev Sênior', 'Tech Lead'] },
+  { name: 'ERP', color: 'var(--category-erp)', roles: ['Consultor funcional', 'Desenvolvedor técnico', 'Arquiteto de soluções'] },
+  { name: 'CRM', color: 'var(--category-crm)', roles: ['Desenvolvedor', 'Consultor funcional', 'Arquiteto'] },
+  { name: 'E-commerce', color: 'var(--category-ecommerce)', roles: ['Dev front-end', 'Dev back-end e integrações', 'Tech Lead'] },
+  { name: 'Cloud e DevOps', color: 'var(--category-cloud)', roles: ['DevOps / SRE', 'Engenheiro de cloud', 'Arquiteto cloud'] },
+  { name: 'Dados e IA', color: 'var(--category-dados)', roles: ['Engenheiro de dados', 'Cientista de dados', 'Analista de BI'] },
+  { name: 'Engenharia', color: 'var(--category-engenharia)', roles: ['Dev Pleno', 'Dev Sênior', 'Tech Lead'] },
 ];
 
 /** @type {Stack[]} */
