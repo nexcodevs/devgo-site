@@ -5,7 +5,7 @@
  * termina, o próximo item abre. Pausa com hover/foco e fora da viewport;
  * fica estático no celular e com movimento reduzido.
  */
-import { assetUrl, byId, closest, html, render, queryAll, reducedMotion, watchVisibility, bindMediaToggle } from '../core/dom.js';
+import { assetUrl, byId, closest, html, render, queryAll, reducedMotion, watchVisibility } from '../core/dom.js';
 import { SERVICES, SQUAD_EXAMPLE, LEADERSHIP_EXAMPLE, MATCH_SCORES } from '../data/services.js';
 
 const AUTOPLAY_MS = 6000;
@@ -45,7 +45,6 @@ export function initServices() {
   let active = 0;
   let hovered = false;
   let visible = false;
-  let userPaused = false;
 
   const show = (/** @type {number} */ index) => {
     active = index;
@@ -58,7 +57,7 @@ export function initServices() {
     const bar = /** @type {HTMLElement | null} */ (items[active].querySelector('.svc-progress i'));
     if (bar) { bar.style.animation = 'none'; void bar.offsetWidth; bar.style.animation = ''; }
   };
-  const syncPaused = () => root.classList.toggle('is-paused', userPaused || hovered || !visible);
+  const syncPaused = () => root.classList.toggle('is-paused', hovered || !visible);
   const staticQuery = window.matchMedia(STATIC_QUERY);
   const syncStatic = () => root.classList.toggle('is-static', reducedMotion || staticQuery.matches);
 
@@ -76,7 +75,6 @@ export function initServices() {
   staticQuery.addEventListener('change', syncStatic);
   watchVisibility(root, (isVisible) => { visible = isVisible; syncPaused(); }, { threshold: 0.35 });
 
-  bindMediaToggle('services-pause', (paused) => { userPaused = paused; syncPaused(); });
   root.style.setProperty('--svc-duration', `${AUTOPLAY_MS}ms`);
   syncStatic();
   syncPaused();
