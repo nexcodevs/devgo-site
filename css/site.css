@@ -194,7 +194,8 @@ p,li,dd,blockquote{text-wrap:pretty}
   .marquee-track{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));width:auto;animation:none}
   .marquee-clone{display:none}
   .logo-cell{width:auto;height:84px;border-bottom:1px solid var(--night-line)}
-  .logo-cell:nth-child(3n){border-right:0}
+  .logo-cell:nth-child(3n),.logo-cell:last-child{border-right:0}
+  .marquee-track>.logo-cell:nth-child(3n+1):nth-last-child(2){grid-column:1 / -1}
   .logo-cell img{opacity:.7;max-width:78%;height:auto}
 }
 

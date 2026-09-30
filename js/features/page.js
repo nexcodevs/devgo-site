@@ -33,10 +33,11 @@ export function initMobileMenu() {
 const CLIENT_LOGOS = /** @type {const} */ ([
   ['samsung', 509 / 80, 'Samsung'],
   ['pwc', 105 / 80, 'PwC'],
-  ['tim', 300 / 80, 'TIM'],
+  ['nttdata', 391 / 80, 'NTT DATA'],
   ['ifood', 150 / 80, 'iFood'],
   ['electrolux', 351 / 80, 'Electrolux'],
-  ['smiles', 194 / 80, 'Smiles'],
+  ['dasa', 240 / 80, 'Dasa'],
+  ['loft', 94 / 80, 'Loft'],
 ]);
 /** Área-alvo em px² para que logos largos e compactos tenham o mesmo peso visual. */
 const LOGO_AREA = 3000;
