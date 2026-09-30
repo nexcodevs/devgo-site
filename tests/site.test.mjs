@@ -265,32 +265,38 @@ describe('stacks', () => {
 });
 
 describe('monte seu squad', () => {
-  test('plataforma, cargos por aba, quantidades e resumo no contato', async () => {
+  test('plataformas, cargos com quantidade, resumo por plataforma e contato', async () => {
     const { page } = await open();
     const role = (name) => page.locator(`.squad-role[data-role="${name}"]`);
-    const trayRow = (name) => page.locator(`.tray-role[data-role="${name}"]`);
 
     await page.click('.sq-platform[data-platform="SAP"]');
     assert.equal(await page.getAttribute('.sq-tab[aria-selected="true"]', 'id'), 'sq-tab-platform');
     await role('Dev ABAP').click();
-    assert.equal(await role('Dev ABAP').getAttribute('aria-pressed'), 'true');
-
+    assert.equal(await page.evaluate(() => document.activeElement?.getAttribute('aria-label')), 'Mais Dev ABAP');
+    await role('Dev ABAP').locator('[data-step="1"]').click();
     await page.click('.sq-tab:has-text("Qualidade e Operação")');
     await role('QA').click();
-    await trayRow('Dev ABAP').locator('[data-step="1"]').click();
-    assert.equal(await page.textContent('.tray-head span'), '3 profissionais');
+    assert.equal(await page.textContent('.sq-platform[data-platform="SAP"] em'), '3');
     assert.equal(await page.textContent('.sq-tab[data-tab="platform"] em'), '2');
 
+    await page.click('.sq-platform[data-platform="VTEX"]');
+    await role('Dev VTEX IO').click();
+    assert.equal(await page.textContent('.tray-head span'), '4 profissionais');
+    assert.equal(await page.locator('.tray-group').count(), 2);
+
     await page.click('.tray-cta');
-    assert.equal(await subject(page), 'Squad SAP: 2× Dev ABAP, 1× QA');
+    assert.equal(await subject(page), 'Squad SAP: 2× Dev ABAP, 1× QA · Squad VTEX: 1× Dev VTEX IO');
 
-    await trayRow('QA').locator('[data-step="-1"]').click();
-    assert.equal(await trayRow('QA').count(), 0);
-    for (let i = 0; i < 25; i++) await trayRow('Dev ABAP').locator('[data-step="1"]').click();
-    assert.equal(await trayRow('Dev ABAP').locator('.squad-step b').textContent(), '20');
+    await page.click('[data-go-platform="SAP"]');
+    await page.click('.sq-tab:has-text("Qualidade e Operação")');
+    await role('QA').locator('[data-step="-1"]').click();
+    assert.equal(await role('QA').evaluate((el) => el.classList.contains('is-active')), false);
+    await page.click('.tray-remove[data-remove-platform="VTEX"]');
+    assert.equal(await page.locator('.tray-group').count(), 1);
 
-    await page.click('.sq-platform[data-platform="Sob medida"]');
-    assert.equal(await page.locator('.sq-tab[data-tab="platform"]').count(), 0);
+    await page.click('.sq-tab[data-tab="platform"]');
+    for (let i = 0; i < 25; i++) await role('Dev ABAP').locator('[data-step="1"]').click();
+    assert.equal(await role('Dev ABAP').locator('.squad-step b').textContent(), '20');
     await page.close();
   });
 

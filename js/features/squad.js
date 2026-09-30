@@ -37,16 +37,34 @@ export function tabsFor(platformName) {
   }, ...categories];
 }
 
+/** @typedef {Map<string, Map<string, number>>} Squads plataforma → cargo → quantidade */
+
+/** Total de profissionais de uma plataforma (ou de todas). @param {Squads} squads @param {string} [platform] */
+export function squadTotal(squads, platform) {
+  const lists = platform ? [squads.get(platform) ?? new Map()] : [...squads.values()];
+  return lists.reduce((sum, roles) => sum + [...roles.values()].reduce((a, b) => a + b, 0), 0);
+}
+
+/** Assunto do formulário: "Squad SAP: 2× Dev ABAP, 1× QA · Squad VTEX: 1× Dev VTEX IO". @param {Squads} squads */
+export function squadSubject(squads) {
+  return PLATFORMS
+    .filter((p) => squadTotal(squads, p.name) > 0)
+    .map((p) => `Squad ${p.name}: ${[...(squads.get(p.name) ?? [])].map(([role, qty]) => `${qty}× ${role}`).join(', ')}`)
+    .join(' · ');
+}
+
 export function initSquad() {
   const builder = byId('squad-builder');
   const tray = byId('squad-tray');
-  /** Quantidade por cargo, na ordem em que foram escolhidos. @type {Map<string, number>} */
-  const squad = new Map();
+  /** Cargos por plataforma, na ordem em que foram escolhidos. @type {Squads} */
+  const squads = new Map();
   let platform = PLATFORMS[0].name;
   let activeTab = '';
+  /** Linhas já exibidas no resumo: só as novas animam a entrada. @type {Set<string>} */
+  let shown = new Set();
 
-  const chosen = () => [...squad].filter(([, qty]) => qty > 0);
-  const total = () => chosen().reduce((sum, [, qty]) => sum + qty, 0);
+  /** @param {string} role */
+  const qtyOf = (role) => squads.get(platform)?.get(role) ?? 0;
 
   const drawBuilder = () => {
     const tabs = tabsFor(platform);
@@ -55,41 +73,51 @@ export function initSquad() {
     render(builder, html`
       <div class="sq-step">
         <h3 class="sq-step-title" id="sq-step-1"><b>1</b>Tecnologia ou plataforma</h3>
-        <div class="sq-platforms" role="radiogroup" aria-labelledby="sq-step-1">${PLATFORMS.map((p) => html`<button type="button" class="sq-platform" role="radio" aria-checked="${String(p.name === platform)}" data-platform="${p.name}"><strong>${p.name}</strong><small>${p.kind}</small></button>`)}</div>
+        <div class="sq-platforms" role="radiogroup" aria-labelledby="sq-step-1">${PLATFORMS.map((p) => {
+          const count = squadTotal(squads, p.name);
+          return html`<button type="button" class="sq-platform" role="radio" aria-checked="${String(p.name === platform)}" data-platform="${p.name}"><strong>${p.name}</strong><small>${p.kind}</small>${count ? html`<em aria-label="${countLabel(count)}">${count}</em>` : ''}</button>`;
+        })}</div>
       </div>
       <div class="sq-step">
         <h3 class="sq-step-title" id="sq-step-2"><b>2</b>Cargos por categoria</h3>
         <div class="sq-cats">
         <div class="sq-tabs" role="tablist" aria-labelledby="sq-step-2">${tabs.map((t) => {
-          const count = t.roles.reduce((sum, r) => sum + (squad.get(r) ?? 0), 0);
+          const count = t.roles.reduce((sum, r) => sum + qtyOf(r), 0);
           return html`<button type="button" class="sq-tab" role="tab" id="sq-tab-${t.id}" aria-controls="sq-panel" aria-selected="${String(t.id === activeTab)}" tabindex="${t.id === activeTab ? '0' : '-1'}" data-tab="${t.id}"><span class="group-icon"><i style="--icon:url(${assetUrl(t.icon)})" aria-hidden="true"></i></span>${t.title}${count ? html`<em>${count}</em>` : ''}</button>`;
         })}</div>
         <div class="sq-panel" role="tabpanel" id="sq-panel" aria-labelledby="sq-tab-${current.id}">
           <p>${current.description}</p>
-          <div class="sq-roles">${current.roles.map((role) => html`<button type="button" class="squad-role" data-role="${role}" aria-pressed="${String((squad.get(role) ?? 0) > 0)}"><span>${role}</span><i aria-hidden="true">+</i></button>`)}</div>
+          <div class="sq-roles">${current.roles.map((role) => {
+            const qty = qtyOf(role);
+            return qty
+              ? html`<div class="squad-role is-active" data-role="${role}"><span>${role}</span><span class="squad-step"><button type="button" data-step="-1" aria-label="Menos ${role}">−</button><b>${qty}</b><button type="button" data-step="1" aria-label="Mais ${role}">+</button></span></div>`
+              : html`<button type="button" class="squad-role" data-role="${role}" data-step="1" aria-label="Adicionar ${role}"><span>${role}</span><i aria-hidden="true">+</i></button>`;
+          })}</div>
         </div>
         </div>
       </div>`);
   };
 
   const drawTray = () => {
-    const items = chosen();
-    const count = total();
-    const showPlatform = PLATFORMS.find((p) => p.name === platform)?.roles.length;
-    render(tray, html`<div class="tray-head"><strong>Seu squad</strong><span>${countLabel(count)}</span></div>${showPlatform ? html`<p class="tray-platform">Plataforma: <b>${platform}</b></p>` : ''}${count
-      ? html`<ul class="tray-list">${items.map(([role, qty]) => html`<li class="tray-role${shown.has(role) ? '' : ' is-new'}" data-role="${role}"><span>${role}</span><span class="squad-step"><button type="button" data-step="-1" aria-label="Menos ${role}">−</button><b>${qty}</b><button type="button" data-step="1" aria-label="Mais ${role}">+</button></span></li>`)}</ul>`
+    const count = squadTotal(squads);
+    const groups = PLATFORMS.filter((p) => squadTotal(squads, p.name) > 0);
+    render(tray, html`<div class="tray-head"><strong>Seu squad</strong><span>${countLabel(count)}</span></div>${count
+      ? html`<div class="tray-groups">${groups.map((p) => html`<section class="tray-group${p.name === platform ? ' is-current' : ''}"><button type="button" class="tray-group-head" data-go-platform="${p.name}"><strong>${p.name}</strong><span>${countLabel(squadTotal(squads, p.name))}</span></button><ul class="tray-list">${[...(squads.get(p.name) ?? [])].map(([role, qty]) => {
+          const key = `${p.name}::${role}`;
+          return html`<li class="tray-role${shown.has(key) ? '' : ' is-new'}"><b>${qty}×</b><span>${role}</span><button type="button" class="tray-remove" data-remove-platform="${p.name}" data-remove-role="${role}" aria-label="Remover ${role} de ${p.name}">×</button></li>`;
+        })}</ul></section>`)}</div>`
       : html`<p class="tray-empty">Escolha a plataforma e os cargos. Se preferir, fale direto com a gente.</p>`}<a class="btn btn-primary tray-cta" href="#contato">${count ? 'Montar este squad' : 'Falar com um especialista'} <span class="arrow" aria-hidden="true">→</span></a>`);
-    shown = new Set(items.map(([role]) => role));
+    shown = new Set(groups.flatMap((p) => [...(squads.get(p.name) ?? new Map()).keys()].map((role) => `${p.name}::${role}`)));
   };
 
   const draw = () => { drawBuilder(); drawTray(); };
-  /** Cargos já exibidos no resumo: só os novos animam a entrada. @type {Set<string>} */
-  let shown = new Set();
 
-  /** @param {string} role @param {number} qty */
-  const setQuantity = (role, qty) => {
+  /** @param {string} name @param {string} role @param {number} qty */
+  const setQuantity = (name, role, qty) => {
     const next = Math.max(0, Math.min(MAX_PER_ROLE, qty));
-    if (next) squad.set(role, next); else squad.delete(role);
+    const roles = squads.get(name) ?? new Map();
+    if (next) roles.set(role, next); else roles.delete(role);
+    if (roles.size) squads.set(name, roles); else squads.delete(name);
     draw();
   };
 
@@ -103,15 +131,17 @@ export function initSquad() {
     if (tab && strip && strip.scrollWidth > strip.clientWidth) strip.scrollLeft = tab.offsetLeft - strip.offsetLeft - (strip.clientWidth - tab.offsetWidth) / 2;
   };
 
+  /** @param {string} name */
+  const choosePlatform = (name) => {
+    platform = name;
+    activeTab = '';
+    draw();
+    refocus(`.sq-platform[data-platform="${CSS.escape(platform)}"]`);
+  };
+
   builder.addEventListener('click', (event) => {
     const chip = closest(event.target, '.sq-platform');
-    if (chip?.dataset.platform) {
-      platform = chip.dataset.platform;
-      activeTab = '';
-      draw();
-      refocus(`.sq-platform[data-platform="${CSS.escape(platform)}"]`);
-      return;
-    }
+    if (chip?.dataset.platform) { choosePlatform(chip.dataset.platform); return; }
     const tab = closest(event.target, '.sq-tab');
     if (tab?.dataset.tab) {
       activeTab = tab.dataset.tab;
@@ -119,11 +149,16 @@ export function initSquad() {
       refocus(`#sq-tab-${activeTab}`);
       return;
     }
+    const step = closest(event.target, '[data-step]');
     const role = closest(event.target, '.squad-role')?.dataset.role;
-    if (role) {
-      setQuantity(role, squad.has(role) ? 0 : 1);
-      refocus(`.squad-role[data-role="${CSS.escape(role)}"]`);
-    }
+    if (!step || !role) return;
+    const delta = Number(step.dataset.step);
+    setQuantity(platform, role, qtyOf(role) + delta);
+    const selector = `.squad-role[data-role="${CSS.escape(role)}"]`;
+    const counter = builder.querySelector(`${selector} .squad-step b`);
+    if (counter && !reducedMotion) replayClass(counter, 'is-bumped');
+    // mantém o foco no controle equivalente (o "+" vira o passo quando o cargo entra)
+    refocus(qtyOf(role) ? `${selector} [data-step="${delta > 0 ? 1 : -1}"]` : selector);
   });
 
   // setas navegam entre as abas (padrão de tablist)
@@ -141,20 +176,17 @@ export function initSquad() {
   });
 
   tray.addEventListener('click', (event) => {
-    const step = closest(event.target, '[data-step]');
-    const row = closest(event.target, '.tray-role');
-    if (step && row?.dataset.role) {
-      const role = row.dataset.role;
-      setQuantity(role, (squad.get(role) ?? 0) + Number(step.dataset.step));
-      const counter = document.querySelector(`.tray-role[data-role="${CSS.escape(role)}"] .squad-step b`);
-      if (counter && !reducedMotion) replayClass(counter, 'is-bumped');
-      refocus(`.tray-role[data-role="${CSS.escape(role)}"] [data-step="${step.dataset.step}"]`);
+    const go = closest(event.target, '[data-go-platform]');
+    if (go?.dataset.goPlatform) { choosePlatform(go.dataset.goPlatform); return; }
+    const remove = closest(event.target, '.tray-remove');
+    if (remove?.dataset.removePlatform && remove.dataset.removeRole) {
+      setQuantity(remove.dataset.removePlatform, remove.dataset.removeRole, 0);
+      /** @type {HTMLElement | null} */ (tray.querySelector('.tray-remove, .tray-cta'))?.focus({ preventScroll: true });
       return;
     }
     if (!closest(event.target, '.tray-cta')) return;
-    const items = chosen();
-    const label = PLATFORMS.find((p) => p.name === platform)?.roles.length ? `Squad ${platform}` : 'Squad';
-    if (items.length) prefillSubject(`${label}: ${items.map(([role, qty]) => `${qty}× ${role}`).join(', ')}`);
+    const subject = squadSubject(squads);
+    if (subject) prefillSubject(subject);
   });
 
   draw();
