@@ -71,7 +71,7 @@ export const RENDERERS = {
     return `<div class="insight-split">
       <div class="insight-intro">
         <span class="eyebrow">insights</span>
-        <h2>Guias para quem monta times de tecnologia.</h2>
+        <h2>O que aprendemos montando times de tecnologia.</h2>
         <p class="lede">Conteúdo prático do time da Devgo sobre ${esc(topics)}.</p>
         <a class="btn btn-primary" href="/insights">Ver todos os insights <span class="arrow" aria-hidden="true">→</span></a>
       </div>
