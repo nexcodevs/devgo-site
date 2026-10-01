@@ -107,7 +107,8 @@ async function buildPage({ meta, content }, pages) {
   if (meta.nav) header = header.replaceAll(`data-nav="${meta.nav}"`, `data-nav="${meta.nav}" aria-current="page"`);
   const footer = await read('site/partials/footer.html');
   const mainTag = meta.navSpy ? '<main id="top" data-nav-spy>' : '<main id="top">';
-  const body = `${header.trim()}\n\n${mainTag}\n${main.trim()}\n</main>\n\n${footer.trim()}`;
+  const body = `${header.trim()}\n\n${mainTag}\n${main.trim()}\n</main>\n\n${footer.trim()}`
+    .replaceAll('{{turnstile_site_key}}', escapeAttr(process.env.TURNSTILE_SITE_KEY ?? ''));
 
   const entries = ['js/main.js', 'js/registry.js', ...featuresIn(body).map((f) => posix.join('js', f.module))];
   const modules = (await moduleClosure(entries)).filter((m) => m !== 'js/main.js');
@@ -120,7 +121,7 @@ async function buildPage({ meta, content }, pages) {
     .replaceAll('{{url}}', SITE_URL + meta.path)
     .replaceAll('{{og_image}}', `${SITE_URL}/assets/${meta.image ?? 'og.jpg'}`)
     .replaceAll('{{site}}', SITE_URL)
-    .replace('{{head_extra}}', meta.type === 'article' ? articleJsonLd(meta) : '')
+    .replace('{{head_extra}}', (meta.type === 'article' ? articleJsonLd(meta) : '') + (meta.noindex ? '<meta name="robots" content="noindex">' : ''))
     .replace('{{preloads}}', preloads);
 
   const html = `<!doctype html>\n<html lang="pt-BR">\n<head>\n${head.trim()}\n</head>\n<body>\n\n${body}\n\n</body>\n</html>\n`;
@@ -129,7 +130,7 @@ async function buildPage({ meta, content }, pages) {
   const out = join(OUT, `${meta.slug}.html`);
   await mkdir(dirname(out), { recursive: true });
   await writeFile(out, html);
-  return meta.path;
+  return meta.noindex ? null : meta.path;
 }
 
 export async function build() {
@@ -144,7 +145,10 @@ export async function build() {
   const pages = await Promise.all(files.map(readPage));
   const metas = pages.map((p) => p.meta);
   const paths = [];
-  for (const page of pages) paths.push(await buildPage(page, metas));
+  for (const page of pages) {
+    const path = await buildPage(page, metas);
+    if (path) paths.push(path); // páginas noindex (como a 404) ficam fora do sitemap
+  }
 
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${paths.map((p) => `  <url><loc>${SITE_URL}${p}</loc></url>`).join('\n')}\n</urlset>\n`;
   await writeFile(join(OUT, 'sitemap.xml'), sitemap);

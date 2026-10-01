@@ -6,6 +6,10 @@
  */
 import { FEATURES } from './registry.js';
 
+// Página aberta por link (não por voltar/recarregar) e sem âncora: começa sempre do topo.
+const navigation = /** @type {PerformanceNavigationTiming | undefined} */ (performance.getEntriesByType('navigation')[0]);
+if (!location.hash && navigation?.type === 'navigate') window.scrollTo(0, 0);
+
 const active = FEATURES.filter((feature) => document.querySelector(feature.selector));
 const loaded = await Promise.allSettled(active.map((feature) => import(feature.module)));
 

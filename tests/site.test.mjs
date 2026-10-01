@@ -72,6 +72,7 @@ describe('renderização', () => {
   test('cada página tem as seções esperadas', async () => {
     const expected = {
       '/': { '.svc-item': 4, '.logo-cell': 14, '.marquee-clone img[alt=""]': 7, '.sq-platform': 7, '.sq-tab': 5, '.squad-role': 5, '.orbit-pill': 28, '.stk-filter': 7, '.tile-matrix i': 90, '.quote': 2, '#insights .insight-item img': 4, '#insights .insight-intro h2': 1, '#insights .insight-intro .btn': 1, '.glob-city': 5, '.glob-list li': 4, '#faq': 0, '#como-funciona': 0, '#contact-form': 1 },
+      '/politica-de-privacidade': { '.legal h2': 12, '.legal a[href^="mailto:"]': 3 },
       '/insights': { '.insight-hero img': 1, '.insight-pick img': 2, '.insight-card img': 20, '.insight-filters button': 6 },
     };
     for (const path of PAGES.filter((p) => p.startsWith('/insights/'))) expected[path] = { '.prose h2': 3, '.article-cover img': 1, '.insight-card .insight-thumb img': 3, '.article-cta .btn': 1 };
@@ -85,6 +86,28 @@ describe('renderização', () => {
       }
       await page.close();
     }
+  });
+
+  test('endereço inexistente mostra a página 404, fora do índice e do sitemap', async () => {
+    const response = await fetch(new URL('/pagina-que-nao-existe', server.url));
+    assert.equal(response.status, 404);
+    const body = await response.text();
+    assert.match(body, /não está no time/);
+    assert.match(body, /<meta name="robots" content="noindex">/);
+    const sitemap = await (await fetch(new URL('/sitemap.xml', server.url))).text();
+    assert.doesNotMatch(sitemap, /\/404</);
+    assert.match(sitemap, /politica-de-privacidade/);
+  });
+
+  test('abrir uma página por link começa do topo', async () => {
+    const { page } = await open();
+    const link = page.locator('#insights .insight-item').first();
+    await link.scrollIntoViewIfNeeded();
+    await link.click();
+    await page.waitForLoadState('load');
+    await page.waitForTimeout(400);
+    assert.equal(await page.evaluate(() => Math.round(window.scrollY)), 0);
+    await page.close();
   });
 
   test('conteúdo pré-renderizado aparece sem JavaScript', async () => {
@@ -326,39 +349,42 @@ describe('seletor de quantidade', () => {
 describe('formulário de contato', () => {
   const VALID = { '#ct-nome': 'Ana', '#ct-email': 'ana@empresa.com', '#ct-tel': '(11) 99999-0000', '#ct-emp': 'Acme', '#ct-assunto': 'Alocar 2 devs', '#ct-msg': 'Precisamos de dois devs sênior.' };
 
-  test('mostra o primeiro erro, marca e foca o campo', async () => {
+  test('no envio, marca todos os campos com erro e foca o primeiro', async () => {
     const { page } = await open();
     await page.click('#contact-form button[type="submit"]');
-    assert.equal(await page.textContent('#form-status'), 'Informe seu nome.');
-    assert.equal(await page.getAttribute('#ct-nome', 'aria-invalid'), 'true');
+    assert.equal(await page.textContent('#form-status'), 'Confira os 7 campos destacados.');
+    assert.equal(await page.locator('#contact-form [aria-invalid="true"]').count(), 7);
+    assert.equal(await page.textContent('#ct-nome-err'), 'Informe seu nome.');
+    assert.equal(await page.getAttribute('#ct-nome', 'aria-describedby'), 'ct-nome-err');
     assert.equal(await page.evaluate(() => document.activeElement?.id), 'ct-nome');
-    await page.fill('#ct-nome', 'A');
+    await page.fill('#ct-nome', 'Ana');
     assert.equal(await page.getAttribute('#ct-nome', 'aria-invalid'), null, 'corrigir o campo remove o destaque');
+    assert.equal(await page.textContent('#ct-nome-err'), '');
     await page.close();
   });
 
-  test('valida cada regra na ordem', async () => {
+  test('valida ao sair do campo, com regras por tipo', async () => {
     const { page } = await open();
-    const expectError = async (message) => {
-      await page.click('#contact-form button[type="submit"]');
-      assert.equal(await page.textContent('#form-status'), message);
-    };
-    await page.fill('#ct-nome', 'Ana');
-    await page.fill('#ct-email', 'ana@');
-    await expectError('Informe um e-mail válido, como voce@empresa.com.');
-    await page.fill('#ct-email', VALID['#ct-email']);
-    await page.fill('#ct-tel', '9999');
-    await expectError('Informe um telefone com DDD.');
-    await page.fill('#ct-tel', VALID['#ct-tel']);
-    await page.fill('#ct-emp', '   ');
-    await expectError('Informe a empresa.');
-    await page.fill('#ct-emp', 'Acme');
-    await expectError('Selecione o número de funcionários.');
-    await page.selectOption('#ct-func', { index: 2 });
-    await expectError('Informe o assunto.');
-    await page.fill('#ct-assunto', 'Teste');
-    await page.fill('#ct-msg', 'curta');
-    await expectError('Escreva uma mensagem com pelo menos 10 caracteres.');
+    const blurWith = async (selector, value) => { await page.fill(selector, value); await page.locator(selector).blur(); return page.textContent(`${selector}-err`); };
+    assert.equal(await blurWith('#ct-nome', '123'), 'Use apenas letras no nome.');
+    assert.equal(await blurWith('#ct-nome', 'Ana Maria'), '');
+    assert.equal(await blurWith('#ct-email', 'ana@empresa'), 'Informe um e-mail válido, como voce@empresa.com.');
+    assert.equal(await blurWith('#ct-email', 'ana@empresa.com.br'), '');
+    assert.equal(await blurWith('#ct-tel', '9999'), 'Informe o telefone com DDD, como (11) 90000-0000.');
+    await page.fill('#ct-tel', '');
+    await page.locator('#ct-tel').pressSequentially('11987654321');
+    assert.equal(await page.inputValue('#ct-tel'), '(11) 98765-4321', 'máscara de telefone');
+    assert.equal(await blurWith('#ct-msg', 'curta'), 'Conte um pouco mais: pelo menos 10 caracteres.');
+    await page.locator('#ct-emp').focus();
+    await page.locator('#ct-emp').blur();
+    assert.equal(await page.textContent('#ct-emp-err'), '', 'só atravessar o campo não acusa erro');
+    await page.close();
+  });
+
+  test('aviso de LGPD aponta para a política de privacidade', async () => {
+    const { page } = await open();
+    assert.equal(await page.getAttribute('#form-note a', 'href'), '/politica-de-privacidade');
+    assert.equal(await page.locator('#form-captcha:visible').count(), 0, 'sem chave, o captcha fica oculto');
     await page.close();
   });
 
@@ -375,6 +401,7 @@ describe('formulário de contato', () => {
     assert.equal(await status.evaluate((el) => el.classList.contains('is-success')), true);
     assert.deepEqual([sent.nome, sent.email, sent.empresa, sent.assunto, sent.funcionarios], ['Ana', 'ana@empresa.com', 'Acme', 'Alocar 2 devs', '1 a 50']);
     assert.equal(sent.website, '');
+    assert.equal(typeof sent.elapsed, 'number');
     assert.equal(await page.inputValue('#ct-nome'), '', 'formulário limpo depois do envio');
     await page.close();
   });
@@ -390,6 +417,17 @@ describe('formulário de contato', () => {
     assert.equal(await page.inputValue('#ct-nome'), 'Ana');
     assert.equal(await status.locator('a').getAttribute('rel'), 'noopener noreferrer');
     assert.equal(await page.isEnabled('#contact-form button[type="submit"]'), true);
+    await page.close();
+  });
+
+  test('erro de campo vindo do servidor marca o campo', async () => {
+    const { page } = await open();
+    await page.route('**/api/lead', (route) => route.fulfill({ status: 400, contentType: 'application/json', body: '{"ok":false,"error":"email"}' }));
+    for (const [selector, value] of Object.entries(VALID)) await page.fill(selector, value);
+    await page.selectOption('#ct-func', { index: 1 });
+    await page.click('#contact-form button[type="submit"]');
+    await page.locator('#form-status').filter({ hasText: 'Confira o campo destacado' }).waitFor();
+    assert.equal(await page.getAttribute('#ct-email', 'aria-invalid'), 'true');
     await page.close();
   });
 

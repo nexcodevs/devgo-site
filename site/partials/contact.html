@@ -19,16 +19,17 @@
         <form class="contact-form" id="contact-form" novalidate aria-describedby="form-note">
           <h3>Fale com a gente</h3>
           <div class="form-grid">
-            <label>Nome<input id="ct-nome" name="nome" type="text" placeholder="Seu nome" autocomplete="name" required></label>
-            <label>E-mail<input id="ct-email" name="email" type="email" placeholder="voce@empresa.com" autocomplete="email" required></label>
-            <label>Telefone<input id="ct-tel" name="telefone" type="tel" placeholder="(11) 90000-0000" autocomplete="tel" required></label>
-            <label>Empresa<input id="ct-emp" name="empresa" type="text" placeholder="Nome da empresa" autocomplete="organization" required></label>
-            <label>Número de funcionários<span class="select-wrap"><select id="ct-func" name="funcionarios" required><option value="" selected disabled>Selecione</option><option>1 a 50</option><option>51 a 200</option><option>201 a 500</option><option>501 a 1.000</option><option>Mais de 1.000</option></select></span></label>
-            <label>Assunto<input id="ct-assunto" name="assunto" type="text" placeholder="Ex.: alocar 2 devs back-end" required></label>
+            <div class="field"><label for="ct-nome">Nome</label><input id="ct-nome" name="nome" type="text" placeholder="Seu nome" autocomplete="name" maxlength="120" required><span class="field-error" id="ct-nome-err"></span></div>
+            <div class="field"><label for="ct-email">E-mail</label><input id="ct-email" name="email" type="email" inputmode="email" placeholder="voce@empresa.com" autocomplete="email" maxlength="160" required><span class="field-error" id="ct-email-err"></span></div>
+            <div class="field"><label for="ct-tel">Telefone</label><input id="ct-tel" name="telefone" type="tel" inputmode="tel" placeholder="(11) 90000-0000" autocomplete="tel" maxlength="20" required><span class="field-error" id="ct-tel-err"></span></div>
+            <div class="field"><label for="ct-emp">Empresa</label><input id="ct-emp" name="empresa" type="text" placeholder="Nome da empresa" autocomplete="organization" maxlength="160" required><span class="field-error" id="ct-emp-err"></span></div>
+            <div class="field"><label for="ct-func">Número de funcionários</label><span class="select-wrap"><select id="ct-func" name="funcionarios" required><option value="" selected disabled>Selecione</option><option>1 a 50</option><option>51 a 200</option><option>201 a 500</option><option>501 a 1.000</option><option>Mais de 1.000</option></select></span><span class="field-error" id="ct-func-err"></span></div>
+            <div class="field"><label for="ct-assunto">Assunto</label><input id="ct-assunto" name="assunto" type="text" placeholder="Ex.: alocar 2 devs back-end" maxlength="200" required><span class="field-error" id="ct-assunto-err"></span></div>
           </div>
           <label class="form-trap" aria-hidden="true">Site<input name="website" type="text" tabindex="-1" autocomplete="off"></label>
-          <label>Mensagem<textarea id="ct-msg" name="mensagem" rows="4" placeholder="Conte o contexto: perfis, senioridade, stack e prazo." required></textarea></label>
-          <p class="form-note" id="form-note">Todos os campos são obrigatórios.</p>
+          <div class="field"><label for="ct-msg">Mensagem</label><textarea id="ct-msg" name="mensagem" rows="4" placeholder="Conte o contexto: perfis, senioridade, stack e prazo." maxlength="4000" required></textarea><span class="field-error" id="ct-msg-err"></span></div>
+          <div class="form-captcha" id="form-captcha" data-sitekey="{{turnstile_site_key}}"></div>
+          <p class="form-note" id="form-note">Todos os campos são obrigatórios. Usamos seus dados apenas para responder ao seu contato, conforme a <a href="/politica-de-privacidade">Política de privacidade</a> e a LGPD (Lei 13.709/2018).</p>
           <button class="btn btn-primary" type="submit">Enviar mensagem <span class="arrow" aria-hidden="true">→</span></button>
           <div class="form-status" id="form-status" role="status" aria-live="polite"></div>
         </form>

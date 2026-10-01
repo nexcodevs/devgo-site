@@ -40,7 +40,9 @@ export async function serve(root, configPath) {
       const body = await readFile(file);
       res.writeHead(200, { ...headersFor(path), 'content-type': TYPES[extname(file)] ?? 'application/octet-stream' }).end(body);
     } catch {
-      res.writeHead(404).end('not found');
+      // como na Vercel: endereço inexistente recebe a página 404.html com status 404
+      const fallback = await readFile(join(base, '404.html')).catch(() => null);
+      res.writeHead(404, fallback ? { ...headersFor(path), 'content-type': TYPES['.html'] } : {}).end(fallback ?? 'not found');
     }
   });
   await new Promise((done) => server.listen(0, '127.0.0.1', done));
