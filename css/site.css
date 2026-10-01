@@ -468,7 +468,9 @@ p,li,dd,blockquote{text-wrap:pretty}
 .sq-step-title b{width:24px;height:24px;display:flex;align-items:center;justify-content:center;border-radius:var(--radius-full);background:var(--blue-500);color:var(--neutral-0);font-size:12px;letter-spacing:0}
 
 /* passo 1: plataformas em cartões do mesmo tamanho */
-.sq-platforms{display:grid;grid-template-columns:repeat(auto-fit,minmax(112px,1fr));gap:var(--space-2)}
+.sq-platforms{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:var(--space-2)}
+@media (max-width:1100px){.sq-platform{padding-inline:var(--space-3)}}
+@media (max-width:900px){.sq-platforms{grid-template-columns:repeat(auto-fill,minmax(120px,1fr))}}
 .sq-platform{position:relative;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:var(--space-1);min-height:64px;padding:var(--space-3) var(--space-4);border:1px solid var(--white-a12);border-radius:var(--radius-md);background:var(--white-a04);color:var(--white-a88);font:inherit;text-align:left;cursor:pointer;transition:border-color var(--t-fast) var(--ease-out),background-color var(--t-fast) var(--ease-out)}
 .sq-platform strong{font-size:14px;font-weight:600;line-height:1.2}
 .sq-platform small{font-size:12px;line-height:1.2;color:var(--on-night-3)}
