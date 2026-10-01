@@ -1,0 +1,31 @@
+# Roda a suíte completa (tipos, lint, API e ponta a ponta) em todo push e pull request.
+# Com a proteção da branch main e as "Deployment Checks" da Vercel ligadas,
+# nada vai para produção sem passar por aqui.
+name: Testes
+
+on:
+  push:
+    branches: [main, revisao]
+  pull_request:
+
+concurrency:
+  group: testes-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  testes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: tests
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: tests/package-lock.json
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm test
