@@ -16,6 +16,7 @@
 // cria o lead ligado às duas e anexa uma nota com a mensagem e a origem.
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const CALL_TIMEOUT_MS = 6000; // cada chamada ao Pipedrive; a função inteira tem folga dentro do limite da Vercel
 const MIN_FILL_MS = 2500; // robôs enviam o formulário instantaneamente
 const LIMITS = { nome: 120, email: 160, telefone: 40, empresa: 160, funcionarios: 40, assunto: 200, mensagem: 4000, origem: 500 };
 
@@ -30,11 +31,11 @@ export function validateLead(body) {
   for (const [key, max] of Object.entries(LIMITS)) data[key] = String(body?.[key] ?? '').trim().slice(0, max);
   if (String(body?.website ?? '').trim()) return { ok: false, error: 'spam' }; // campo-isca, invisível para pessoas
   const elapsed = Number(body?.elapsed);
-  if (Number.isFinite(elapsed) && elapsed < MIN_FILL_MS) return { ok: false, error: 'spam' }; // preenchido rápido demais
+  if (!Number.isFinite(elapsed) || elapsed < MIN_FILL_MS) return { ok: false, error: 'spam' }; // sem o tempo do formulário ou rápido demais
   if (data.nome.length < 2 || !/\p{L}/u.test(data.nome)) return { ok: false, error: 'nome' };
   if (!EMAIL_PATTERN.test(data.email)) return { ok: false, error: 'email' };
   if (data.telefone.replace(/\D/g, '').length < 10) return { ok: false, error: 'telefone' };
-  if (data.telefone.replace(/\D/g, '').length > 13) return { ok: false, error: 'telefone' };
+  if (data.telefone.replace(/\D/g, '').length > 15) return { ok: false, error: 'telefone' };
   for (const key of ['empresa', 'funcionarios', 'assunto']) if (data[key].length < 2) return { ok: false, error: key };
   if (data.mensagem.length < 10) return { ok: false, error: 'mensagem' };
   return { ok: true, data };
@@ -82,7 +83,8 @@ export async function createPipedriveLead(d, config, http = fetch) {
     const prefix = version === 'v2' ? '/api/v2' : host === 'https://api.pipedrive.com' ? '/v1' : '/api/v1';
     const url = `${host}${prefix}${path}`;
     const headers = { 'x-api-token': config.token, Accept: 'application/json', ...(body ? { 'Content-Type': 'application/json' } : {}) };
-    const response = await http(url, body ? { method: 'POST', headers, body: JSON.stringify(body) } : { headers });
+    const signal = AbortSignal.timeout(CALL_TIMEOUT_MS);
+    const response = await http(url, body ? { method: 'POST', headers, body: JSON.stringify(body), signal } : { headers, signal });
     const json = await response.json().catch(() => ({}));
     if (!response.ok || json.success === false) throw new PipedriveError(`${version}${path.split('?')[0]}`, response.status, String(json.error ?? json.error_info ?? ''));
     return json.data;
@@ -161,8 +163,9 @@ export default async function handler(req, res) {
     // o campo-isca responde como sucesso para não ensinar o robô
     return result.error === 'spam' ? res.status(200).json({ ok: true }) : res.status(400).json({ ok: false, error: result.error });
   }
+  // o captcha só é exigido com as duas chaves: a pública (no build) e a secreta (aqui)
   const captchaSecret = process.env.TURNSTILE_SECRET_KEY;
-  if (captchaSecret) {
+  if (captchaSecret && process.env.TURNSTILE_SITE_KEY) {
     const forwarded = req.headers?.['x-forwarded-for'];
     const ip = String(Array.isArray(forwarded) ? forwarded[0] : forwarded ?? '').split(',')[0].trim();
     const human = await verifyTurnstile(captchaSecret, String(/** @type {Record<string, unknown>} */ (body).turnstile ?? ''), ip).catch(() => false);
@@ -184,7 +187,6 @@ export default async function handler(req, res) {
     return res.status(200).json({ ok: true });
   } catch (error) {
     console.error('[lead] falha ao criar lead', error);
-    const stage = error instanceof PipedriveError ? `${error.stage} ${error.status}` : 'rede';
-    return res.status(502).json({ ok: false, error: 'crm', stage });
+    return res.status(502).json({ ok: false, error: 'crm' }); // detalhes (etapa e status) ficam só no log
   }
 }

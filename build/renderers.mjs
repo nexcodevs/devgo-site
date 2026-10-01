@@ -14,7 +14,7 @@ const title = (a) => esc(a.title.replace(/ · Insights Devgo$/, ''));
 /** Capa do artigo; `small` usa a versão de 600px. */
 /** Ponto de foco da foto (rosto) para os recortes menores que 16:10. */
 const focus = (a) => (a.imageFocus ? ` style="object-position:${esc(a.imageFocus)}"` : '');
-const cover = (a, small = false) => `<img src="/assets/${small ? a.image.replace(/\.jpg$/, '-sm.jpg') : a.image}" alt="${esc(a.imageAlt)}" width="${small ? 600 : 1200}" height="${small ? 375 : 750}" loading="lazy"${focus(a)}>`;
+const cover = (a, small = false, eager = false) => `<img src="/assets/${small ? a.image.replace(/\.jpg$/, '-sm.jpg') : a.image}" alt="${esc(a.imageAlt)}" width="${small ? 600 : 1200}" height="${small ? 375 : 750}" ${eager ? 'fetchpriority="high"' : 'loading="lazy"'}${focus(a)}>`;
 
 const card = (a, featured = false) => `<a class="insight-card" href="${a.path}" data-topic="${esc(a.category)}"${featured ? ' data-featured' : ''}>
           <span class="insight-thumb">${cover(a, true)}</span>
@@ -48,7 +48,7 @@ export const RENDERERS = {
       </div>
       <div class="insight-top" id="insight-top">
         <a class="insight-hero" href="${lead.path}">
-          <span class="insight-hero-img">${cover(lead)}</span>
+          <span class="insight-hero-img">${cover(lead, false, true)}</span>
           <span class="insight-hero-text"><span class="insight-meta">Mais recente · ${esc(lead.category)}</span><h3>${title(lead)}</h3><p>${esc(lead.summary)}</p><span class="insight-more">Ler artigo · ${esc(lead.readingTime)} <span class="arrow" aria-hidden="true">→</span></span></span>
         </a>
         <div class="insight-picks">
@@ -90,7 +90,7 @@ export const RENDERERS = {
   <div class="wrap">
     <h2 class="related-title" id="related-title">Continue lendo</h2>
     <div class="insight-grid">
-        ${others.map(card).join('\n        ')}
+        ${others.map((a) => card(a)).join('\n        ')}
     </div>
   </div>
 </section>`;

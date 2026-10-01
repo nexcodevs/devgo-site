@@ -3,7 +3,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import handler, { validateLead, createPipedriveLead, noteFor, pipedriveHost, verifyTurnstile } from '../api/lead.mjs';
 
-const VALID = { nome: 'Ana', email: 'ana@empresa.com', telefone: '(11) 99999-0000', empresa: 'Acme', funcionarios: '51 a 200', assunto: 'Alocar 2 devs', mensagem: 'Precisamos de dois devs sênior.', origem: 'https://devgo.digital/' };
+const VALID = { nome: 'Ana', email: 'ana@empresa.com', telefone: '(11) 99999-0000', empresa: 'Acme', funcionarios: '51 a 200', assunto: 'Alocar 2 devs', mensagem: 'Precisamos de dois devs sênior.', origem: 'https://devgo.digital/', elapsed: 8000 };
 
 /** fetch falso que registra as chamadas e responde por rota */
 function fakeFetch(routes) {
@@ -26,6 +26,7 @@ test('valida os campos e barra o campo-isca', () => {
   assert.deepEqual(validateLead({ ...VALID, telefone: '123' }), { ok: false, error: 'telefone' });
   assert.deepEqual(validateLead({ ...VALID, website: 'http://spam' }), { ok: false, error: 'spam' });
   assert.deepEqual(validateLead({ ...VALID, elapsed: 400 }), { ok: false, error: 'spam' });
+  assert.deepEqual(validateLead({ ...VALID, elapsed: undefined }), { ok: false, error: 'spam' }, 'sem o tempo do formulário');
   assert.deepEqual(validateLead({ ...VALID, nome: '1' }), { ok: false, error: 'nome' });
 });
 

@@ -16,7 +16,8 @@ import { RENDERERS } from './renderers.mjs';
 import { FEATURES } from '../js/registry.js';
 
 /** Endereço público. Troque para https://devgo.digital quando o domínio apontar para a Vercel. */
-export const SITE_URL = 'https://devgo-site-2026.vercel.app';
+/** Endereço público do site. Na Vercel, defina SITE_URL (ex.: https://devgo.digital) ao trocar o domínio. */
+export const SITE_URL = (process.env.SITE_URL ?? 'https://devgo-site-2026.vercel.app').replace(/\/$/, '');
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const OUT = join(ROOT, 'dist');
