@@ -26,7 +26,7 @@ test('valida os campos e barra o campo-isca', () => {
   assert.deepEqual(validateLead({ ...VALID, telefone: '123' }), { ok: false, error: 'telefone' });
   assert.deepEqual(validateLead({ ...VALID, website: 'http://spam' }), { ok: false, error: 'spam' });
   assert.deepEqual(validateLead({ ...VALID, elapsed: 400 }), { ok: false, error: 'spam' });
-  assert.deepEqual(validateLead({ ...VALID, elapsed: undefined }), { ok: false, error: 'spam' }, 'sem o tempo do formulário');
+  assert.equal(validateLead({ ...VALID, elapsed: undefined }).ok, true, 'página antiga em cache, sem o tempo, não perde o lead');
   assert.deepEqual(validateLead({ ...VALID, nome: '1' }), { ok: false, error: 'nome' });
 });
 

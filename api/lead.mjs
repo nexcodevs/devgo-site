@@ -17,7 +17,7 @@
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const CALL_TIMEOUT_MS = 6000; // cada chamada ao Pipedrive; a função inteira tem folga dentro do limite da Vercel
-const MIN_FILL_MS = 2500; // robôs enviam o formulário instantaneamente
+const MIN_FILL_MS = 1500; // robôs enviam o formulário instantaneamente
 const LIMITS = { nome: 120, email: 160, telefone: 40, empresa: 160, funcionarios: 40, assunto: 200, mensagem: 4000, origem: 500 };
 
 /**
@@ -31,7 +31,8 @@ export function validateLead(body) {
   for (const [key, max] of Object.entries(LIMITS)) data[key] = String(body?.[key] ?? '').trim().slice(0, max);
   if (String(body?.website ?? '').trim()) return { ok: false, error: 'spam' }; // campo-isca, invisível para pessoas
   const elapsed = Number(body?.elapsed);
-  if (!Number.isFinite(elapsed) || elapsed < MIN_FILL_MS) return { ok: false, error: 'spam' }; // sem o tempo do formulário ou rápido demais
+  // rápido demais para uma pessoa. Sem o tempo (página antiga em cache), segue: o campo-isca ainda filtra robôs
+  if (Number.isFinite(elapsed) && elapsed < MIN_FILL_MS) return { ok: false, error: 'spam' };
   if (data.nome.length < 2 || !/\p{L}/u.test(data.nome)) return { ok: false, error: 'nome' };
   if (!EMAIL_PATTERN.test(data.email)) return { ok: false, error: 'email' };
   if (data.telefone.replace(/\D/g, '').length < 10) return { ok: false, error: 'telefone' };
