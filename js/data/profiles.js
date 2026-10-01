@@ -19,7 +19,7 @@
 /** @type {Platform[]} */
 export const PLATFORMS = [
   { name: 'Sob medida', kind: 'Web, mobile e APIs', roles: [] },
-  { name: 'SAP', kind: 'ERP', roles: ['Consultor SAP FI/CO', 'Consultor SAP SD/MM', 'Dev ABAP', 'SAP Basis', 'SAP BTP', 'Arquiteto S/4HANA'] },
+  { name: 'SAP', kind: 'ERP', roles: ['Consultor SAP FI/CO', 'Consultor SAP SD/MM', 'Dev ABAP', 'SAP Basis', 'SAP BTP', 'Arquiteto S/4HANA', 'Dev SAP Commerce (Hybris)', 'Consultor SAP Commerce (Hybris)'] },
   { name: 'TOTVS', kind: 'ERP', roles: ['Dev ADVPL/TL++', 'Consultor Protheus', 'Especialista Fluig'] },
   { name: 'Salesforce', kind: 'CRM', roles: ['Salesforce Admin', 'Salesforce Developer', 'Consultor Sales/Service Cloud', 'Consultor Marketing Cloud', 'Arquiteto Salesforce'] },
   { name: 'Dynamics', kind: 'ERP e CRM', roles: ['Consultor Dynamics F&O', 'Dev Dynamics (X++)', 'Consultor Business Central'] },

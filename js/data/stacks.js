@@ -32,7 +32,7 @@ export const CATEGORIES = [
 
 /** @type {Stack[]} */
 export const STACKS = [
-  { name: 'SAP', category: 'ERP', tags: ['S/4HANA', 'ABAP', 'Fiori', 'BTP'], hot: true },
+  { name: 'SAP', category: 'ERP', tags: ['S/4HANA', 'ABAP', 'Fiori', 'BTP', 'Commerce (Hybris)'], hot: true },
   { name: 'Oracle', category: 'ERP', tags: ['Oracle Cloud', 'E-Business Suite', 'PL/SQL'], hot: true },
   { name: 'TOTVS', category: 'ERP', tags: ['Protheus', 'RM', 'ADVPL'], hot: false },
   { name: 'Microsoft Dynamics 365', short: 'Dynamics 365', category: 'ERP', tags: ['Finance & Operations', 'Business Central'], hot: false },
