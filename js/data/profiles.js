@@ -45,7 +45,7 @@ export const PROFILE_GROUPS = [
     title: 'Mobile',
     description: 'Apps nativos e multiplataforma, do protótipo à loja.',
     icon: 'card3.svg',
-    roles: ['iOS', 'Android', 'React Native', 'Flutter'],
+    roles: ['iOS', 'Android', 'React Native', 'Flutter', 'Kotlin Multiplatform', 'Tech Lead Mobile', 'QA Mobile'],
   },
   {
     title: 'Dados e IA',
