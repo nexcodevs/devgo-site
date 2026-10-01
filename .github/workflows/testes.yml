@@ -1,6 +1,8 @@
-# Roda a suíte completa (tipos, lint, API e ponta a ponta) em todo push e pull request.
-# Com a proteção da branch main e as "Deployment Checks" da Vercel ligadas,
-# nada vai para produção sem passar por aqui.
+# Fluxo de publicação:
+#   1. Toda alteração entra na branch `revisao`.
+#   2. Esta ação roda a suíte completa (tipos, lint, API e ponta a ponta).
+#   3. Só se tudo passar, ela avança a `main` para o mesmo commit, e a Vercel publica.
+# Assim nada chega à produção sem passar nos testes, sem depender de configurações extras.
 name: Testes
 
 on:
@@ -29,3 +31,16 @@ jobs:
       - run: npm ci
       - run: npx playwright install --with-deps chromium
       - run: npm test
+
+  publicar:
+    needs: testes
+    if: github.event_name == 'push' && github.ref == 'refs/heads/revisao'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Avança a main para o commit testado (só avanço direto, nunca sobrescreve)
+        run: git push origin HEAD:main
