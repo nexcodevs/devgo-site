@@ -33,7 +33,11 @@ async function open({ path = '/', viewport = VIEWPORTS.desktop, reducedMotion = 
   const scripts = [];
   page.on('pageerror', (e) => problems.push(`pageerror: ${e.message}`));
   page.on('console', (m) => { if (m.type() === 'error') problems.push(`console: ${m.text()}`); });
-  page.on('requestfailed', (r) => problems.push(`requestfailed: ${r.url()}`));
+  page.on('requestfailed', (r) => {
+    // o Chromium de teste não tem o codec H.264: ao recusar o vídeo do celular, tenta a próxima fonte e aborta
+    if (r.url().endsWith('.mp4') && r.failure()?.errorText === 'net::ERR_ABORTED') return;
+    problems.push(`requestfailed: ${r.url()}`);
+  });
   page.on('response', (r) => { if (r.status() >= 400) problems.push(`${r.status()}: ${r.url()}`); });
   page.on('request', (r) => { if (r.resourceType() === 'script') scripts.push(new URL(r.url()).pathname); });
   await page.goto(new URL(path, server.url).href);
