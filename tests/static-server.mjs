@@ -13,6 +13,7 @@ const TYPES = {
   '.svg': 'image/svg+xml',
   '.png': 'image/png',
   '.jpg': 'image/jpeg',
+  '.webp': 'image/webp',
   '.mp4': 'video/mp4',
   '.woff2': 'font/woff2',
   '.txt': 'text/plain; charset=utf-8',
@@ -33,6 +34,8 @@ export async function serve(root, configPath) {
   const headersFor = (path) => Object.fromEntries(rules.filter((r) => r.pattern.test(path)).flatMap((r) => r.headers.map((h) => [h.key, h.value])));
   const server = createServer(async (req, res) => {
     const path = decodeURIComponent(new URL(req.url ?? '/', 'http://x').pathname);
+    // na Vercel este script é servido pela própria plataforma; aqui, um vazio
+    if (path === '/_vercel/insights/script.js') { res.writeHead(200, { 'Content-Type': TYPES['.js'] }).end('window.__vaLoaded = true;'); return; }
     const clean = path === '/' ? '/index.html' : extname(path) ? path : `${path}.html`;
     const file = normalize(join(base, clean));
     if (!file.startsWith(base)) { res.writeHead(403).end(); return; }

@@ -143,7 +143,7 @@ describe('carregamento e navegação entre páginas', () => {
     for (const path of PAGES) {
       const { page, scripts } = await open({ path });
       const preloaded = (await page.$$eval('link[rel="modulepreload"]', (links) => links.map((l) => l.getAttribute('href')))).sort();
-      const used = [...new Set(scripts)].filter((s) => s !== '/js/main.js').sort();
+      const used = [...new Set(scripts)].filter((s) => s.startsWith('/js/') && s !== '/js/main.js').sort();
       assert.deepEqual(preloaded, used, path);
       await page.close();
     }
@@ -170,12 +170,26 @@ describe('carregamento e navegação entre páginas', () => {
     await page.close();
   });
 
+  /** @param {import('playwright').Page} page */
+  const structured = async (page) => (await page.locator('script[type="application/ld+json"]').allTextContents()).map((t) => JSON.parse(t));
+
+  test('home descreve a empresa e o site para buscadores', async () => {
+    const { page } = await open();
+    const [home] = await structured(page);
+    assert.deepEqual(home['@graph'].map((/** @type {any} */ n) => n['@type']), ['Organization', 'WebSite']);
+    assert.match(home['@graph'][0].logo, /\/assets\/logo\.png$/);
+    await page.close();
+  });
+
   test('artigos têm dados estruturados válidos e link de volta para Insights', async () => {
     for (const path of PAGES.filter((p) => p.startsWith('/insights/'))) {
       const { page } = await open({ path });
-      const data = JSON.parse(await page.locator('script[type="application/ld+json"]').textContent());
+      const [data, trail] = await structured(page);
       assert.equal(data['@type'], 'Article', path);
       assert.equal(data.mainEntityOfPage.endsWith(path), true, path);
+      assert.equal(data.dateModified, data.datePublished, path);
+      assert.deepEqual(trail.itemListElement.map((/** @type {any} */ i) => i.name).slice(0, 2), ['Início', 'Insights'], path);
+      assert.equal(trail.itemListElement[2].item.endsWith(path), true, path);
       assert.equal(await page.getAttribute('.nav-links [aria-current="page"]', 'href'), '/insights', path);
       await page.close();
     }
@@ -184,6 +198,7 @@ describe('carregamento e navegação entre páginas', () => {
   test('sitemap lista todas as páginas', async () => {
     const xml = await (await fetch(new URL('/sitemap.xml', server.url))).text();
     for (const path of PAGES) assert.match(xml, new RegExp(`<loc>[^<]*${path === '/' ? '/' : path}</loc>`));
+    for (const path of PAGES.filter((p) => p.startsWith('/insights/'))) assert.match(xml, new RegExp(`${path}</loc><lastmod>\\d{4}-\\d{2}-\\d{2}</lastmod>`));
   });
 });
 
@@ -402,7 +417,26 @@ describe('formulário de contato', () => {
     assert.deepEqual([sent.nome, sent.email, sent.empresa, sent.assunto, sent.funcionarios], ['Ana', 'ana@empresa.com', 'Acme', 'Alocar 2 devs', '1 a 50']);
     assert.equal(sent.website, '');
     assert.equal(typeof sent.elapsed, 'number');
+    assert.match(sent.origem, /veio de: acesso direto · entrou por: \/ · enviou de: http/);
     assert.equal(await page.inputValue('#ct-nome'), '', 'formulário limpo depois do envio');
+    const events = await page.evaluate(() => (/** @type {any} */ (window).vaq ?? []).map((/** @type {any[]} */ e) => e[1].name));
+    assert.deepEqual(events, ['Lead enviado'], 'conversão registrada, sem dados pessoais');
+    await page.close();
+  });
+
+  test('a origem da primeira página da visita segue com o lead', async () => {
+    const { page } = await open({ path: '/insights?utm_source=linkedin&utm_medium=social&utm_campaign=lancamento' });
+    await page.click('.nav-cta');
+    await page.waitForURL(/\/#contato$/);
+    await page.waitForLoadState('networkidle');
+    /** @type {any} */
+    let sent = null;
+    await page.route('**/api/lead', async (route) => { sent = route.request().postDataJSON(); await route.fulfill({ status: 200, contentType: 'application/json', body: '{"ok":true}' }); });
+    for (const [selector, value] of Object.entries(VALID)) await page.fill(selector, value);
+    await page.selectOption('#ct-func', { index: 1 });
+    await page.click('#contact-form button[type="submit"]');
+    await page.locator('#form-status.is-success').waitFor();
+    assert.match(sent.origem, /^campanha: linkedin \/ social \/ lancamento · entrou por: \/insights · enviou de: http[^#]+\/$/);
     await page.close();
   });
 

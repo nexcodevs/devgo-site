@@ -7,6 +7,7 @@
 import { assetUrl, byId, closest, html, render, replayClass, reducedMotion } from '../core/dom.js';
 import { PLATFORMS, PROFILE_GROUPS, PLATFORM_ICON } from '../data/profiles.js';
 import { prefillSubject } from './contact-form.js';
+import { track } from './analytics.js';
 
 const MAX_PER_ROLE = 20;
 
@@ -62,6 +63,7 @@ export function initSquad() {
   let activeTab = '';
   /** Linhas já exibidas no resumo: só as novas animam a entrada. @type {Set<string>} */
   let shown = new Set();
+  let used = false; // registra o primeiro uso só uma vez por página
 
   /** @param {string} role */
   const qtyOf = (role) => squads.get(platform)?.get(role) ?? 0;
@@ -153,6 +155,7 @@ export function initSquad() {
     const role = closest(event.target, '.squad-role')?.dataset.role;
     if (!step || !role) return;
     const delta = Number(step.dataset.step);
+    if (!used && delta > 0) { used = true; track('Squad usado', { plataforma: platform }); }
     setQuantity(platform, role, qtyOf(role) + delta);
     const selector = `.squad-role[data-role="${CSS.escape(role)}"]`;
     const counter = builder.querySelector(`${selector} .squad-step b`);
@@ -186,6 +189,7 @@ export function initSquad() {
     }
     if (!closest(event.target, '.tray-cta')) return;
     const subject = squadSubject(squads);
+    track('Squad para o formulário', { profissionais: squadTotal(squads), plataformas: [...squads.keys()].join(', ').slice(0, 100) });
     if (subject) prefillSubject(subject);
   });
 

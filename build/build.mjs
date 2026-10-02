@@ -93,13 +93,50 @@ function articleJsonLd(meta) {
     headline: meta.title.replace(/ · Insights Devgo$/, ''),
     description: meta.description,
     datePublished: meta.date,
+    dateModified: meta.updated ?? meta.date,
     image: `${SITE_URL}/assets/${meta.image}`,
     inLanguage: 'pt-BR',
     author: { '@type': 'Organization', name: 'Devgo' },
-    publisher: { '@type': 'Organization', name: 'Devgo', logo: { '@type': 'ImageObject', url: `${SITE_URL}/assets/logo.svg` } },
+    publisher: { '@type': 'Organization', name: 'Devgo', logo: { '@type': 'ImageObject', url: `${SITE_URL}/assets/logo.png` } },
     mainEntityOfPage: SITE_URL + meta.path,
   };
-  return `<script type="application/ld+json">${JSON.stringify(data).replace(/</g, '\\u003c')}</script>`;
+  return jsonLd(data);
+}
+
+const jsonLd = (data) => `<script type="application/ld+json">${JSON.stringify(data).replace(/</g, '\\u003c')}</script>`;
+
+/** Empresa e site, na página inicial (base para o painel de conhecimento do Google). */
+function homeJsonLd() {
+  return jsonLd({
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'Organization',
+        '@id': `${SITE_URL}/#org`,
+        name: 'Devgo',
+        url: `${SITE_URL}/`,
+        logo: `${SITE_URL}/assets/logo.png`,
+        description: 'Alocação de profissionais de tecnologia: devs, QA, dados, design e liderança técnica em regime full-time, 100% dedicados ao time do cliente.',
+        email: 'privacidade@devgo.digital',
+        areaServed: ['BR', 'Latin America', 'US', 'EU'],
+        sameAs: ['https://www.linkedin.com/company/devgodigital/', 'https://www.instagram.com/devgo.digital/'],
+      },
+      { '@type': 'WebSite', '@id': `${SITE_URL}/#site`, name: 'Devgo', url: `${SITE_URL}/`, inLanguage: 'pt-BR', publisher: { '@id': `${SITE_URL}/#org` } },
+    ],
+  });
+}
+
+/** Trilha Início › Insights › artigo, para o Google mostrar o caminho no resultado. */
+function breadcrumbJsonLd(meta) {
+  const trail = [['Início', '/']];
+  if (meta.slug.startsWith('insights')) trail.push(['Insights', '/insights']);
+  if (meta.path !== '/' && meta.path !== '/insights') trail.push([meta.title.replace(/ · .*$/, ''), meta.path]);
+  if (trail.length < 2) return '';
+  return jsonLd({
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: trail.map(([name, path], i) => ({ '@type': 'ListItem', position: i + 1, name, item: SITE_URL + path })),
+  });
 }
 
 async function buildPage({ meta, content }, pages) {
@@ -122,7 +159,7 @@ async function buildPage({ meta, content }, pages) {
     .replaceAll('{{url}}', SITE_URL + meta.path)
     .replaceAll('{{og_image}}', `${SITE_URL}/assets/${meta.image ?? 'og.jpg'}`)
     .replaceAll('{{site}}', SITE_URL)
-    .replace('{{head_extra}}', (meta.type === 'article' ? articleJsonLd(meta) : '') + (meta.noindex ? '<meta name="robots" content="noindex">' : ''))
+    .replace('{{head_extra}}', meta.noindex ? '<meta name="robots" content="noindex">' : [meta.slug === 'index' ? homeJsonLd() : '', meta.type === 'article' ? articleJsonLd(meta) : '', breadcrumbJsonLd(meta)].filter(Boolean).join('\n'))
     .replace('{{preloads}}', preloads);
 
   const html = `<!doctype html>\n<html lang="pt-BR">\n<head>\n${head.trim()}\n</head>\n<body>\n\n${body}\n\n</body>\n</html>\n`;
@@ -131,7 +168,7 @@ async function buildPage({ meta, content }, pages) {
   const out = join(OUT, `${meta.slug}.html`);
   await mkdir(dirname(out), { recursive: true });
   await writeFile(out, html);
-  return meta.noindex ? null : meta.path;
+  return meta.noindex ? null : { path: meta.path, lastmod: meta.updated ?? meta.date };
 }
 
 export async function build() {
@@ -147,14 +184,14 @@ export async function build() {
   const metas = pages.map((p) => p.meta);
   const paths = [];
   for (const page of pages) {
-    const path = await buildPage(page, metas);
-    if (path) paths.push(path); // páginas noindex (como a 404) ficam fora do sitemap
+    const entry = await buildPage(page, metas);
+    if (entry) paths.push(entry); // páginas noindex (como a 404) ficam fora do sitemap
   }
 
-  const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${paths.map((p) => `  <url><loc>${SITE_URL}${p}</loc></url>`).join('\n')}\n</urlset>\n`;
+  const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${paths.map((p) => `  <url><loc>${SITE_URL}${p.path}</loc>${p.lastmod ? `<lastmod>${p.lastmod}</lastmod>` : ''}</url>`).join('\n')}\n</urlset>\n`;
   await writeFile(join(OUT, 'sitemap.xml'), sitemap);
   await writeFile(join(OUT, 'robots.txt'), `User-agent: *\nAllow: /\n\nSitemap: ${SITE_URL}/sitemap.xml\n`);
-  return paths;
+  return paths.map((p) => p.path);
 }
 
 if (import.meta.url === pathToFileURL(process.argv[1]).href) {

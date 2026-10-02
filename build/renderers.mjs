@@ -14,7 +14,16 @@ const title = (a) => esc(a.title.replace(/ · Insights Devgo$/, ''));
 /** Capa do artigo; `small` usa a versão de 600px. */
 /** Ponto de foco da foto (rosto) para os recortes menores que 16:10. */
 const focus = (a) => (a.imageFocus ? ` style="object-position:${esc(a.imageFocus)}"` : '');
-const cover = (a, small = false, eager = false) => `<img src="/assets/${small ? a.image.replace(/\.jpg$/, '-sm.jpg') : a.image}" alt="${esc(a.imageAlt)}" width="${small ? 600 : 1200}" height="${small ? 375 : 750}" ${eager ? 'fetchpriority="high"' : 'loading="lazy"'}${focus(a)}>`;
+/** Versões WebP da capa (600 e 1200 px); o .jpg fica só para o og:image. */
+const webp = (image) => {
+  const base = `/assets/${image.replace(/\.jpg$/, '')}`;
+  return { sm: `${base}-sm.webp`, lg: `${base}.webp`, srcset: `${base}-sm.webp 600w, ${base}.webp 1200w` };
+};
+const cover = (a, small = false, eager = false) => {
+  const img = webp(a.image);
+  const sizes = small ? '(max-width: 760px) 92vw, 400px' : '(max-width: 1100px) 92vw, 760px';
+  return `<img src="${small ? img.sm : img.lg}" srcset="${img.srcset}" sizes="${sizes}" alt="${esc(a.imageAlt)}" width="${small ? 600 : 1200}" height="${small ? 375 : 750}" ${eager ? 'fetchpriority="high"' : 'loading="lazy" decoding="async"'}${focus(a)}>`;
+};
 
 const card = (a, featured = false) => `<a class="insight-card" href="${a.path}" data-topic="${esc(a.category)}"${featured ? ' data-featured' : ''}>
           <span class="insight-thumb">${cover(a, true)}</span>
@@ -34,7 +43,7 @@ export const RENDERERS = {
     <p class="article-byline">Time Devgo · <time datetime="${meta.date}">${formatDate(meta.date)}</time> · ${esc(meta.readingTime)} de leitura</p>
   </div>
 </header>
-<div class="article-cover"><div class="wrap"><img src="/assets/${meta.image}" alt="${esc(meta.imageAlt)}" width="1200" height="750"${focus(meta)}></div></div>`,
+<div class="article-cover"><div class="wrap"><img src="${webp(meta.image).lg}" srcset="${webp(meta.image).srcset}" sizes="(max-width: 1100px) 92vw, 1100px" alt="${esc(meta.imageAlt)}" width="1200" height="750" fetchpriority="high"${focus(meta)}></div></div>`,
 
   /** Página /insights: filtro por tema, três destaques e a biblioteca completa (o JS filtra e pagina). */
   'insights-list': ({ pages }) => {

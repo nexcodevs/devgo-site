@@ -9,6 +9,7 @@
  * mantém os dados na tela e aponta um canal alternativo.
  */
 import { byId, html, render, reducedMotion } from '../core/dom.js';
+import { leadOrigin, track } from './analytics.js';
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@.]+(\.[^\s@.]+)*\.[a-z]{2,}$/i;
 const NAME_PATTERN = /^[\p{L}][\p{L}\p{M}' .-]*$/u;
@@ -175,6 +176,7 @@ export function initContactForm() {
     ids.forEach((id) => touched.add(id));
     const invalid = ids.filter((id) => !check(id));
     if (invalid.length) {
+      track('Formulário com erro', { campos: invalid.length });
       showStatus('is-error', html`${invalid.length === 1 ? 'Confira o campo destacado.' : `Confira os ${invalid.length} campos destacados.`}`);
       field(invalid[0]).focus();
       return;
@@ -187,7 +189,7 @@ export function initContactForm() {
 
     /** @type {Record<string, string | number>} */
     const payload = {
-      origem: window.location.href,
+      origem: leadOrigin(),
       website: /** @type {HTMLInputElement} */ (form.elements.namedItem('website'))?.value ?? '',
       elapsed: Date.now() - startedAt,
       turnstile: captcha,
@@ -202,6 +204,7 @@ export function initContactForm() {
       const response = await fetch(ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
       const result = await response.json().catch(() => ({}));
       if (response.ok && result.ok) {
+        track('Lead enviado', { tipo: payload.assunto.toString().startsWith('Squad ') ? 'squad' : 'contato', funcionarios: String(payload.funcionarios), pagina: location.pathname });
         form.reset();
         touched.clear();
         showStatus('is-success', html`Mensagem enviada. Um especialista da Devgo responde em breve.`);

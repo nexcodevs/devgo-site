@@ -22,4 +22,4 @@ export const PLACEMENTS = [
 ];
 
 /** Fotos que se revezam nos cartões. */
-export const PLACEMENT_FACES = ['fa1.jpg', 'fa2.jpg', 'fa3.jpg', 'fa4.jpg', 'fa5.jpg'];
+export const PLACEMENT_FACES = ['fa1.webp', 'fa2.webp', 'fa3.webp', 'fa4.webp', 'fa5.webp'];
