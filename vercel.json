@@ -3,6 +3,45 @@
   "outputDirectory": "dist",
   "installCommand": "echo sem dependências",
   "cleanUrls": true,
+  "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "devgo-site-2026.vercel.app"
+        }
+      ],
+      "destination": "https://www.devgo.digital/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/especialidades",
+      "destination": "/#especialidades",
+      "permanent": true
+    },
+    {
+      "source": "/como-funciona",
+      "destination": "/#solucoes",
+      "permanent": true
+    },
+    {
+      "source": "/contato",
+      "destination": "/#contato",
+      "permanent": true
+    },
+    {
+      "source": "/index",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/home",
+      "destination": "/",
+      "permanent": true
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",

@@ -17,7 +17,7 @@ import { FEATURES } from '../js/registry.js';
 
 /** Endereço público. Troque para https://devgo.digital quando o domínio apontar para a Vercel. */
 /** Endereço público do site. Na Vercel, defina SITE_URL (ex.: https://devgo.digital) ao trocar o domínio. */
-export const SITE_URL = (process.env.SITE_URL ?? 'https://devgo-site-2026.vercel.app').replace(/\/$/, '');
+export const SITE_URL = (process.env.SITE_URL ?? 'https://www.devgo.digital').replace(/\/$/, '');
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const OUT = join(ROOT, 'dist');
@@ -159,7 +159,9 @@ async function buildPage({ meta, content }, pages) {
     .replaceAll('{{url}}', SITE_URL + meta.path)
     .replaceAll('{{og_image}}', `${SITE_URL}/assets/${meta.image ?? 'og.jpg'}`)
     .replaceAll('{{site}}', SITE_URL)
-    .replace('{{head_extra}}', meta.noindex ? '<meta name="robots" content="noindex">' : [meta.slug === 'index' ? homeJsonLd() : '', meta.type === 'article' ? articleJsonLd(meta) : '', breadcrumbJsonLd(meta)].filter(Boolean).join('\n'))
+    // páginas noindex não declaram canônica: os dois sinais juntos se contradizem
+    .replace('{{canonical}}', meta.noindex ? '' : `<link rel="canonical" href="${SITE_URL + meta.path}">`)
+    .replace('{{head_extra}}', meta.noindex ? '<meta name="robots" content="noindex, follow">' : [meta.slug === 'index' ? homeJsonLd() : '', meta.type === 'article' ? articleJsonLd(meta) : '', breadcrumbJsonLd(meta)].filter(Boolean).join('\n'))
     .replace('{{preloads}}', preloads);
 
   const html = `<!doctype html>\n<html lang="pt-BR">\n<head>\n${head.trim()}\n</head>\n<body>\n\n${body}\n\n</body>\n</html>\n`;

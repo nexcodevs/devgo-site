@@ -13,7 +13,8 @@ let PAGES = [];
 
 let server, browser;
 before(async () => {
-  PAGES = await build();
+  // o sitemap lista só as páginas indexáveis; a política (noindex) também é testada
+  PAGES = [...await build(), '/politica-de-privacidade'];
   server = await serve(`${ROOT}dist`, `${ROOT}vercel.json`);
   browser = await chromium.launch();
 });
@@ -97,10 +98,12 @@ describe('renderização', () => {
     assert.equal(response.status, 404);
     const body = await response.text();
     assert.match(body, /não está no time/);
-    assert.match(body, /<meta name="robots" content="noindex">/);
+    assert.match(body, /<meta name="robots" content="noindex, follow">/);
+    assert.doesNotMatch(body, /rel="canonical"/);
     const sitemap = await (await fetch(new URL('/sitemap.xml', server.url))).text();
     assert.doesNotMatch(sitemap, /\/404</);
-    assert.match(sitemap, /politica-de-privacidade/);
+    assert.doesNotMatch(sitemap, /politica-de-privacidade/);
+    assert.match(sitemap, /<loc>https:\/\/www\.devgo\.digital\/<\/loc>/);
   });
 
   test('abrir uma página por link começa do topo', async () => {
@@ -199,9 +202,9 @@ describe('carregamento e navegação entre páginas', () => {
     }
   });
 
-  test('sitemap lista todas as páginas', async () => {
+  test('sitemap lista todas as páginas indexáveis', async () => {
     const xml = await (await fetch(new URL('/sitemap.xml', server.url))).text();
-    for (const path of PAGES) assert.match(xml, new RegExp(`<loc>[^<]*${path === '/' ? '/' : path}</loc>`));
+    for (const path of PAGES.filter((p) => p !== '/politica-de-privacidade')) assert.match(xml, new RegExp(`<loc>[^<]*${path === '/' ? '/' : path}</loc>`));
     for (const path of PAGES.filter((p) => p.startsWith('/insights/'))) assert.match(xml, new RegExp(`${path}</loc><lastmod>\\d{4}-\\d{2}-\\d{2}</lastmod>`));
   });
 });
@@ -565,4 +568,14 @@ describe('funções puras', () => {
     });
     await page.close();
   });
+});
+
+test('vercel.json: o domínio .vercel.app e os endereços antigos redirecionam (301) para www.devgo.digital', async () => {
+  const { readFile } = await import('node:fs/promises');
+  const config = JSON.parse(await readFile(new URL('../vercel.json', import.meta.url), 'utf8'));
+  const host = config.redirects.find((r) => r.has?.some((h) => h.type === 'host' && h.value === 'devgo-site-2026.vercel.app'));
+  assert.ok(host?.permanent && host.destination === 'https://www.devgo.digital/:path*');
+  for (const old of ['/especialidades', '/como-funciona', '/contato']) {
+    assert.ok(config.redirects.some((r) => r.source === old && r.permanent), old);
+  }
 });
