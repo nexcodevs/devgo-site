@@ -21,11 +21,18 @@ function relative(href, pageDir) {
 /** Reescreve href/src absolutos ("/x") de uma página; mantém links externos e âncoras locais. */
 function relativize(html, pagePath) {
   const pageDir = posix.dirname(pagePath);
-  return html.replace(/\b(href|src)="(\/(?!\/)[^"]*)"/g, (_, attr, url) => {
-    // na própria home, links para a home viram âncoras locais (sem recarregar o Artifact)
-    if (pagePath === 'index.html' && (url === '/' || url.startsWith('/#'))) return `${attr}="${url === '/' ? '#top' : url.slice(1)}"`;
-    return `${attr}="${relative(url, pageDir)}"`;
-  });
+  return html
+    // o script do Vercel Analytics só existe na Vercel
+    .replace(/<script defer src="\/_vercel\/insights\/script\.js"><\/script>\n?/, '')
+    .replace(/\bsrcset="([^"]*)"/g, (_, set) => `srcset="${set.split(',').map((item) => {
+      const [url, ...descriptor] = item.trim().split(/\s+/);
+      return [url.startsWith('/') && !url.startsWith('//') ? relative(url, pageDir) : url, ...descriptor].join(' ');
+    }).join(', ')}"`)
+    .replace(/\b(href|src|poster)="(\/(?!\/)[^"]*)"/g, (_, attr, url) => {
+      // na própria home, links para a home viram âncoras locais (sem recarregar o Artifact)
+      if (pagePath === 'index.html' && (url === '/' || url.startsWith('/#'))) return `${attr}="${url === '/' ? '#top' : url.slice(1)}"`;
+      return `${attr}="${relative(url, pageDir)}"`;
+    });
 }
 
 /** A home vira o conteúdo que o Artifact envolve: <title>, elementos do head e corpo. */
@@ -61,4 +68,8 @@ for (const page of await listHtml(outDir)) {
   if (page === 'index.html') html = unwrap(html);
   await writeFile(file, html);
 }
+// links montados pelo JS (acordeão de Soluções, só na home): também relativos
+const servicesFile = join(outDir, 'js/data/services.js');
+const services = await readFile(servicesFile, 'utf8');
+await writeFile(servicesFile, services.replace(/href: '(\/[^']+)'/g, (_, url) => `href: '${relative(url, '.')}'`));
 console.log(`cópia de revisão em ${outDir}`);
