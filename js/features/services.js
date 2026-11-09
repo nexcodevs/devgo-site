@@ -35,7 +35,7 @@ export function initServices() {
     <div class="svc-item">
       <button type="button" class="svc-head" aria-expanded="false" aria-controls="svc-body-${i}"><span class="svc-num">${ordinal(i)}</span><span class="svc-title">${svc.title}</span><span class="svc-plus" aria-hidden="true">+</span></button>
       <div class="svc-body" id="svc-body-${i}" role="region" aria-label="${svc.title}">
-        <div class="svc-copy"><span class="svc-kicker">${ordinal(i)} · ${svc.subtitle}</span><h3>${svc.title}</h3><p>${svc.description}</p><ul class="svc-list">${svc.bullets.map((b) => html`<li>${b}</li>`)}</ul><div class="svc-ideal"><b>Ideal para:</b> ${svc.idealFor}</div><a class="btn btn-primary" href="#contato">Quero este modelo <span class="arrow" aria-hidden="true">→</span></a></div>
+        <div class="svc-copy"><span class="svc-kicker">${ordinal(i)} · ${svc.subtitle}</span><h3>${svc.title}</h3><p>${svc.description}</p><ul class="svc-list">${svc.bullets.map((b) => html`<li>${b}</li>`)}</ul><div class="svc-ideal"><b>Ideal para:</b> ${svc.idealFor}</div><div class="svc-actions"><a class="btn btn-primary" href="#contato">Quero este modelo <span class="arrow" aria-hidden="true">→</span></a><a class="svc-link" href="${svc.href}">Como funciona <span class="arrow" aria-hidden="true">→</span></a></div></div>
         <div class="viz">${VIZ[svc.viz]()}</div>
       </div>
       <i class="svc-progress" aria-hidden="true"><i></i></i>

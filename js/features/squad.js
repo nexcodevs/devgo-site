@@ -59,7 +59,11 @@ export function initSquad() {
   const tray = byId('squad-tray');
   /** Cargos por plataforma, na ordem em que foram escolhidos. @type {Squads} */
   const squads = new Map();
-  let platform = PLATFORMS[0].name;
+  // páginas de plataforma abrem o construtor já na plataforma delas (data-platform)
+  const fixed = PLATFORMS.find((p) => p.name === builder.dataset.platform)?.name;
+  let platform = fixed ?? PLATFORMS[0].name;
+  // em página de plataforma, o construtor fica só nela: sem o passo de escolher tecnologia
+  const locked = Boolean(fixed);
   let activeTab = '';
   /** Linhas já exibidas no resumo: só as novas animam a entrada. @type {Set<string>} */
   let shown = new Set();
@@ -72,16 +76,16 @@ export function initSquad() {
     const tabs = tabsFor(platform);
     if (!tabs.some((t) => t.id === activeTab)) activeTab = tabs[0].id;
     const current = /** @type {typeof tabs[number]} */ (tabs.find((t) => t.id === activeTab));
-    render(builder, html`
+    render(builder, html`${locked ? '' : html`
       <div class="sq-step">
         <h3 class="sq-step-title" id="sq-step-1"><b>1</b>Tecnologia ou plataforma</h3>
         <div class="sq-platforms" role="radiogroup" aria-labelledby="sq-step-1">${PLATFORMS.map((p) => {
           const count = squadTotal(squads, p.name);
           return html`<button type="button" class="sq-platform" role="radio" aria-checked="${String(p.name === platform)}" data-platform="${p.name}"><strong>${p.name}</strong><small>${p.kind}</small>${count ? html`<em aria-label="${countLabel(count)}">${count}</em>` : ''}</button>`;
         })}</div>
-      </div>
+      </div>`}
       <div class="sq-step">
-        <h3 class="sq-step-title" id="sq-step-2"><b>2</b>Cargos por categoria</h3>
+        <h3 class="sq-step-title" id="sq-step-2">${locked ? html`Cargos ${platform} por categoria` : html`<b>2</b>Cargos por categoria`}</h3>
         <div class="sq-cats">
         <div class="sq-tabs" role="tablist" aria-labelledby="sq-step-2">${tabs.map((t) => {
           const count = t.roles.reduce((sum, r) => sum + qtyOf(r), 0);
@@ -103,12 +107,12 @@ export function initSquad() {
   const drawTray = () => {
     const count = squadTotal(squads);
     const groups = PLATFORMS.filter((p) => squadTotal(squads, p.name) > 0);
-    render(tray, html`<div class="tray-head"><strong>Seu squad</strong><span>${countLabel(count)}</span></div>${count
+    render(tray, html`<div class="tray-head"><strong>${locked ? `Seu squad ${platform}` : 'Seu squad'}</strong><span>${countLabel(count)}</span></div>${count
       ? html`<div class="tray-groups">${groups.map((p) => html`<section class="tray-group${p.name === platform ? ' is-current' : ''}"><button type="button" class="tray-group-head" data-go-platform="${p.name}"><strong>${p.name}</strong><span>${countLabel(squadTotal(squads, p.name))}</span></button><ul class="tray-list">${[...(squads.get(p.name) ?? [])].map(([role, qty]) => {
           const key = `${p.name}::${role}`;
           return html`<li class="tray-role${shown.has(key) ? '' : ' is-new'}"><b>${qty}×</b><span>${role}</span><button type="button" class="tray-remove" data-remove-platform="${p.name}" data-remove-role="${role}" aria-label="Remover ${role} de ${p.name}">×</button></li>`;
         })}</ul></section>`)}</div>`
-      : html`<p class="tray-empty">Escolha a plataforma e os cargos. Se preferir, fale direto com a gente.</p>`}<a class="btn btn-primary tray-cta" href="#contato">${count ? 'Montar este squad' : 'Falar com um especialista'} <span class="arrow" aria-hidden="true">→</span></a>`);
+      : html`<p class="tray-empty">${locked ? `Escolha os cargos ${platform} e as quantidades. Se preferir, fale direto com a gente.` : 'Escolha a plataforma e os cargos. Se preferir, fale direto com a gente.'}</p>`}<a class="btn btn-primary tray-cta" href="#contato">${count ? 'Montar este squad' : 'Falar com um especialista'} <span class="arrow" aria-hidden="true">→</span></a>`);
     shown = new Set(groups.flatMap((p) => [...(squads.get(p.name) ?? new Map()).keys()].map((role) => `${p.name}::${role}`)));
   };
 

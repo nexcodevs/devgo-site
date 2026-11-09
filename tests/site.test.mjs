@@ -80,6 +80,10 @@ describe('renderização', () => {
       '/politica-de-privacidade': { '.legal h2': 12, '.legal a[href^="mailto:"]': 3 },
       '/insights': { '.insight-hero img': 1, '.insight-pick img': 2, '.insight-card img': 20, '.insight-filters button': 6 },
     };
+    // páginas de solução e de plataforma: mesmo esqueleto, conteúdo próprio
+    for (const path of PAGES.filter((p) => /^\/(solucoes|plataformas)\//.test(p))) {
+      expected[path] = { '.lp-hero-media > img': 1, '.lp-live': 1, '.lp-feature': 1, '.lp-faq details': -1, '.lp-explore-group': 2, '#contact-form': 1, '#squad-builder': path.startsWith('/plataformas/') || path.endsWith('/squad-as-a-service') ? 1 : 0 };
+    }
     for (const path of PAGES.filter((p) => p.startsWith('/insights/'))) expected[path] = { '.prose h2': 3, '.article-cover img': 1, '.insight-card .insight-thumb img': 3, '.article-cta .btn': 1 };
     assert.deepEqual(Object.keys(expected).sort(), [...PAGES].sort());
     for (const [path, counts] of Object.entries(expected)) {
@@ -87,6 +91,7 @@ describe('renderização', () => {
       for (const [selector, n] of Object.entries(counts)) {
         const found = await page.locator(selector).count();
         if (selector === '.prose h2') assert.ok(found >= n, `${path} ${selector}: ${found}`);
+        else if (n < 0) assert.ok(found >= 3, `${path} ${selector}: ${found}`);
         else assert.equal(found, n, `${path} ${selector}`);
       }
       await page.close();
@@ -578,4 +583,23 @@ test('vercel.json: o domínio .vercel.app e os endereços antigos redirecionam (
   for (const old of ['/especialidades', '/como-funciona', '/contato']) {
     assert.ok(config.redirects.some((r) => r.source === old && r.permanent), old);
   }
+});
+
+describe('páginas de plataforma', () => {
+  test('o montador de squad fica travado na plataforma da página', async () => {
+    const { page } = await open({ path: '/plataformas/sap' });
+    await page.waitForSelector('#squad-builder .sq-tab');
+    assert.equal(await page.locator('#squad-builder .sq-platform').count(), 0);
+    assert.match(await page.locator('#sq-step-2').innerText(), /cargos sap por categoria/i);
+    await page.locator('#squad-builder .squad-role').first().click();
+    assert.match(await page.locator('#squad-tray .tray-head').innerText(), /Seu squad SAP/);
+    await page.close();
+  });
+
+  test('o CTA do herói preenche o assunto do formulário', async () => {
+    const { page } = await open({ path: '/solucoes/hunting-tech' });
+    await page.locator('.lp-actions a[data-subject]').click();
+    assert.ok((await page.inputValue('#ct-assunto')).length > 3);
+    await page.close();
+  });
 });

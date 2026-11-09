@@ -145,6 +145,12 @@ export function initContactForm() {
     render(status, content);
   };
 
+  // botões que levam ao contato já dizendo o assunto (páginas de solução e plataforma)
+  document.addEventListener('click', (event) => {
+    const link = /** @type {HTMLElement | null} */ (event.target instanceof Element ? event.target.closest('a[data-subject]') : null);
+    if (link?.dataset.subject) prefillSubject(link.dataset.subject);
+  });
+
   const phone = /** @type {HTMLInputElement} */ (field('ct-tel'));
   phone.addEventListener('input', () => {
     const atEnd = phone.selectionStart === phone.value.length;

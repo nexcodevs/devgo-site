@@ -10,6 +10,7 @@
  * @property {string[]} bullets
  * @property {string} idealFor
  * @property {VizKind} viz ilustração exibida ao lado do texto
+ * @property {string} href página do modelo
  */
 
 /** @type {Service[]} */
@@ -21,6 +22,7 @@ export const SERVICES = [
     bullets: ['Devs front, back, full-stack e mobile', 'QA, DevOps, dados e UX/UI', 'Substituição garantida', 'Cobrança mensal por profissional'],
     idealFor: 'Times que precisam de capacidade extra sem abrir vaga CLT.',
     viz: 'alloc',
+    href: '/solucoes/alocacao-de-profissionais',
   },
   {
     title: 'Squad as a Service',
@@ -29,6 +31,7 @@ export const SERVICES = [
     bullets: ['Composição sob medida', 'Rituais ágeis desde a primeira sprint', 'Escala para cima ou para baixo', 'Cobrança mensal pela capacidade do squad'],
     idealFor: 'Empresas que querem acelerar um produto sem montar um time do zero.',
     viz: 'squad',
+    href: '/solucoes/squad-as-a-service',
   },
   {
     title: 'Liderança sob demanda',
@@ -37,6 +40,7 @@ export const SERVICES = [
     bullets: ['Arquitetos e tech leads', 'Product managers e product owners', 'Dedicação integral, sem consultoria avulsa', 'Cobrança mensal por profissional'],
     idealFor: 'Times que cresceram e precisam de direção técnica ou de produto.',
     viz: 'lead',
+    href: '/solucoes/lideranca-sob-demanda',
   },
   {
     title: 'Hunting tech',
@@ -45,6 +49,7 @@ export const SERVICES = [
     bullets: ['Match por IA na base e no mercado', 'Validação técnica, cultural e de carreira', 'Shortlist pronta para entrevista', 'Fee por contratação realizada'],
     idealFor: 'Empresas que querem contratar direto, com a assertividade de quem só faz tech.',
     viz: 'match',
+    href: '/solucoes/hunting-tech',
   },
 ];
 
