@@ -1,23 +1,26 @@
-// Recebe o formulário de contato do site e cria o lead no Pipedrive.
+// Recebe o formulário de contato do site e cria um negócio no funil do Pipedrive.
 // Roda como função serverless da Vercel (POST /api/lead).
 //
 // Variáveis de ambiente (Vercel → Settings → Environment Variables):
 //   PIPEDRIVE_API_TOKEN    obrigatório: token de API de um usuário do Pipedrive
 //   PIPEDRIVE_DOMAIN       opcional: subdomínio da conta (ex.: "devgo" para devgo.pipedrive.com)
-//   PIPEDRIVE_OWNER_ID     opcional: id do usuário dono dos leads
-//   PIPEDRIVE_LABEL_IDS    opcional: ids de etiquetas de lead, separados por vírgula
-//   PIPEDRIVE_FIELD_EMPLOYEES  opcional: chave do campo personalizado "nº de funcionários" do lead
+//   PIPEDRIVE_OWNER_ID     opcional: id do usuário dono dos negócios
+//   PIPEDRIVE_PIPELINE_ID  opcional: funil do negócio (padrão: 1, funil Devgo)
+//   PIPEDRIVE_STAGE_ID     opcional: etapa do negócio (padrão: 7, etapa "Lead" do funil Devgo)
+//   PIPEDRIVE_LABEL_IDS    opcional: ids numéricos de etiquetas de negócio, separados por vírgula
+//   PIPEDRIVE_FIELD_EMPLOYEES  opcional: chave do campo personalizado "nº de funcionários" do negócio
 //   TURNSTILE_SECRET_KEY   opcional: chave secreta do Cloudflare Turnstile (com ela, o captcha passa a ser exigido)
 //
-// Pessoas e organizações usam a API v2 do Pipedrive (as rotas v1 foram descontinuadas);
-// leads e notas continuam na v1, que é onde existem.
+// Pessoas, organizações e negócios usam a API v2 do Pipedrive; notas continuam na v1.
 //
 // Fluxo: reaproveita pessoa (pelo e-mail) e organização (pelo nome) se já existirem,
-// cria o lead ligado às duas e anexa uma nota com a mensagem e a origem.
+// cria o negócio no funil ligado às duas e anexa uma nota com a mensagem e a origem.
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const CALL_TIMEOUT_MS = 6000; // cada chamada ao Pipedrive; a função inteira tem folga dentro do limite da Vercel
 const MIN_FILL_MS = 1500; // robôs enviam o formulário instantaneamente
+const DEFAULT_PIPELINE_ID = 1; // funil "Devgo"
+const DEFAULT_STAGE_ID = 7; // etapa "Lead", a primeira do funil Devgo
 const LIMITS = { nome: 120, email: 160, telefone: 40, empresa: 160, funcionarios: 40, assunto: 200, mensagem: 4000, origem: 500 };
 
 /**
@@ -71,9 +74,9 @@ export class PipedriveError extends Error {
 }
 
 /**
- * Cria (ou reaproveita) organização e pessoa e cria o lead com uma nota.
+ * Cria (ou reaproveita) organização e pessoa e cria o negócio com uma nota.
  * @param {Record<string, string>} d dados já validados
- * @param {{ token: string, domain?: string, ownerId?: string, labelIds?: string, employeesField?: string }} config
+ * @param {{ token: string, domain?: string, ownerId?: string, pipelineId?: string, stageId?: string, labelIds?: string, employeesField?: string }} config
  * @param {typeof fetch} [http]
  */
 export async function createPipedriveLead(d, config, http = fetch) {
@@ -108,27 +111,32 @@ export async function createPipedriveLead(d, config, http = fetch) {
       ...owner,
     })).id;
 
-  const labels = (config.labelIds ?? '').split(',').map((s) => s.trim()).filter(Boolean);
-  const lead = {
+  const labels = (config.labelIds ?? '').split(',').map((s) => Number(s.trim())).filter((n) => Number.isInteger(n) && n > 0);
+  const deal = {
     title: `${d.empresa} · ${d.assunto}`.slice(0, 250),
     person_id: personId,
-    organization_id: orgId,
+    org_id: orgId,
+    pipeline_id: Number(config.pipelineId) || DEFAULT_PIPELINE_ID,
+    stage_id: Number(config.stageId) || DEFAULT_STAGE_ID,
     ...owner,
+  };
+  const extras = {
     ...(labels.length ? { label_ids: labels } : {}),
+    ...(config.employeesField ? { custom_fields: { [config.employeesField]: d.funcionarios } } : {}),
   };
   let created;
   try {
-    created = await call('v1', '/leads', config.employeesField ? { ...lead, [config.employeesField]: d.funcionarios } : lead);
+    created = await call('v2', '/deals', { ...deal, ...extras });
   } catch (error) {
-    // campo personalizado mal configurado não pode derrubar o lead: tenta sem ele
-    if (!config.employeesField) throw error;
-    console.warn('[lead] campo de funcionários recusado, criando sem ele', String(error));
-    created = await call('v1', '/leads', lead);
+    // etiqueta ou campo personalizado mal configurado não pode derrubar o negócio: tenta sem eles
+    if (!Object.keys(extras).length) throw error;
+    console.warn('[lead] etiquetas ou campo de funcionários recusados, criando sem eles', String(error));
+    created = await call('v2', '/deals', deal);
   }
   try {
-    await call('v1', '/notes', { content: noteFor(d), lead_id: created.id });
+    await call('v1', '/notes', { content: noteFor(d), deal_id: created.id });
   } catch (error) {
-    console.warn('[lead] nota não anexada', String(error)); // o lead já existe; a nota é complemento
+    console.warn('[lead] nota não anexada', String(error)); // o negócio já existe; a nota é complemento
   }
   return created.id;
 }
@@ -182,12 +190,14 @@ export default async function handler(req, res) {
       token,
       domain: process.env.PIPEDRIVE_DOMAIN,
       ownerId: process.env.PIPEDRIVE_OWNER_ID,
+      pipelineId: process.env.PIPEDRIVE_PIPELINE_ID,
+      stageId: process.env.PIPEDRIVE_STAGE_ID,
       labelIds: process.env.PIPEDRIVE_LABEL_IDS,
       employeesField: process.env.PIPEDRIVE_FIELD_EMPLOYEES,
     });
     return res.status(200).json({ ok: true });
   } catch (error) {
-    console.error('[lead] falha ao criar lead', error);
+    console.error('[lead] falha ao criar o negócio', error);
     return res.status(502).json({ ok: false, error: 'crm' }); // detalhes (etapa e status) ficam só no log
   }
 }

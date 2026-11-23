@@ -35,20 +35,22 @@ test('aceita o subdomínio em qualquer formato', () => {
   for (const v of ['devgo', 'devgo.pipedrive.com', 'https://devgo.pipedrive.com/']) assert.equal(pipedriveHost(v), 'https://devgo.pipedrive.com');
 });
 
-test('cria organização, pessoa, lead e nota quando nada existe', async () => {
+test('cria organização, pessoa, negócio no funil e nota quando nada existe', async () => {
   const { http, calls } = fakeFetch({
     'GET v2 /organizations/search': { items: [] },
     'POST v2 /organizations': { id: 11 },
     'GET v2 /persons/search': { items: [] },
     'POST v2 /persons': { id: 22 },
-    'POST v1 /leads': { id: 'lead-1' },
+    'POST v2 /deals': { id: 901 },
     'POST v1 /notes': { id: 33 },
   });
-  const id = await createPipedriveLead(VALID, { token: 't0k', ownerId: '7', labelIds: 'a, b' }, http);
-  assert.equal(id, 'lead-1');
-  const lead = calls.find((c) => c.path === '/leads').body;
-  assert.deepEqual(lead, { title: 'Acme · Alocar 2 devs', person_id: 22, organization_id: 11, owner_id: 7, label_ids: ['a', 'b'] });
-  assert.equal(calls.find((c) => c.path === '/notes').body.lead_id, 'lead-1');
+  const id = await createPipedriveLead(VALID, { token: 't0k', ownerId: '7', labelIds: '4, x' }, http);
+  assert.equal(id, 901);
+  const deal = calls.find((c) => c.path === '/deals').body;
+  assert.deepEqual(deal, { title: 'Acme · Alocar 2 devs', person_id: 22, org_id: 11, pipeline_id: 1, stage_id: 7, owner_id: 7, label_ids: [4] });
+  assert.equal(calls.find((c) => c.path === '/deals').version, 'v2');
+  assert.equal(calls.find((c) => c.path === '/notes').body.deal_id, 901);
+  assert.equal(calls.some((c) => c.path === '/leads'), false);
   assert.deepEqual(calls.find((c) => c.path === '/persons' && c.body).body.emails, [{ value: 'ana@empresa.com', primary: true, label: 'work' }]);
   assert.ok(calls.every((c) => c.headers['x-api-token'] === 't0k' && !c.url.includes('t0k')));
 });
@@ -57,14 +59,15 @@ test('reaproveita pessoa e organização existentes', async () => {
   const { http, calls } = fakeFetch({
     'GET v2 /organizations/search': { items: [{ item: { id: 5 } }] },
     'GET v2 /persons/search': { items: [{ item: { id: 6 } }] },
-    'POST v1 /leads': { id: 'lead-2' },
+    'POST v2 /deals': { id: 902 },
   });
-  await createPipedriveLead(VALID, { token: 't' }, http);
+  await createPipedriveLead(VALID, { token: 't', pipelineId: '3', stageId: '15' }, http);
   assert.equal(calls.some((c) => c.body && (c.path === '/organizations' || c.path === '/persons')), false);
-  assert.deepEqual(calls.find((c) => c.path === '/leads').body.person_id, 6);
+  const deal = calls.find((c) => c.path === '/deals').body;
+  assert.deepEqual([deal.person_id, deal.org_id, deal.pipeline_id, deal.stage_id], [6, 5, 3, 15]);
 });
 
-test('busca e nota com falha não derrubam o lead; campo extra recusado é descartado', async () => {
+test('busca e nota com falha não derrubam o negócio; campo extra recusado é descartado', async () => {
   const { http, calls } = fakeFetch({
     'GET v2 /organizations/search': new Error('gone'),
     'POST v2 /organizations': { id: 1 },
@@ -74,10 +77,10 @@ test('busca e nota com falha não derrubam o lead; campo extra recusado é desca
   });
   let leadCalls = 0;
   const wrapped = async (url, init) => {
-    if (url.includes('/leads')) { leadCalls++; const body = JSON.parse(init.body); if (body.custom_x) return { ok: false, status: 400, json: async () => ({ success: false, error: 'bad field' }) }; return { ok: true, status: 200, json: async () => ({ success: true, data: { id: 'lead-3' } }) }; }
+    if (url.includes('/deals')) { leadCalls++; const body = JSON.parse(init.body); if (body.custom_fields) return { ok: false, status: 400, json: async () => ({ success: false, error: 'bad field' }) }; return { ok: true, status: 200, json: async () => ({ success: true, data: { id: 903 } }) }; }
     return http(url, init);
   };
-  assert.equal(await createPipedriveLead(VALID, { token: 't', employeesField: 'custom_x' }, wrapped), 'lead-3');
+  assert.equal(await createPipedriveLead(VALID, { token: 't', employeesField: 'custom_x' }, wrapped), 903);
   assert.equal(leadCalls, 2);
   assert.ok(calls.some((c) => c.path === '/notes'));
 });
