@@ -16,7 +16,7 @@ concurrency:
 
 jobs:
   testes:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     defaults:
       run:
@@ -35,7 +35,7 @@ jobs:
   publicar:
     needs: testes
     if: github.event_name == 'push' && github.ref == 'refs/heads/revisao'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: write
     steps:
