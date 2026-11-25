@@ -5,12 +5,16 @@
  *
  * - `track(nome, dados)` registra um evento de conversão. Sem o script da
  *   Vercel (testes, bloqueadores), os eventos ficam na fila e nada quebra.
- * - A primeira página da visita guarda UTMs, referência e página de entrada
- *   na sessionStorage; `leadOrigin()` monta o texto que vai na nota do lead.
+ * - A primeira página da visita guarda UTMs, identificadores de clique
+ *   (gclid, gbraid, wbraid), referência e página de entrada na sessionStorage;
+ *   `leadOrigin()` monta o texto que vai na nota do lead.
  */
 
 const STORAGE_KEY = 'devgo:origem';
 const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'];
+const CLICK_ID_KEYS = ['gclid', 'gbraid', 'wbraid'];
+const CLICK_ID_PATTERN = /^[A-Za-z0-9._-]+$/;
+const MAX_CLICK_ID = 120;
 const MAX_ORIGIN = 480; // a API aceita até 500 caracteres
 
 /** @typedef {Record<string, string | number | boolean>} EventData */
@@ -48,7 +52,11 @@ export function firstTouch(href, referrer) {
   }
   const ref = safe(() => new URL(referrer).hostname);
   if (ref && ref !== url.hostname) touch.referencia = ref.replace(/^www\./, '');
-  if (url.searchParams.has('gclid')) touch.utm_source ??= 'google-ads';
+  for (const key of CLICK_ID_KEYS) {
+    const value = url.searchParams.get(key)?.trim() ?? '';
+    if (CLICK_ID_PATTERN.test(value)) touch[key] = value.slice(0, MAX_CLICK_ID);
+  }
+  if (CLICK_ID_KEYS.some((key) => touch[key])) touch.utm_source ??= 'google-ads';
   if (url.searchParams.has('fbclid')) touch.referencia ??= 'facebook';
   if (url.searchParams.has('li_fat_id')) touch.referencia ??= 'linkedin';
   return touch;
@@ -65,6 +73,7 @@ export function describeOrigin(touch, page) {
     if (campaign) parts.push(`campanha: ${campaign}`);
     if (touch.utm_term) parts.push(`termo: ${touch.utm_term}`);
     if (touch.utm_content) parts.push(`conteúdo: ${touch.utm_content}`);
+    for (const key of CLICK_ID_KEYS) if (touch[key]) parts.push(`${key}: ${touch[key]}`);
     parts.push(touch.referencia ? `veio de: ${touch.referencia}` : campaign ? '' : 'veio de: acesso direto');
     parts.push(`entrou por: ${touch.entrada}`);
   }

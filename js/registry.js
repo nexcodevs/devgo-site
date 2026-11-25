@@ -14,6 +14,8 @@
 /** @type {Feature[]} */
 export const FEATURES = [
   { name: 'analytics', selector: '#top', module: './features/analytics.js', init: 'initAnalytics' },
+  // Antes do formulário: a tag já existe quando o envio é confirmado.
+  { name: 'gtag', selector: '#top', module: './features/gtag.js', init: 'initGtag' },
   { name: 'menu', selector: '#menu-btn', module: './features/page.js', init: 'initMobileMenu' },
   { name: 'hero-rotator', selector: '#hero-rotator', module: './features/page.js', init: 'initHeroRotator' },
   { name: 'hero-video', selector: '#hero-video', module: './features/page.js', init: 'initHeroVideo' },
