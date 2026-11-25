@@ -10,6 +10,7 @@
  */
 import { byId, html, render, reducedMotion } from '../core/dom.js';
 import { leadOrigin, track } from './analytics.js';
+import { reportLeadConversion } from './gtag.js';
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@.]+(\.[^\s@.]+)*\.[a-z]{2,}$/i;
 const NAME_PATTERN = /^[\p{L}][\p{L}\p{M}' .-]*$/u;
@@ -205,6 +206,7 @@ export function initContactForm() {
       const result = await response.json().catch(() => ({}));
       if (response.ok && result.ok) {
         track('Lead enviado', { tipo: payload.assunto.toString().startsWith('Squad ') ? 'squad' : 'contato', funcionarios: String(payload.funcionarios), pagina: location.pathname });
+        reportLeadConversion();
         form.reset();
         touched.clear();
         showStatus('is-success', html`Mensagem enviada. Um especialista da Devgo responde em breve.`);

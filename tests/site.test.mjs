@@ -41,6 +41,9 @@ async function open({ path = '/', viewport = VIEWPORTS.desktop, reducedMotion = 
   });
   page.on('response', (r) => { if (r.status() >= 400) problems.push(`${r.status()}: ${r.url()}`); });
   page.on('request', (r) => { if (r.resourceType() === 'script') scripts.push(new URL(r.url()).pathname); });
+  // A tag real do Google não entra no teste: senão cada página geraria hit na conta de anúncios.
+  // A CSP continua valendo — se o domínio estiver bloqueado, o navegador recusa o script antes desta rota.
+  await page.route(/https:\/\/www\.googletagmanager\.com\//, (route) => route.fulfill({ status: 200, contentType: 'text/javascript; charset=utf-8', body: '' }));
   await page.goto(new URL(path, server.url).href);
   await page.waitForLoadState('networkidle');
   return { page, problems, scripts };
@@ -58,6 +61,19 @@ async function scrollThrough(page) {
 }
 
 const subject = (page) => page.inputValue('#ct-assunto');
+
+/** Eventos `gtag('event', …)` empilhados na página. A tag externa é um script vazio no teste. */
+function googleEvents(page) {
+  return page.evaluate(() => {
+    const layer = /** @type {any[]} */ (/** @type {any} */ (window).dataLayer ?? []);
+    return layer.flatMap((entry) => {
+      const args = Array.from(entry);
+      if (args[0] !== 'event') return [];
+      const payload = args[2] && typeof args[2] === 'object' ? args[2] : {};
+      return [{ name: String(args[1]), ...payload }];
+    });
+  });
+}
 
 describe('renderização', () => {
   for (const [name, viewport] of Object.entries(VIEWPORTS)) {
@@ -379,6 +395,7 @@ describe('formulário de contato', () => {
     assert.equal(await page.textContent('#ct-nome-err'), 'Informe seu nome.');
     assert.equal(await page.getAttribute('#ct-nome', 'aria-describedby'), 'ct-nome-err');
     assert.equal(await page.evaluate(() => document.activeElement?.id), 'ct-nome');
+    assert.deepEqual(await googleEvents(page), [], 'erro de validação não é conversão');
     await page.fill('#ct-nome', 'Ana');
     assert.equal(await page.getAttribute('#ct-nome', 'aria-invalid'), null, 'corrigir o campo remove o destaque');
     assert.equal(await page.textContent('#ct-nome-err'), '');
@@ -428,6 +445,7 @@ describe('formulário de contato', () => {
     assert.equal(await page.inputValue('#ct-nome'), '', 'formulário limpo depois do envio');
     const events = await page.evaluate(() => (/** @type {any} */ (window).vaq ?? []).map((/** @type {any[]} */ e) => e[1].name));
     assert.deepEqual(events, ['Lead enviado'], 'conversão registrada, sem dados pessoais');
+    assert.deepEqual(await googleEvents(page), [{ name: 'conversion', send_to: 'AW-17010261251/9K0qCNurzL8dEIP6j68_' }], 'uma conversão do Google Ads, sem generate_lead enquanto o GA4 é placeholder');
     await page.close();
   });
 
@@ -447,6 +465,39 @@ describe('formulário de contato', () => {
     await page.close();
   });
 
+  test('o clique do anúncio segue na origem do lead', async () => {
+    const { page } = await open({ path: '/?gclid=CjwKCAjwteste123&gbraid=gb-teste_1' });
+    /** @type {any} */
+    let sent = null;
+    await page.route('**/api/lead', async (route) => { sent = route.request().postDataJSON(); await route.fulfill({ status: 200, contentType: 'application/json', body: '{"ok":true}' }); });
+    for (const [selector, value] of Object.entries(VALID)) await page.fill(selector, value);
+    await page.selectOption('#ct-func', { index: 1 });
+    await page.click('#contact-form button[type="submit"]');
+    await page.locator('#form-status.is-success').waitFor();
+    assert.match(sent.origem, /campanha: google-ads · gclid: CjwKCAjwteste123 · gbraid: gb-teste_1 · entrou por: \//);
+    await page.close();
+  });
+
+  test('dois envios no mesmo instante geram uma conversão', async () => {
+    const { page } = await open();
+    let hits = 0;
+    await page.route('**/api/lead', async (route) => {
+      hits += 1;
+      await route.fulfill({ status: 200, contentType: 'application/json', body: '{"ok":true}' });
+    });
+    for (const [selector, value] of Object.entries(VALID)) await page.fill(selector, value);
+    await page.selectOption('#ct-func', { index: 1 });
+    await page.evaluate(() => {
+      const form = /** @type {HTMLFormElement} */ (document.querySelector('#contact-form'));
+      form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+      form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+    });
+    await page.locator('#form-status.is-success').waitFor();
+    assert.equal(hits, 1);
+    assert.equal((await googleEvents(page)).filter((event) => event.name === 'conversion').length, 1);
+    await page.close();
+  });
+
   test('se o servidor falhar, mantém os dados e oferece outro canal', async () => {
     const { page } = await open();
     await page.route('**/api/lead', (route) => route.fulfill({ status: 502, contentType: 'application/json', body: '{"ok":false}' }));
@@ -458,6 +509,7 @@ describe('formulário de contato', () => {
     assert.equal(await page.inputValue('#ct-nome'), 'Ana');
     assert.equal(await status.locator('a').getAttribute('rel'), 'noopener noreferrer');
     assert.equal(await page.isEnabled('#contact-form button[type="submit"]'), true);
+    assert.deepEqual(await googleEvents(page), [], 'falha do servidor não é conversão');
     await page.close();
   });
 
@@ -469,6 +521,7 @@ describe('formulário de contato', () => {
     await page.click('#contact-form button[type="submit"]');
     await page.locator('#form-status').filter({ hasText: 'Confira o campo destacado' }).waitFor();
     assert.equal(await page.getAttribute('#ct-email', 'aria-invalid'), 'true');
+    assert.deepEqual(await googleEvents(page), [], 'recusa de campo não é conversão');
     await page.close();
   });
 
@@ -570,9 +623,51 @@ describe('funções puras', () => {
   });
 });
 
+test('medição: placeholder não dispara e o rótulo real dispara só a conversão', async () => {
+  const { page } = await open();
+  const plan = await page.evaluate(async () => {
+    const { measurementPlan, GOOGLE_TAGS } = await import('/js/features/gtag.js');
+    const { firstTouch, describeOrigin } = await import('/js/features/analytics.js');
+    const longId = 'a'.repeat(200);
+    const touch = firstTouch(`https://www.devgo.digital/?gclid=${longId}&wbraid=wb.teste`, 'https://www.google.com/');
+    return {
+      live: measurementPlan(GOOGLE_TAGS),
+      placeholder: measurementPlan({ adsId: 'AW-17010261251', adsSendTo: 'AW-17010261251/SUBSTITUIR_PELO_ROTULO', ga4MeasurementId: 'G-XXXXXXXX' }),
+      empty: measurementPlan({ adsId: '', adsSendTo: '', ga4MeasurementId: '' }),
+      ga4: measurementPlan({ adsId: 'AW-17010261251', adsSendTo: 'AW-17010261251/9K0qCNurzL8dEIP6j68_', ga4MeasurementId: 'G-ABC123' }),
+      gclidLength: touch.gclid.length,
+      source: touch.utm_source,
+      origin: describeOrigin(touch, 'https://www.devgo.digital/'),
+      dropped: firstTouch('https://www.devgo.digital/?gclid=<script>', '').gclid ?? '',
+    };
+  });
+  assert.deepEqual(plan.live, { loadScript: true, configAds: true, conversion: true, generateLead: false, scriptId: 'AW-17010261251' });
+  assert.deepEqual(plan.placeholder, { loadScript: true, configAds: true, conversion: false, generateLead: false, scriptId: 'AW-17010261251' });
+  assert.deepEqual(plan.empty, { loadScript: false, configAds: false, conversion: false, generateLead: false, scriptId: '' });
+  assert.equal(plan.ga4.generateLead, true);
+  assert.equal(plan.ga4.conversion, true);
+  assert.equal(plan.gclidLength, 120);
+  assert.equal(plan.source, 'google-ads');
+  assert.match(plan.origin, new RegExp(`gclid: ${'a'.repeat(120)} · wbraid: wb.teste`));
+  assert.ok(plan.origin.length <= 480);
+  assert.equal(plan.dropped, '');
+  await page.close();
+});
+
 test('vercel.json: o domínio .vercel.app e os endereços antigos redirecionam (301) para www.devgo.digital', async () => {
   const { readFile } = await import('node:fs/promises');
   const config = JSON.parse(await readFile(new URL('../vercel.json', import.meta.url), 'utf8'));
+  const csp = config.headers.flatMap((rule) => rule.headers).find((header) => header.key === 'Content-Security-Policy').value;
+  const scriptSrc = csp.split(';').map((part) => part.trim()).find((part) => part.startsWith('script-src'));
+  assert.match(scriptSrc, /https:\/\/www\.googletagmanager\.com/);
+  assert.match(scriptSrc, /https:\/\/www\.googleadservices\.com/);
+  assert.doesNotMatch(scriptSrc, /unsafe-inline/);
+  assert.match(csp, /https:\/\/va\.vercel-scripts\.com/);
+  assert.match(csp, /https:\/\/challenges\.cloudflare\.com/);
+  assert.match(csp, /https:\/\/www\.google-analytics\.com/);
+  assert.match(csp, /https:\/\/analytics\.google\.com/);
+  assert.match(csp, /https:\/\/\*\.google-analytics\.com/);
+  assert.match(csp, /https:\/\/\*\.analytics\.google\.com/);
   const host = config.redirects.find((r) => r.has?.some((h) => h.type === 'host' && h.value === 'devgo-site-2026.vercel.app'));
   assert.ok(host?.permanent && host.destination === 'https://www.devgo.digital/:path*');
   for (const old of ['/especialidades', '/como-funciona', '/contato']) {
